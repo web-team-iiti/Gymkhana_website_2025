@@ -16,7 +16,7 @@ const Footer = () => {
         <div className="md:max-w-md">
           <div className="flex items-center space-x-3">
             <img
-              src="https://gymkhana.iiti.ac.in/main_logo.png"
+              src="/main_logo.png"
               className="h-10 sm:h-20 md:h-40 lg:h-48"
               alt="Logo"
             />

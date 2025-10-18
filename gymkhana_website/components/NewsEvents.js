@@ -1,5 +1,3 @@
-
-
 const events = [
   {
     title: "Annual Sports Festival 2025",
@@ -27,37 +25,35 @@ const events = [
   },
 ];
 
-// The EventCard component is a reusable UI piece for a single event.
-function EventCard({ event }) {
-  return (
-    <div className="bg-gray-50/80 rounded-xl p-6 border border-gray-200/90 transition-shadow hover:shadow-lg">
-      <div className="flex justify-between items-start mb-2">
-        <div>
-          <h3 className="text-xl font-semibold text-gray-900">{event.title}</h3>
-          <p className="text-sm text-gray-500 mt-1">{event.date}</p>
-        </div>
-        <span className={`px-3 py-1 text-xs font-medium rounded-full ${event.statusColor}`}>
-          {event.status}
-        </span>
+// Arrow function for a single event card
+const EventCard = ({ event }) => (
+  <div className="bg-gray-50/80 rounded-xl p-6 border border-gray-200/90 transition-shadow hover:shadow-lg">
+    <div className="flex justify-between items-start mb-2">
+      <div>
+        <h3 className="text-xl font-semibold text-gray-900">{event.title}</h3>
+        <p className="text-sm text-gray-500 mt-1">{event.date}</p>
       </div>
-      <p className="text-gray-600 my-4">{event.description}</p>
-      <span className="inline-block bg-white border border-gray-300 text-gray-700 text-xs font-medium px-3 py-1 rounded-md">
-        {event.tag}
+      <span className={`px-3 py-1 text-xs font-medium rounded-full ${event.statusColor}`}>
+        {event.status}
       </span>
     </div>
-  );
-}
+    <p className="text-gray-600 my-4">{event.description}</p>
+    <span className="inline-block bg-white border border-gray-300 text-gray-700 text-xs font-medium px-3 py-1 rounded-md">
+      {event.tag}
+    </span>
+  </div>
+);
 
+// Arrow function for the main News & Events section
+const NewsAndEvents = () => (
+  <section>
+    <h2 className="text-3xl font-bold text-white mb-8">News & Events</h2>
+    <div className="space-y-6">
+      {events.map((event) => (
+        <EventCard key={event.title} event={event} />
+      ))}
+    </div>
+  </section>
+);
 
-export default function NewsAndEvents() {
-  return (
-    <section>
-      <h2 className="text-3xl font-bold text-gray-900 mb-8">News & Events</h2>
-      <div className="space-y-6">
-        {events.map((event) => (
-          <EventCard key={event.title} event={event} />
-        ))}
-      </div>
-    </section>
-  );
-}
+export default NewsAndEvents;

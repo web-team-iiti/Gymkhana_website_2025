@@ -12,8 +12,8 @@ const Navbar = () => {
   // Helper to check active links
   const isActive = (path) =>
     pathname === path
-      ? "text-blue-700 dark:text-blue-500"
-      : "text-gray-900 dark:text-white hover:text-blue-700 dark:hover:text-blue-500";
+      ? "text-yellow-700 dark:text-yellow-500"
+      : "text-gray-900 dark:text-white hover:text-yellow-700 dark:hover:text-yellow-500";
 
   const isClubActive = pathname.startsWith("/club");
 
@@ -26,12 +26,12 @@ const Navbar = () => {
           className="flex items-center space-x-3 rtl:space-x-reverse"
         >
           <img
-            src="https://gymkhana.iiti.ac.in/main_logo.png"
+            src="/main_logo.png"
             className="h-10"
             alt="Logo"
           />
           <span className="self-center text-2xl font-bold whitespace-nowrap dark:text-white">
-            Student's Gymkhana
+            <span className=" text-yellow-500">Student's</span> Gymkhana
           </span>
         </Link>
 
