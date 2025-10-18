@@ -93,8 +93,8 @@ const Navbar = () => {
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 className={`flex items-center justify-between w-full py-2 px-3 rounded md:w-auto md:p-0 ${
                   isClubActive
-                    ? "text-blue-700 dark:text-blue-500"
-                    : "text-gray-900 dark:text-white hover:text-blue-700 dark:hover:text-blue-500"
+                    ? "text-yellow-700 dark:text-yellow-500"
+                    : "text-gray-900 dark:text-white hover:text-yellow-700 dark:hover:text-yellow-500"
                 }`}
               >
                 Clubs
