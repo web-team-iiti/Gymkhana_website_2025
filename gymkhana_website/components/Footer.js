@@ -13,22 +13,17 @@ const Footer = () => {
       {/* Top Section */}
       <div className="flex flex-col md:flex-row justify-between w-full gap-10 border-b border-gray-700 pb-8">
         {/* Left Section */}
-        <div className="md:max-w-md">
+        <div className="md:max-w-lg">
           <div className="flex items-center space-x-3">
             <img
               src="/main_logo.png"
-              className="h-10 sm:h-20 md:h-40 lg:h-48"
+              className="h-10 sm:h-20 md:h-30"
               alt="Logo"
             />
-          </div>
             <h2 className="text-white pt-2 text-xl md:text-2xl font-bold">
               Student's Gymkhana IIT Indore
             </h2>
-          <p className="mt-6 text-sm font-semibold leading-relaxed text-gray-300">
-            Student Gymkhana, IIT Indore represents the collective student body,
-            organizing various cultural, technical, and sports activities
-            throughout the year to enhance student engagement and leadership.
-          </p>
+          </div>
         </div>
 
         {/* Right Section */}

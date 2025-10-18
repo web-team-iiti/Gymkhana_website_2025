@@ -9,27 +9,31 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 
 export const metadata = {
   title: "Student's Gymkhana - IIT Indore",
-  description: "A Organization for IIT Indore Students",
+  description: "An Organization for IIT Indore Students",
+  icons: {
+    icon: "/main_logo.png", // favicon logo
+  },
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col relative`}>
-        
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col relative`}
+      >
         {/* Background image for all pages */}
         <div className="fixed inset-0 z-[-2]">
           <Image
-            src="/bgimg.png" // replace with your background image
+            src="/bgimg.png"
             alt="Background"
             fill
             style={{ objectFit: "cover" }}
             priority
           />
-          <div className="absolute inset-0 bg-black/20"></div> {/* optional overlay for readability */}
+          <div className="absolute inset-0 bg-black/20"></div>
         </div>
 
-        {/* Navbar */}
+        {/* Navbar with logo */}
         <Navbar />
 
         {/* Main content */}
