@@ -1,26 +1,16 @@
-import Councils from "@/components/Councils";
-import Header from "@/components/Header";
-import NewsAndEvents from "@/components/NewsEvents";
+import Clubs from '@/components/Clubs'
+import RadialMenu from '@/components/Councils'
+import UpcomingEvents from '@/components/NewsEvents'
+import React from 'react'
 
-export default function HomePage() {
+const page = () => {
   return (
-    <div className="text-gray-800">
-      <Header />
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
-          {/* Left Column */}
-          <div className="lg:col-span-3">
-            <NewsAndEvents />
-          </div>
-
-          {/* Right Column */}
-          <div className="lg:col-span-2">
-            <Councils />
-          </div>
-
-        </div>
-      </main>
+    <div>
+      <RadialMenu/>
+      <Clubs/>
+      <UpcomingEvents/>
     </div>
-  );
+  )
 }
 
+export default page

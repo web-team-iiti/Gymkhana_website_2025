@@ -1,15 +1,10 @@
 import React from "react";
-import {
-  FaFacebookF,
-  FaInstagram,
-  FaLinkedinIn,
-  FaTwitter,
-} from "react-icons/fa";
+import {FaFacebookF,FaInstagram,FaLinkedinIn,FaTwitter,} from "react-icons/fa";
 import { MdEmail, MdLocationOn } from "react-icons/md";
 
 const Footer = () => {
   return (
-    <footer className="px-6 md:px-16 lg:px-24 xl:px-32 pt-10 w-full bg-gray-900 text-gray-400">
+    <footer className="px-6 md:px-16 lg:px-24 xl:px-32 pt-10 w-full bg-black text-gray-400">
       {/* Top Section */}
       <div className="flex flex-col md:flex-row justify-between w-full gap-10 border-b border-gray-700 pb-8">
         {/* Left Section */}
