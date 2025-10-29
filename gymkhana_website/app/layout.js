@@ -21,8 +21,8 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col relative`}
       >
-        {/* Background image for all pages */}
-        <div className="fixed inset-0 z-[-2]">
+        Background image for all pages
+        <div className="fixed inset-0 z-[-10]">
           <Image
             src="/bgimg.png"
             alt="Background"
@@ -34,10 +34,11 @@ export default function RootLayout({ children }) {
         </div>
 
         {/* Navbar with logo */}
+        {/* <Navbar className="relative z-20"/> */}
         <Navbar />
 
         {/* Main content */}
-        <main className="flex-grow">{children}</main>
+        <main className="flex-grow pt-20">{children}</main>
 
         {/* Footer */}
         <Footer />
