@@ -1,5 +1,10 @@
 import React from "react";
-import {FaFacebookF,FaInstagram,FaLinkedinIn,FaTwitter,} from "react-icons/fa";
+import {
+  FaFacebookF,
+  FaInstagram,
+  FaLinkedinIn,
+  FaTwitter,
+} from "react-icons/fa";
 import { MdEmail, MdLocationOn } from "react-icons/md";
 
 const Footer = () => {
@@ -27,49 +32,73 @@ const Footer = () => {
           <div>
             <h2 className="font-semibold text-xl mb-5 text-white">Contact</h2>
             <ul className="text-sm font-semibold text-white space-y-2">
+              {/* Email */}
               <li className="flex items-center space-x-2">
                 <MdEmail className="text-white" />
-                <span>studentgym@iiti.ac.in</span>
+                <a
+                  href="mailto:studentgym@iiti.ac.in"
+                  className="hover:text-blue-400 transition"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  studentgym@iiti.ac.in
+                </a>
               </li>
-              <li className="flex items-center space-x-2">
-                <MdLocationOn className="text-white" />
-                <span>
-                  Indian Institute of Technology Indore,<br />
-                  Khandwa Road, Simrol,<br />
+
+              {/* Location */}
+              <li className="flex items-start space-x-2">
+                <MdLocationOn className="text-white mt-1" />
+                <a
+                  href="https://www.google.com/maps/place/Indian+Institute+of+Technology+Indore/@22.5203748,75.9201363,15z"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-blue-400 transition"
+                >
+                  Indian Institute of Technology Indore,
+                  <br />
+                  Khandwa Road, Simrol,
+                  <br />
                   Indore 453552
-                </span>
+                </a>
               </li>
             </ul>
           </div>
-
 
           {/* Social Media */}
           <div>
             <h2 className="font-semibold text-xl mb-5 text-white">Follow Us</h2>
             <div className="flex space-x-4 text-lg">
               <a
-                href="#"
+                href="https://www.facebook.com/iitindore/"
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label="Facebook"
                 className="hover:text-blue-500 transition"
               >
                 <FaFacebookF />
               </a>
               <a
-                href="#"
+                href="https://www.instagram.com/iitindore/"
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label="Instagram"
                 className="hover:text-pink-500 transition"
               >
                 <FaInstagram />
               </a>
               <a
-                href="#"
+                href="https://www.linkedin.com/school/iit-indore/"
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label="LinkedIn"
                 className="hover:text-blue-400 transition"
               >
                 <FaLinkedinIn />
               </a>
               <a
-                href="#"
+                href="https://twitter.com/IITIOfficial"
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label="Twitter"
                 className="hover:text-sky-400 transition"
               >

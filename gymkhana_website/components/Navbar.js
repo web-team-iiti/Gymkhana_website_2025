@@ -33,8 +33,7 @@ const Navbar = () => {
   const isClubActive = pathname.startsWith("/club");
 
   return (
-    <nav
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 backdrop-blur-md border-b 
+    <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 backdrop-blur-md border-b 
         ${
           isScrolled
             ? "bg-white/60 dark:bg-gray-900/60 border-gray-300 dark:border-gray-700 shadow-md"

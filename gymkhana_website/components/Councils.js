@@ -1,56 +1,31 @@
 "use client";
 import React, { useState } from "react";
 
-// --- 1. Custom CSS for Wave Animation and Glow Effects ---
+// --- 1. Custom CSS (Unchanged) ---
 const customStyles = `
-  /* Continuous synchronized outward wave */
-  @keyframes wave-sync {
+  @keyframes waveMove {
     0% {
-      stroke-dashoffset: 150;
-      stroke-opacity: 0.2;
-    }
-    30% {
-      stroke-opacity: 0.8;
-    }
-    60% {
-      stroke-dashoffset: 0;
-      stroke-opacity: 1;
+      mask-image: linear-gradient(90deg, transparent 0%, black 10%, black 80%, transparent 100%);
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 10%, black 80%, transparent 100%);
+      background-position: 0 0, 0% 50%;
     }
     100% {
-      stroke-dashoffset: -150;
-      stroke-opacity: 0.2;
+      mask-image: linear-gradient(90deg, transparent 30%, black 60%, transparent 90%);
+      -webkit-mask-image: linear-gradient(90deg, transparent 30%, black 60%, transparent 90%);
+      background-position: 48px 0, 100% 50%; /* 12 * 4 = 48 */
     }
   }
 
-  /* One-time pulse when hovered */
-  @keyframes wave-pulse {
-    0% {
-      stroke-dashoffset: 150;
-      stroke-opacity: 0.6;
-    }
-    50% {
-      stroke-dashoffset: 50;
-      stroke-opacity: 1;
-    }
-    100% {
-      stroke-dashoffset: 0;
-      stroke-opacity: 0;
-    }
+  @keyframes colorShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
   }
 
-  .connector-line {
-    stroke-width: 2;
-    pointer-events: none;
-    stroke-dasharray: 6 8;
-    filter: drop-shadow(0 0 6px currentColor);
-  }
-
-  .wave-sync {
-    animation: wave-sync 2s linear infinite;
-  }
-
-  .wave-pulse {
-    animation: wave-pulse 0.8s ease-out forwards;
+  @keyframes pulseGlow {
+    0% { filter: brightness(0.9); }
+    50% { filter: brightness(1.3); }
+    100% { filter: brightness(0.9); }
   }
 
   .glow-text {
@@ -58,74 +33,91 @@ const customStyles = `
   }
 `;
 
-// --- 2. Node Data ---
+// --- 2. Node Data (Angles updated to 45° rotation) ---
 const councils = [
   {
     id: 1,
-    color: "#48bb78",
+    color: "#48bb78", // Green
     icon: "snt.jpg",
-    angle: 45,
+    angle: 45, // Top-Right
     title: "Science and Technology Council",
     description:
       "The SnT Council of IIT Indore is a community of science and technology enthusiasts who love to explore the unthinkable.",
   },
   {
-    id: 2,
-    color: "#f87171",
-    icon: "cult.jpg",
-    angle: 315,
-    title: "Cultural Council",
+    id: 4, 
+    color: "#fcd34d", // Yellow
+    icon: "acad.jpg",
+    angle: 135, // Top-Left
+    title: "Academic Council",
     description:
-      "The Cultural Council of IIT Indore orchestrates a diverse array of cultural events throughout the year, fostering artistic expression and community engagement among students and faculty alike.",
+      "The Academics Council has been trusted with the responsibility of managing executive activities in two of the most crucial aspects of student life - Academics and Career.",
   },
   {
     id: 3,
-    color: "#63b3ed",
+    color: "#63b3ed", // Blue
     icon: "gym.jpg",
-    angle: 225,
+    angle: 225, // Bottom-Left
     title: "Sports Council",
     description:
       "The Sports Council is the voice and face of IIT Indore sports community, responsible for management and conduction of all sporting events in the campus.",
   },
   {
-    id: 4,
-    color: "#fcd34d",
-    icon: "acad.jpg",
-    angle: 135,
-    title: "Academic Council",
+    id: 2,
+    color: "#f87171", // Red
+    icon: "cult.jpg",
+    angle: 315, // Bottom-Right
+    title: "Cultural Council",
     description:
-      "The Academics Council has been trusted with the responsibility of managing executive activities in two of the most crucial aspects of student life - Academics and Career.",
+      "The Cultural Council of IIT Indore orchestrates a diverse array of cultural events throughout the year, fostering artistic expression and community engagement among students and faculty alike.",
   },
 ];
 
-// --- 3. Connector Component ---
-const Connector = ({ angle, hexColor, isPulsing, animationKey }) => {
-  const animationClass = isPulsing ? "wave-pulse" : "wave-sync";
+// --- 3. Connector Component (Unchanged) ---
+const Connector = ({ angle, hexColor }) => {
+  const dotSize = 4;
+  const dotSpacing = 12;
+  const waveSpeed = 3;
+  const pulseSpeed = 2.5;
+
+  const dottedPattern = `repeating-radial-gradient(circle, ${hexColor} 0 ${
+    dotSize / 2
+  }px, transparent ${dotSize / 2}px ${dotSpacing}px)`;
+  
+  const gradient = `linear-gradient(90deg, ${hexColor}, ${hexColor}aa, ${hexColor}50)`;
+
   return (
-    <svg
-      key={animationKey}
+    <div
       className="absolute w-[300px] h-[300px] origin-center top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
       style={{ transform: `rotate(${angle}deg)` }}
-      viewBox="0 0 300 300"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
     >
-      <line
-        x1="150"
-        y1="150"
-        x2="300"
-        y2="150"
-        stroke={hexColor}
-        className={`connector-line ${animationClass}`}
-      />
-    </svg>
+      <div
+        className="absolute left-1/2 top-1/2 -translate-y-1/2 pointer-events-none"
+        style={{ width: "150px", height: `${dotSize}px` }}
+      >
+        <div
+          aria-hidden
+          className="absolute left-0 right-0"
+          style={{
+            height: `${dotSize}px`,
+            borderRadius: 9999,
+            backgroundImage: `${dottedPattern}, ${gradient}`,
+            backgroundSize: `${dotSpacing * 2}px ${dotSize}px, 400% 400%`,
+            backgroundBlendMode: "overlay",
+            animation: `waveMove ${waveSpeed}s linear infinite, colorShift ${
+              pulseSpeed * 3
+            }s ease-in-out infinite, pulseGlow ${pulseSpeed}s ease-in-out infinite`,
+            boxShadow: `0 0 12px ${hexColor}, 0 0 24px ${hexColor}50`,
+          }}
+        />
+      </div>
+    </div>
   );
 };
 
-// --- 4. Main Component ---
+// --- 4. Main Component (Unchanged) ---
 const RadialMenu = () => {
   const [hoveredNode, setHoveredNode] = useState(null);
-  const [pulseKeyMap, setPulseKeyMap] = useState({});
 
   // --- Central Node ---
   const CentralNode = () => (
@@ -151,34 +143,35 @@ const RadialMenu = () => {
   const PeripheralNode = ({ id, icon, color, angle, title, description }) => {
     const radius = 250;
     const radian = (angle * Math.PI) / 180;
-    const posX = 300 + radius * Math.cos(radian) - 35;
-    const posY = 300 - radius * Math.sin(radian) - 35;
+    const nodeSize = 128; // w-32/h-32 = 8rem = 128px
+    const nodePosX = 300 + radius * Math.cos(radian) - (nodeSize / 2);
+    const nodePosY = 300 - radius * Math.sin(radian) - (nodeSize / 2);
+
     const isHovered = hoveredNode === id;
 
-    const textRadius = radius + 40;
+    const textRadius = radius + 80; 
     const textPosX = 300 + textRadius * Math.cos(radian);
     const textPosY = 300 - textRadius * Math.sin(radian);
 
-    const handleMouseEnter = () => {
-      setHoveredNode(id);
-      setPulseKeyMap((prev) => ({
-        ...prev,
-        [id]: Date.now(),
-      }));
-    };
-
+    const handleMouseEnter = () => setHoveredNode(id);
     const handleMouseLeave = () => setHoveredNode(null);
 
     return (
       <>
+        {/* The Icon Node */}
         <div
           className="absolute flex flex-col items-center justify-center transition-all duration-300 hover:z-30 cursor-pointer"
-          style={{ left: `${posX}px`, top: `${posY}px` }}
+          style={{ 
+            left: `${nodePosX}px`, 
+            top: `${nodePosY}px`,
+            width: `${nodeSize}px`,
+            height: `${nodeSize}px`,
+           }}
           onMouseOver={handleMouseEnter}
           onMouseOut={handleMouseLeave}
         >
           <div
-            className="relative w-32 h-32 rounded-full bg-black border-2 flex items-center justify-center transition-all duration-300"
+            className="relative w-full h-full rounded-full bg-black border-2 flex items-center justify-center transition-all duration-300"
             style={{
               borderColor: color,
               boxShadow: isHovered
@@ -190,19 +183,19 @@ const RadialMenu = () => {
             <img
               src={icon}
               alt={title}
-              className="w-28 h-28 rounded-full object-cover"
+              className="w-28 h-28 rounded-full object-cover" // w-28 = 7rem = 112px
             />
           </div>
         </div>
 
-        {/* Hover Description */}
+        {/* Hover Description Box */}
         {isHovered && (
           <div
-            className="absolute z-50 transition-all max-w-sm duration-300 opacity-100 backdrop-blur-md rounded-2xl p-4 text-center shadow-lg pointer-events-none"
+            className="absolute z-50 transition-all w-[384px] duration-300 opacity-100 backdrop-blur-md rounded-2xl p-4 text-center shadow-lg pointer-events-none"
             style={{
-              left: `${textPosX - 150}px`,
+              left: `${textPosX}px`,
               top: `${textPosY}px`,
-              transform: "translate(-50%, -50%) scale(1)",
+              transform: "translate(-50%, -50%)", 
               background: "rgba(0, 0, 0, 0.75)",
               border: `2px solid ${color}`,
               boxShadow: `0 0 20px ${color}, 0 0 40px ${color}55`,
@@ -222,7 +215,7 @@ const RadialMenu = () => {
     <>
       <style>{customStyles}</style>
       <div
-        className="relative flex items-center justify-center text-white font-sans min-h-screen"
+        className="relative flex items-center justify-center text-white font-sans py-10 overflow-hidden"
         style={{
           backgroundImage: `
             url('/bgimg.png'),
@@ -233,18 +226,14 @@ const RadialMenu = () => {
           backgroundRepeat: "no-repeat, repeat",
         }}
       >
-        {/* Optional dark overlay for readability */}
         <div className="absolute inset-0 bg-black/50"></div>
 
-        {/* Main Radial Menu */}
         <div className="relative w-[600px] h-[600px] flex items-center justify-center">
           {councils.map((node) => (
             <Connector
               key={`line-${node.id}`}
-              animationKey={pulseKeyMap[node.id] || `line-${node.id}`}
               angle={node.angle}
               hexColor={node.color}
-              isPulsing={hoveredNode === node.id}
             />
           ))}
 

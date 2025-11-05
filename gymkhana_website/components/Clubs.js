@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 
-// Mock Data (same as before)
+// 🧩 Mock Data
 const mockClubs = [
   {
     id: 1,
@@ -43,7 +43,7 @@ const mockClubs = [
   {
     id: 5,
     name: "Electronics Club",
-    category: "Cultural",
+    category: "Technical",
     tag: "TECHNICAL",
     description:
       "Celebrate the diversity of India by promoting cultural exchange between states.",
@@ -105,15 +105,16 @@ const ClubCard = ({ club }) => {
 const DiscoverClubsPage = () => {
   const scrollRef = useRef(null);
   const router = useRouter();
-  const handleClick = () => {
-    router.push("/club");
-  };
+
+  // Filter state
+  const [filter, setFilter] = useState("ALL");
+
   // Auto-scroll logic
   useEffect(() => {
     const scrollContainer = scrollRef.current;
     if (!scrollContainer) return;
 
-    let scrollSpeed = 0.5; // pixels per frame
+    let scrollSpeed = 0.5;
     let animationFrameId;
 
     const scrollStep = () => {
@@ -122,36 +123,70 @@ const DiscoverClubsPage = () => {
         scrollContainer.scrollLeft + scrollContainer.clientWidth >=
         scrollContainer.scrollWidth
       ) {
-        scrollContainer.scrollLeft = 0; // Loop back to start
+        scrollContainer.scrollLeft = 0;
       }
       animationFrameId = requestAnimationFrame(scrollStep);
     };
 
     animationFrameId = requestAnimationFrame(scrollStep);
     return () => cancelAnimationFrame(animationFrameId);
-  }, []);
+  }, [filter]); // re-run when filter changes so it resets scroll position
+
+  const handleClick = () => router.push("/club");
+
+  // Filter clubs based on selected category
+  const filteredClubs =
+    filter === "ALL"
+      ? mockClubs
+      : mockClubs.filter((club) => club.category.toUpperCase() === filter);
+
+  // Duplicate list for seamless scroll
+  const displayClubs = [...filteredClubs, ...filteredClubs];
 
   return (
     <div className="w-full flex flex-col items-center justify-center text-white bg-gray-950 bg-[radial-gradient(#1a1a1a_1px,transparent_1px)] bg-[size:50px_50px] overflow-hidden">
-      <div className="text-center mb-12 mt-16">
+      <div className="text-center mb-10 mt-16">
         <h1 className="text-5xl font-bold mb-3">Our Clubs</h1>
         <p className="text-gray-400 max-w-2xl mx-auto">
           Explore the diverse range of clubs at IIT Indore. Hover to learn more!
         </p>
       </div>
 
-      {/* Horizontal Scrolling Section */}
+      {/* 🟢 Filter Buttons */}
+      <div className="flex gap-4 mb-8">
+        {["ALL", "TECHNICAL", "SPORTS", "CULTURAL"].map((cat) => (
+          <button
+            key={cat}
+            onClick={() => setFilter(cat)}
+            className={`px-5 py-2 rounded-full text-sm font-semibold transition-colors duration-300 border 
+              ${filter === cat
+                ? "bg-blue-600 border-blue-500 text-white"
+                : "bg-transparent border-gray-600 text-gray-300 hover:bg-gray-800"
+              }`}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      {/* 🌀 Horizontal Scrolling Section */}
       <div
         ref={scrollRef}
         className="flex overflow-x-hidden gap-8 w-full px-16 py-12 relative"
       >
-        {/* Duplicate the list for smoother looping */}
-        {[...mockClubs, ...mockClubs].map((club, index) => (
-          <ClubCard key={index} club={club} />
-        ))}
+        {displayClubs.length > 0 ? (
+          displayClubs.map((club, index) => <ClubCard key={index} club={club} />)
+        ) : (
+          <p className="text-gray-400 text-center w-full">
+            No clubs found in this category.
+          </p>
+        )}
       </div>
+
       <div onClick={handleClick} className="my-6">
-        <button className="bg-blue-700 hover:bg-blue-800 rounded-full p-1 py-2 px-2">View All Clubs</button>
+        <button className="bg-blue-700 hover:bg-blue-800 rounded-full py-2 px-4">
+          View All Clubs →
+        </button>
       </div>
     </div>
   );
