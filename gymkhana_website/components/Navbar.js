@@ -76,14 +76,14 @@ const Navbar = () => {
         <div className={`${isMenuOpen ? "block" : "hidden"} w-full md:block md:w-auto`}>
           <ul className="flex flex-col font-bold text-xl p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-transparent dark:bg-gray-800 md:dark:bg-transparent dark:border-gray-700">
             {/* Home */}
-            <li>
+            <li onClick={() => setIsMenuOpen(!isMenuOpen)}>
               <Link href="/" className={`block py-2 px-3 rounded md:p-0 ${isActive("/")}`}>
                 Home
               </Link>
             </li>
 
             {/* Members */}
-            <li>
+            <li onClick={() => setIsMenuOpen(!isMenuOpen)}>
               <Link
                 href="/members"
                 className={`block py-2 px-3 rounded md:p-0 ${isActive("/members")}`}
@@ -110,7 +110,7 @@ const Navbar = () => {
                 ${isDropdownOpen ? "block" : "hidden"} md:group-hover:block transition-all duration-200`}
               >
                 <ul className="py-2 text-sm text-gray-700 dark:text-gray-400">
-                  <li onClick={() => setIsDropdownOpen(false)}>
+                  <li onClick={() => {setIsDropdownOpen(false);setIsMenuOpen(!isMenuOpen)}}>
                     <Link
                       href="/club/technical"
                       className={`block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white ${isActive(
@@ -120,7 +120,7 @@ const Navbar = () => {
                       Technical Clubs
                     </Link>
                   </li>
-                  <li onClick={() => setIsDropdownOpen(false)}>
+                  <li onClick={() => {setIsDropdownOpen(false);setIsMenuOpen(!isMenuOpen)}}>
                     <Link
                       href="/club/cultural"
                       className={`block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white ${isActive(
@@ -130,7 +130,7 @@ const Navbar = () => {
                       Cultural Clubs
                     </Link>
                   </li>
-                  <li onClick={() => setIsDropdownOpen(false)}>
+                  <li onClick={() => {setIsDropdownOpen(false);setIsMenuOpen(!isMenuOpen)}}>
                     <Link
                       href="/club/sports"
                       className={`block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white ${isActive(
@@ -145,7 +145,7 @@ const Navbar = () => {
             </li>
 
             {/* Events */}
-            <li>
+            <li onClick={() => setIsMenuOpen(!isMenuOpen)}>
               <Link
                 href="/events"
                 className={`block py-2 px-3 rounded md:p-0 ${isActive("/events")}`}
@@ -155,7 +155,7 @@ const Navbar = () => {
             </li>
 
             {/* Contact */}
-            <li>
+            <li onClick={() => setIsMenuOpen(!isMenuOpen)}>
               <Link
                 href="/contact"
                 className={`block py-2 px-3 rounded md:p-0 ${isActive("/contact")}`}

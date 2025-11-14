@@ -167,13 +167,13 @@ const TeamCarousel = () => {
   const loopedMembers = [...members, ...members];
 
   return (
-    <div className="relative w-full h-screen flex flex-col items-center justify-center overflow-hidden">
+    <div className="relative w-full h-[80vh] sm:h-screen flex flex-col items-center justify-center overflow-hidden">
 
       {/* Background */}
       <div className="absolute top-0 left-0 z-[-2] h-screen w-screen bg-[#000000] 
           bg-[radial-gradient(#ffffff33_1px,#00091d_1px)] bg-[size:20px_20px]"></div>
 
-      <h1 className="text-4xl font-bold text-white mb-6 tracking-widest uppercase">
+      <h1 className="sm:text-4xl text-2xl font-bold text-white sm:mb-6 tracking-widest uppercase">
         Our Secretaries
       </h1>
 

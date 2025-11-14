@@ -109,7 +109,7 @@ const EventDetailsPage = () => {
         <div className="w-full flex flex-col items-center py-16 bg-gray-950 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] text-white">
             <div className="max-w-3xl w-full">
                 {/* 🖼️ Auto-scrolling image carousel (centered & fixed height) */}
-                <div className="relative overflow-hidden rounded-2xl shadow-lg mb-8 w-full h-[500px]">
+                <div className="relative overflow-hidden rounded-2xl shadow-lg mb-8 w-full h-[300px] md:h-[500px]">
                     <div
                         className="flex transition-transform duration-700 ease-in-out h-full"
                         style={{

@@ -49,8 +49,8 @@ const ContactInfo = () => (
         </div>
         <div>
           <h3 className="text-lg font-semibold text-gray-300">Website</h3>
-          <a
-            href="#"
+          <a target="_blank" rel="noopener noreferrer"
+            href="https://www.iiti.ac.in/"
             className="text-purple-400 hover:text-purple-500 hover:underline"
           >
             https://www.iiti.ac.in/
@@ -98,7 +98,7 @@ const MapView = () => (
 
 // --- Main Component (Arrow Function) ---
 const App = () => (
-  <div className="flex items-center text-white justify-center min-h-screen p-4 relative w-full overflow-x-hidden">
+  <div className="flex items-center text-white justify-center min-h-screen   relative w-full overflow-x-hidden">
 
 
     {/* Background */}
@@ -115,7 +115,7 @@ const App = () => (
         </div>
 
         {/* Map */}
-        <div className="w-full h-full">
+        <div className="w-full h-full px-2 rounded-full">
           <MapView />
         </div>
 

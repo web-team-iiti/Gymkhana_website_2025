@@ -45,7 +45,7 @@ const councils = [
       "The SnT Council of IIT Indore is a community of science and technology enthusiasts who love to explore the unthinkable.",
   },
   {
-    id: 4, 
+    id: 2, 
     color: "#fcd34d", // Yellow
     icon: "acad.jpg",
     angle: 135, // Top-Left
@@ -63,7 +63,7 @@ const councils = [
       "The Sports Council is the voice and face of IIT Indore sports community, responsible for management and conduction of all sporting events in the campus.",
   },
   {
-    id: 2,
+    id: 4,
     color: "#f87171", // Red
     icon: "cult.jpg",
     angle: 315, // Bottom-Right
@@ -89,7 +89,8 @@ const Connector = ({ angle, hexColor }) => {
   return (
     <div
       className="absolute w-[300px] h-[300px] origin-center top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-      style={{ transform: `rotate(${angle}deg)` }}
+      style={{ transform: `rotate(${-angle}deg)`
+ }}
     >
       <div
         className="absolute left-1/2 top-1/2 -translate-y-1/2 pointer-events-none"

@@ -146,14 +146,14 @@ const DiscoverClubsPage = () => {
   return (
     <div className="w-full flex flex-col items-center justify-center text-white bg-gray-950 bg-[radial-gradient(#1a1a1a_1px,transparent_1px)] bg-[size:50px_50px] overflow-hidden">
       <div className="text-center mb-10 mt-16">
-        <h1 className="text-5xl font-bold mb-3">Our Clubs</h1>
+        <h1 className="text-4xl font-bold mb-3">Our Clubs</h1>
         <p className="text-gray-400 max-w-2xl mx-auto">
           Explore the diverse range of clubs at IIT Indore. Hover to learn more!
         </p>
       </div>
 
       {/* 🟢 Filter Buttons */}
-      <div className="flex gap-4 mb-8">
+      <div className="flex gap-1 sm:gap-4 mb-8">
         {["ALL", "TECHNICAL", "SPORTS", "CULTURAL"].map((cat) => (
           <button
             key={cat}
