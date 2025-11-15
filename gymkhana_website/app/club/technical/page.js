@@ -22,77 +22,77 @@ const TechnicalClubsPage = () => {
   const clubs = [
     {
       name: "Aeromodelling Club",
-      logo: "",
+      logo: "/aeroclub.jpg",
       description: "A group of enthusiastic people who love to make UAVs. We deal with designing, building, and flying miniaturized aircraft. The club participates in various technical fests and competitions across the country."
     },
     {
       name: "Astronomy Club",
-      logo: "",
+      logo: "/astronomyclub.jpg",
       description: "A hub of cosmic exploration open to everyone with curiosity about the universe. We offer stargazing sessions, astronomy workshops, and provide advanced resources for those who want to dive deeper."
     },
     {
       name: "CAE Club",
-      logo: "",
+      logo: "/cae.png",
       description: "Computer-Aided Engineering Club deals with common engineering problems and develops optimum solutions using CAE software. We conduct workshops, seminars, webinars, and CAD competitions."
     },
     {
       name: "CFA Club",
-      logo: "",
+      logo: "/CFA.jpg",
       description: "The Finance and Analytics Club aims to prepare students for corporate and research-based financial problems. We focus on financial modeling, data analysis, and investment strategies."
     },
     {
       name: "Concrete Club",
-      logo: "",
+      logo: "/concreate.jpg",
       description: "Dedicated to exploring concrete technology and civil engineering applications. The club conducts workshops on construction materials, structural design, and sustainable building practices."
     },
     {
       name: "Electronics Club",
-      logo: "",
+      logo: "/electronics.png",
       description: "A motley of electronics fanatics providing a platform to explore the fascinating field of electronics. We conduct lecture series, workshops, seminars, and competitions with hands-on experience."
     },
     {
       name: "Cynaptics",
-      logo: "",
+      logo: "/cynaptics.jpg",
       description: "Focused on artificial intelligence, machine learning, and neural networks. The club works on cutting-edge AI projects, organizes workshops on deep learning, and participates in AI competitions."
     },
     {
       name: "GDSC",
-      logo: "",
+      logo: "/gdsc.png",
       description: "Google Developer Student Club - A vibrant community of developers exploring web development, AI/ML, Android development, and cloud computing. We empower students through workshops and hackathons."
     },
     {
       name: "Gymkhana Web Team",
-      logo: "",
+      logo: "/Web_Team_Logo.aeedf74e.png",
       description: "The technical backbone of Student Gymkhana, responsible for developing and maintaining the official Gymkhana website and various web applications using modern web technologies."
     },
     {
       name: "IVDC",
-      logo: "",
+      logo: "/ivdc.jpg",
       description: "Intelligent Vehicle Design Club focuses on automotive engineering, autonomous vehicles, and intelligent transportation systems. We design concept vehicles and participate in Formula Student competitions."
     },
     {
       name: "Metacryst",
-      logo: "",
+      logo: "/MetaCryst Logo1.a914f007.png",
       description: "A club dedicated to materials science and crystallography. We explore the structure, properties, and applications of various materials, conduct research projects in materials engineering."
     },
     {
       name: "Programming Club",
-      logo: "",
+      logo: "/pclub.png",
       description: "A community of highly enthusiastic students focused on development, algorithms, security, ML, and all aspects of programming. We organize coding competitions, hackathons, and workshops."
     },
     {
       name: "Quantum Computing Club",
-      logo: "",
+      logo: "/quantum computing.abcb2b09.jpg",
       description: "Exploring the revolutionary field of quantum computing. The club conducts workshops on quantum algorithms, quantum cryptography, and provides hands-on experience with quantum platforms."
     },
     {
       name: "Robotics Club",
-      logo: "",
+      logo: "/robotics.jpg",
       description: "A diverse group of students who loves to build robots. We build micromouse, hexapod, line followers, humanoids, and robotic arms. If you're thrilled by robots, this is the place to be."
     },
     {
       name: "Biocrats Club",
-      logo: "",
+      logo: "/Biocrats.jpg",
       description: "Dedicated to biological sciences, biotechnology, and biomedical engineering. We conduct workshops on bioinformatics, synthetic biology, and organize seminars on the latest advances."
     }
   ];
@@ -117,8 +117,10 @@ const TechnicalClubsPage = () => {
   ];
 
   const galleryImages = [
-    "", "", "", "", "", "", "", "",
-    "", "", "", "", "", "", "", ""
+    "", "", "", "",
+    "", "", "", "",
+    "", "", "", "",
+    "", "", "", ""
   ];
 
   // Auto-scrolling gallery
@@ -224,7 +226,7 @@ const TechnicalClubsPage = () => {
       <div className="relative z-10 max-w-7xl mx-auto p-8">
         {/* Page Title */}
         <div className="text-center mb-12">
-          <h1 className="text-6xl font-bold mb-4 bg-gradient-to-r from-blue-700 via-blue-400 to-cyan-400 bg-clip-text text-transparent animate-gradient">
+          <h1 className="text-6xl font-bold mb-4 bg-gradient-to-r from-purple-700 via-purple-400 to-purple-200 bg-clip-text text-transparent animate-gradient">
             Technical Clubs
           </h1>
           <p className="text-xl text-gray-400">IIT Indore Student Gymkhana</p>
@@ -235,7 +237,7 @@ const TechnicalClubsPage = () => {
           {/* Left Column (2/3 width) */}
           <div className="lg:col-span-2 space-y-6">
             {/* Club Carousel - Smooth Continuous Scroll */}
-            <div className="bg-gray-900/50 backdrop-blur-xl rounded-2xl p-6 border border-gray-800 hover:border-blue-500/50 transition-all duration-300 shadow-2xl overflow-hidden">
+            <div className="bg-gray-900/50 backdrop-blur-xl rounded-2xl p-6 border border-gray-800 hover:border-purple-500/50 transition-all duration-300 shadow-2xl overflow-hidden">
               <div className="relative overflow-hidden">
                 <div
                   className="flex gap-4"
@@ -259,8 +261,17 @@ const TechnicalClubsPage = () => {
                           setHoveredClub(null);
                         }}
                       >
-                        <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 h-40 flex flex-col items-center justify-center border border-gray-700 hover:border-blue-500 hover:bg-gray-700/50 transition-all duration-300 hover:scale-105">
-                          <div className="text-5xl mb-3">{club.logo}</div>
+                        <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 h-40 flex flex-col items-center justify-center border border-gray-700 hover:border-purple-500 hover:bg-gray-700/30 transition-all duration-300 hover:scale-105">
+                          <img 
+                            src={club.logo} 
+                            alt={`${club.name} logo`}
+                            className="w-20 h-20 object-contain mb-3 rounded-lg group-hover:opacity-70 transition-opacity duration-300"
+                            onError={(e) => {
+                              e.target.style.display = 'none';
+                              e.target.nextSibling.style.display = 'block';
+                            }}
+                          />
+                          <div className="text-5xl mb-3 group-hover:opacity-70 transition-opacity duration-300" style={{display: 'none'}}>⚙️</div>
                           <h3 className="text-sm font-semibold text-center text-gray-300 group-hover:text-white line-clamp-2">
                             {club.name}
                           </h3>
@@ -268,7 +279,7 @@ const TechnicalClubsPage = () => {
 
                         {/* Hover Description */}
                         {hoveredClub === actualIndex && (
-                          <div className="absolute inset-0 bg-gray-900/80 backdrop-blur-md rounded-xl p-4 flex items-center justify-center border border-blue-400 animate-fadeIn z-20 overflow-hidden">
+                          <div className="absolute inset-0 bg-gray-900/80 backdrop-blur-md rounded-xl p-4 flex items-center justify-center border border-purple-400 animate-fadeIn z-20 overflow-hidden">
                             <p className="text-xs text-gray-300 text-center leading-relaxed overflow-y-auto max-h-full">
                               {club.description}
                             </p>
@@ -291,7 +302,7 @@ const TechnicalClubsPage = () => {
                     }}
                     className={`h-2 rounded-full transition-all ${
                       index === (currentClubIndex % clubs.length)
-                        ? 'w-8 bg-blue-500'
+                        ? 'w-8 bg-purple-500'
                         : 'w-2 bg-gray-700 hover:bg-gray-600'
                     }`}
                   />
@@ -300,8 +311,8 @@ const TechnicalClubsPage = () => {
             </div>
 
             {/* Club Heads Carousel - FIXED: Now shows contacts on ANY hovered card */}
-            <div className="bg-gray-900/50 backdrop-blur-xl rounded-2xl p-6 border border-gray-800 hover:border-blue-500/50 transition-all duration-300 shadow-2xl overflow-hidden">
-              <h3 className="text-2xl font-bold mb-4 text-center text-blue-400">Club Heads</h3>
+            <div className="bg-gray-900/50 backdrop-blur-xl rounded-2xl p-6 border border-gray-800 hover:border-purple-500/50 transition-all duration-300 shadow-2xl overflow-hidden">
+              <h3 className="text-2xl font-bold mb-4 text-center text-purple-400">Club Heads</h3>
               
               <div className="relative overflow-hidden">
                 <div
@@ -327,14 +338,14 @@ const TechnicalClubsPage = () => {
                           setHoveredHead(null); // Clear hover state
                         }}
                       >
-                        <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-4 h-64 flex flex-col items-center justify-center border border-gray-700 hover:border-blue-500 hover:bg-gray-700/50 transition-all duration-300">
+                        <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-4 h-64 flex flex-col items-center justify-center border border-gray-700 hover:border-purple-500 hover:bg-gray-700/50 transition-all duration-300">
                           <div className="text-6xl mb-3 filter drop-shadow-lg">
                             {head.photo}
                           </div>
                           <h4 className="text-base font-bold mb-1 text-white text-center line-clamp-2">
                             {head.name}
                           </h4>
-                          <p className="text-blue-400 mb-1 text-xs font-medium text-center line-clamp-1">
+                          <p className="text-purple-400 mb-1 text-xs font-medium text-center line-clamp-1">
                             {head.role}
                           </p>
                           <p className="text-gray-500 text-xs mb-2 text-center line-clamp-1">
@@ -348,7 +359,7 @@ const TechnicalClubsPage = () => {
                                 href={head.instagram}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="bg-gradient-to-r from-purple-600 to-pink-600 p-2 rounded-full hover:scale-110 transition-transform shadow-lg hover:shadow-blue-400/50"
+                                className="bg-gradient-to-r from-purple-600 to-pink-600 p-2 rounded-full hover:scale-110 transition-transform shadow-lg hover:shadow-purple-400/50"
                               >
                                 <FaInstagram className="text-lg" />
                               </a>
@@ -387,7 +398,7 @@ const TechnicalClubsPage = () => {
                     }}
                     className={`h-2 rounded-full transition-all ${
                       index === (currentHeadIndex % clubHeads.length)
-                        ? 'w-8 bg-blue-500'
+                        ? 'w-8 bg-purple-500'
                         : 'w-2 bg-gray-700 hover:bg-gray-600'
                     }`}
                   />
@@ -399,7 +410,7 @@ const TechnicalClubsPage = () => {
           {/* Gallery - Right Side */}
           <div className="lg:col-span-1">
             <div className="bg-gray-900/50 backdrop-blur-xl rounded-2xl p-6 border border-gray-800 shadow-2xl h-full">
-              <h3 className="text-2xl font-bold mb-4 text-center text-blue-400">Gallery</h3>
+              <h3 className="text-2xl font-bold mb-4 text-center text-purple-400">Gallery</h3>
               <div
                 ref={galleryRef}
                 className="grid grid-cols-2 gap-4 overflow-hidden"
@@ -408,7 +419,7 @@ const TechnicalClubsPage = () => {
                 {galleryImages.concat(galleryImages).concat(galleryImages).map((img, index) => (
                   <div
                     key={index}
-                    className="bg-gradient-to-br from-blue-900/30 via-gray-800/30 to-blue-700/30 rounded-xl flex items-center justify-center text-5xl hover:scale-110 transition-transform duration-300 aspect-square border border-gray-700 hover:border-blue-500"
+                    className="bg-gradient-to-br from-purple-900/30 via-gray-800/30 to-purple-700/30 rounded-xl flex items-center justify-center text-5xl hover:scale-110 transition-transform duration-300 aspect-square border border-gray-700 hover:border-purple-500"
                   >
                     {img}
                   </div>

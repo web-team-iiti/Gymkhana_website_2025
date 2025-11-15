@@ -51,20 +51,20 @@ const BackgroundLayout = ({ children }) => {
             this.x, this.y, 0,
             this.x, this.y, this.size * 1.5
           );
-          gradient.addColorStop(0, `rgba(51, 85, 234, ${this.glowIntensity})`);
-          gradient.addColorStop(1, 'rgba(51, 85, 234, 0)');
+          gradient.addColorStop(0, `rgba(147, 51, 234,  ${this.glowIntensity})`);
+          gradient.addColorStop(1, 'rgba(147, 51, 234, 0)');
           ctx.fillStyle = gradient;
           ctx.fill();
         }
 
-        ctx.strokeStyle = `rgba(51, 85, 234, ${this.opacity})`;
+        ctx.strokeStyle = `rgba(147, 51, 234, ${this.opacity})`;
         ctx.lineWidth = 1.5;
         ctx.stroke();
 
         if (this.glowIntensity > 0.1) {
           ctx.beginPath();
           ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(130, 153, 255, ${this.glowIntensity * 2})`;
+          ctx.fillStyle = `rgba(192, 132, 252,  ${this.glowIntensity * 2})`;
           ctx.fill();
         }
       }
@@ -113,8 +113,8 @@ const BackgroundLayout = ({ children }) => {
           this.x, this.y, 0,
           this.x, this.y, this.size * 3
         );
-        gradient.addColorStop(0, `rgba(130, 153, 255, ${this.opacity})`);
-        gradient.addColorStop(1, 'rgba(130, 153, 255, 0)');
+        gradient.addColorStop(0, `rgba(192, 132, 252, ${this.opacity})`);
+        gradient.addColorStop(1, 'rgba(192, 132, 252, 0)');
 
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size * 3, 0, Math.PI * 2);
