@@ -21,7 +21,7 @@ const Footer = () => {
               alt="Logo"
             />
             <h2 className="text-white pt-2 text-xl md:text-2xl font-bold">
-              Student's Gymkhana IIT Indore
+              <span className=" text-yellow-500">Students' Gymkhana</span> IIT Indore
             </h2>
           </div>
         </div>
@@ -30,7 +30,7 @@ const Footer = () => {
         <div className="flex-1 flex flex-col md:flex-row md:justify-end gap-16">
           {/* Contact Info */}
           <div>
-            <h2 className="font-semibold text-xl mb-5 text-white">Contact</h2>
+            <h2 className="font-semibold text-xl mb-5 text-white"><span className=" text-yellow-500">Contact</span> Us</h2>
             <ul className="text-sm font-semibold text-white space-y-2">
               {/* Email */}
               <li className="flex items-center space-x-2">
@@ -66,7 +66,7 @@ const Footer = () => {
 
           {/* Social Media */}
           <div>
-            <h2 className="font-semibold text-xl mb-5 text-white">Follow Us</h2>
+            <h2 className="font-semibold text-xl mb-5 text-white"><span className=" text-yellow-500">Follow</span> Us</h2>
             <div className="flex space-x-4 text-lg">
               <a
                 href="https://www.facebook.com/iitindore/"
@@ -111,7 +111,7 @@ const Footer = () => {
 
       {/* Bottom Section */}
       <p className="pt-6 text-center text-xs md:text-sm pb-6 border-t border-gray-800 mt-6 text-gray-500">
-        © {new Date().getFullYear()} Student's Gymkhana, IIT Indore. All Rights Reserved.
+        <span className="text-yellow-500">© {new Date().getFullYear()} Student's Gymkhana,</span> IIT Indore. All Rights Reserved.
       </p>
     </footer>
   );

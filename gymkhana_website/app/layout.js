@@ -19,7 +19,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col relative`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen text-white flex flex-col relative`}
       >
         Background image for all pages
         {/* <div className="fixed inset-0 z-[-10]">

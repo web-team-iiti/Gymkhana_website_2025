@@ -3,6 +3,10 @@
 *{
     font-family: serif;
 }
+/* To hide scroll bars */
+body::-webkit-scrollbar {
+    display: none;
+}
 
 /* Custom animations for hover effects */
 @keyframes fadeIn {
@@ -40,4 +44,3 @@ canvas.finisher-header {
   height: 100vh;
   z-index: -1; /* stays behind your content */
 }
-

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { FaSignInAlt } from "react-icons/fa";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -28,24 +29,23 @@ const Navbar = () => {
   const isActive = (path) =>
     pathname === path
       ? "text-yellow-700 dark:text-yellow-500"
-      : "text-gray-900 dark:text-white hover:text-yellow-700 dark:hover:text-yellow-500";
+      : "text-white hover:text-yellow-700 dark:hover:text-yellow-500";
 
   const isClubActive = pathname.startsWith("/club");
 
   return (
     <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 backdrop-blur-md border-b 
-        ${
-          isScrolled
-            ? "bg-white/60 dark:bg-gray-900/60 border-gray-300 dark:border-gray-700 shadow-md"
-            : "bg-white dark:bg-gray-900 border-transparent"
-        }`}
+        ${isScrolled
+        ? "bg-gray-900/60 border-gray-700 shadow-md"
+        : "bg-gray-900 border-transparent"
+      }`}
     >
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between py-5 mx-auto px-4">
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
           <img src="/main_logo.png" className="h-10" alt="Logo" />
-          <span className="self-center text-2xl font-bold whitespace-nowrap dark:text-white">
-            <span className="text-yellow-500">Student's</span> Gymkhana
+          <span className="self-center text-xl sm:text-2xl font-bold whitespace-nowrap dark:text-white">
+            <span className="text-yellow-500">Students'</span> Gymkhana
           </span>
         </Link>
 
@@ -74,7 +74,7 @@ const Navbar = () => {
 
         {/* Menu Links */}
         <div className={`${isMenuOpen ? "block" : "hidden"} w-full md:block md:w-auto`}>
-          <ul className="flex flex-col font-bold text-xl p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-transparent dark:bg-gray-800 md:dark:bg-transparent dark:border-gray-700">
+          <ul className="flex flex-col font-bold text-xl p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-950 text-white md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-transparent dark:bg-gray-800 md:dark:bg-transparent dark:border-gray-700">
             {/* Home */}
             <li onClick={() => setIsMenuOpen(!isMenuOpen)}>
               <Link href="/" className={`block py-2 px-3 rounded md:p-0 ${isActive("/")}`}>
@@ -93,49 +93,56 @@ const Navbar = () => {
             </li>
 
             {/* Club Dropdown */}
-            <li className="relative group">
-              <button
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className={`flex items-center justify-between w-full py-2 px-3 rounded md:w-auto md:p-0 ${
-                  isClubActive
-                    ? "text-yellow-700 dark:text-yellow-500"
-                    : "text-gray-900 dark:text-white hover:text-yellow-700 dark:hover:text-yellow-500"
-                }`}
+            <li className="relative group w-full md:w-auto">
+              <button onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className={`flex items-center justify-between w-full py-2 px-3 rounded md:w-auto md:p-0 transition-colors ${isClubActive
+                  ? "text-yellow-500"
+                  : "text-white hover:text-yellow-500"
+                  }`}
               >
-                Clubs
+                <span>Clubs</span>
+                {/* Arrow Icon that rotates */}
+                <svg className={`w-2.5 h-2.5 ms-2.5 transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : 'rotate-0'}`}
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 10 6"
+                >
+                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
+                </svg>
               </button>
 
-              <div
-                className={`absolute z-10 mt-2 font-normal bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600
-                ${isDropdownOpen ? "block" : "hidden"} md:group-hover:block transition-all duration-200`}
+              {/* Dropdown Container */}
+              <div className={`/* Mobile Styles (Accordion) */relative w-full overflow-hidden transition-all duration-300 ease-in-out ${isDropdownOpen ? "max-h-96 opacity-100 mt-2" : "max-h-0 opacity-0 md:opacity-100 md:max-h-none"}/* Desktop Styles (Popup) */ md:absolute md:z-10 md:mt-2 md:w-48 md:rounded-lg md:shadow-lg md:bg-gray-800 md:group-hover:block md:hidden ${isDropdownOpen ? "md:block" : ""}`}
               >
-                <ul className="py-2 text-sm text-gray-700 dark:text-gray-400">
-                  <li onClick={() => {setIsDropdownOpen(false);setIsMenuOpen(!isMenuOpen)}}>
+                {/* Inner List */}
+                <ul className="py-2 text-sm text-gray-300 bg-transparent md:bg-gray-800 rounded-lg border-l-2 border-yellow-500/50 md:border-0 ml-2 md:ml-0 pl-2 md:pl-0">
+
+                  {/* Technical */}
+                  <li onClick={() => { setIsDropdownOpen(false); setIsMenuOpen(false) }}>
                     <Link
                       href="/club/technical"
-                      className={`block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white ${isActive(
-                        "/club/technical"
-                      )}`}
+                      className={`block px-4 py-2 hover:text-white md:hover:bg-gray-600 ${isActive("/club/technical")}`}
                     >
                       Technical Clubs
                     </Link>
                   </li>
-                  <li onClick={() => {setIsDropdownOpen(false);setIsMenuOpen(!isMenuOpen)}}>
+
+                  {/* Cultural */}
+                  <li onClick={() => { setIsDropdownOpen(false); setIsMenuOpen(false) }}>
                     <Link
                       href="/club/cultural"
-                      className={`block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white ${isActive(
-                        "/club/cultural"
-                      )}`}
+                      className={`block px-4 py-2 hover:text-white md:hover:bg-gray-600 ${isActive("/club/cultural")}`}
                     >
                       Cultural Clubs
                     </Link>
                   </li>
-                  <li onClick={() => {setIsDropdownOpen(false);setIsMenuOpen(!isMenuOpen)}}>
+
+                  {/* Sports */}
+                  <li onClick={() => { setIsDropdownOpen(false); setIsMenuOpen(false) }}>
                     <Link
                       href="/club/sports"
-                      className={`block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white ${isActive(
-                        "/club/sports"
-                      )}`}
+                      className={`block px-4 py-2 hover:text-white md:hover:bg-gray-600 ${isActive("/club/sports")}`}
                     >
                       Sports Clubs
                     </Link>
@@ -161,6 +168,18 @@ const Navbar = () => {
                 className={`block py-2 px-3 rounded md:p-0 ${isActive("/contact")}`}
               >
                 Contact
+              </Link>
+            </li>
+            {/* Login */}
+            <li className="mt-4 md:mt-0 md:ml-4">
+              <Link href="/login" onClick={() => setIsMenuOpen(false)}
+                className="group flex items-center justify-center px-6 py-2 md:px-2 md:py-1 rounded-full bg-yellow-500 text-gray-900 font-bold transition-all duration-300 shadow-[0_0_10px_rgba(234,179,8,0.5)] hover:bg-yellow-400 hover:shadow-[0_0_20px_rgba(234,179,8,0.8)] md:hover:scale-105 md:hover:pr-5"
+              >
+                {/* ICON: Larger on mobile, smaller on desktop */}
+                <FaSignInAlt className="text-xl md:text-md shrink-0" />
+                <span className="whitespace-nowrap transition-all duration-300 ease-in-out max-w-xs opacity-100 ml-2 md:max-w-0 md:opacity-0 md:ml-0 md:group-hover:max-w-xs md:group-hover:opacity-100 md:group-hover:ml-2">
+                  Login
+                </span>
               </Link>
             </li>
           </ul>

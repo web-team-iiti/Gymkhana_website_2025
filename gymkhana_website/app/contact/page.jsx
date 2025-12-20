@@ -1,5 +1,7 @@
+"use client";
 import React from "react";
 import { IoMail, IoLocationSharp, IoCall, IoGlobeOutline } from "react-icons/io5";
+import Particles from "@/components/Particles";
 
 // --- SVG Logo (Arrow Function) ---
 const Logo = () => (
@@ -11,10 +13,10 @@ const Logo = () => (
 // --- Contact Info Component (Arrow Function) ---
 const ContactInfo = () => (
   <div className="flex flex-col p-10 space-y-10">
-    <img src="./main_logo.png" className="w-24 h-24" alt="" />
+    <img src="/main_logo.png" className="w-24 h-24 object-contain" alt="Logo" />
 
     <div className="space-y-6">
-      <h2 className="text-3xl font-bold text-gray-100">Contact Us</h2>
+      <h2 className="text-xl sm:text-2xl md:text-4xl font-bold text-gray-100"><span className="text-yellow-500">CONTACT </span>US</h2>
 
       {/* Email */}
       <div className="flex items-start gap-4">
@@ -80,9 +82,10 @@ const ContactInfo = () => (
 
 // --- Map Component (Arrow Function) ---
 const MapView = () => (
-  <div className="w-full h-full min-h-[300px] md:min-h-0">
+  <div className="w-full h-full min-h-[400px] md:min-h-0 relative">
+    {/* Corrected Google Maps Embed URL for IIT Indore */}
     <iframe
-      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d49199.14624652981!2d75.95237308569699!3d22.511516858341317!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3962efcccbce7145%3A0x784e8cb69818596b!2sIndian%20Institute%20of%20Technology%20Indore!5e1!3m2!1sen!2sin!4v1763049299629!5m2!1sen!2sin"
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3685.568700076758!2d75.92073487604535!3d22.52035963488053!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3962efcccbce7145%3A0x784e8cb69818596b!2sIIT%20Indore!5e0!3m2!1sen!2sin!4v1708450000000!5m2!1sen!2sin"
       width="100%"
       height="100%"
       style={{ border: 0 }}
@@ -90,7 +93,7 @@ const MapView = () => (
       loading="lazy"
       referrerPolicy="no-referrer-when-downgrade"
       title="IIT Indore Location"
-      className="rounded-r-lg md:rounded-none"
+      className="rounded-b-3xl md:rounded-r-3xl md:rounded-bl-none"
     ></iframe>
   </div>
 );
@@ -98,15 +101,25 @@ const MapView = () => (
 
 // --- Main Component (Arrow Function) ---
 const App = () => (
-  <div className="flex items-center text-white justify-center min-h-screen   relative w-full overflow-x-hidden">
+  // 🟢 Added bg-black to make white particles visible
+  <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-black py-12 px-4">
 
+    {/* 🌌 Background Layer: Particles */}
+    <div className="absolute inset-0 z-0 pointer-events-none">
+      <Particles
+        particleColors={['#ffffff', '#ffffff']}
+        particleCount={700}
+        particleSpread={10}
+        speed={0.1}
+        particleBaseSize={100}
+        moveParticlesOnHover={true}
+        alphaParticles={false}
+        disableRotation={false}
+      />
+    </div>
 
-    {/* Background */}
-    <div className="absolute top-0 left-0 z-[-2] h-screen w-screen bg-[#000000] 
-      bg-[radial-gradient(#ffffff33_1px,#00091d_1px)] bg-[size:20px_20px]"></div>
-
-    <div className="w-full max-w-6xl mx-auto overflow-hidden bg-gray-950 rounded-3xl shadow-2xl z-10">
-
+    {/* Content Layer (z-10 ensures it's above particles) */}
+    <div className="relative z-10 w-full max-w-6xl mx-auto bg-gray-950/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-gray-800">
       <div className="grid grid-cols-1 md:grid-cols-2">
 
         {/* Contact Info */}
@@ -115,7 +128,7 @@ const App = () => (
         </div>
 
         {/* Map */}
-        <div className="w-full h-full px-2 rounded-full">
+        <div className="w-full h-full">
           <MapView />
         </div>
 

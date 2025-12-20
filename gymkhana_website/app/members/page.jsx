@@ -1,9 +1,13 @@
 "use client";
-import React, { useRef, useEffect } from "react";
+import Particles from "@/components/Particles";
+import React, { useRef, useEffect, useState } from "react";
 import { IoMailOutline, IoLogoLinkedin, IoLogoInstagram } from "react-icons/io5";
 
 const TeamCarousel = () => {
   const scrollRef = useRef(null);
+  
+  // 1️⃣ Add State for pausing
+  const [isPaused, setIsPaused] = useState(false);
 
   const members = [
     {
@@ -15,8 +19,6 @@ const TeamCarousel = () => {
       linkedin: "#",
       instagram: "#"
     },
-
-    // GS Cultural Affairs
     {
       name: "Apoorv Singh",
       title: "GENERAL SECRETARY",
@@ -26,8 +28,6 @@ const TeamCarousel = () => {
       linkedin: "#",
       instagram: "#"
     },
-
-    // GS Academics UG
     {
       name: "Khush Singla",
       title: "GENERAL SECRETARY",
@@ -37,8 +37,6 @@ const TeamCarousel = () => {
       linkedin: "#",
       instagram: "#"
     },
-
-    // GS Hostel Affairs
     {
       name: "Atharvakant",
       title: "GENERAL SECRETARY",
@@ -48,8 +46,6 @@ const TeamCarousel = () => {
       linkedin: "#",
       instagram: "#"
     },
-
-    // GS MAC
     {
       name: "Shubham Kumar",
       title: "GENERAL SECRETARY",
@@ -59,8 +55,6 @@ const TeamCarousel = () => {
       linkedin: "#",
       instagram: "#"
     },
-
-    // GS Science & Technology
     {
       name: "SatyaJeet Pani",
       title: "GENERAL SECRETARY",
@@ -70,8 +64,6 @@ const TeamCarousel = () => {
       linkedin: "#",
       instagram: "#"
     },
-
-    // GS Academics PG
     {
       name: "Saurabh Yadav",
       title: "GENERAL SECRETARY",
@@ -81,8 +73,6 @@ const TeamCarousel = () => {
       linkedin: "#",
       instagram: "#"
     },
-
-    // GS COA
     {
       name: "Nawed Ashraf",
       title: "GENERAL SECRETARY",
@@ -92,8 +82,6 @@ const TeamCarousel = () => {
       linkedin: "#",
       instagram: "#"
     },
-
-    // GS Sports Affairs
     {
       name: "Prayag Lakhani",
       title: "GENERAL SECRETARY",
@@ -105,8 +93,7 @@ const TeamCarousel = () => {
     }
   ];
 
-
-  // 🌀 Smooth Auto-Scroll
+  // 🌀 Smooth Auto-Scroll Logic
   useEffect(() => {
     const container = scrollRef.current;
     if (!container) return;
@@ -115,31 +102,31 @@ const TeamCarousel = () => {
     let animationFrameId;
 
     const scrollStep = () => {
-      container.scrollLeft += scrollSpeed;
+      // 2️⃣ Only scroll if NOT paused
+      if (!isPaused) {
+        container.scrollLeft += scrollSpeed;
 
-      if (
-        container.scrollLeft + container.clientWidth >=
-        container.scrollWidth
-      ) {
-        container.scrollLeft = 0;
+        // Reset logic: seamless loop
+        // If we scrolled past half the width (first set of items), snap back to 0
+        if (container.scrollLeft >= container.scrollWidth / 2) {
+           container.scrollLeft = 0;
+        }
       }
-
       animationFrameId = requestAnimationFrame(scrollStep);
     };
 
     animationFrameId = requestAnimationFrame(scrollStep);
     return () => cancelAnimationFrame(animationFrameId);
-  }, []);
+  }, [isPaused]); // Re-run effect when pause state changes
 
   const ProfileCard = ({ name, title, org, img, email, linkedin, instagram }) => {
     return (
       <div className="
         w-[300px] rounded-2xl shadow-lg overflow-hidden 
         transition-all duration-300 hover:-translate-y-2 mx-4 flex-shrink-0 
-        border-2 border-white hover:border-yellow-400
+        border-2 border-white hover:border-yellow-400 bg-white group
       ">
-
-        <img src={img} alt={name} className="w-full rounded-t-2xl" />
+        <img src={img} alt={name} className="w-full h-64 object-cover rounded-t-2xl" />
 
         <div className="text-center py-10 bg-white">
           <h3 className="text-2xl font-bold text-gray-800 mb-2 uppercase">{name}</h3>
@@ -167,20 +154,42 @@ const TeamCarousel = () => {
   const loopedMembers = [...members, ...members];
 
   return (
-    <div className="relative w-full h-[80vh] sm:h-screen flex flex-col items-center justify-center overflow-hidden">
+    <div className="relative w-full py-10  flex flex-col items-center justify-center overflow-hidden bg-black">
+      
+      {/* 1. Particles Background Layer */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <Particles
+          particleColors={['#ffffff', '#ffffff']}
+          particleCount={700}
+          particleSpread={10}
+          speed={0.1}
+          particleBaseSize={100}
+          moveParticlesOnHover={true}
+          alphaParticles={false}
+          disableRotation={false}
+        />
+      </div>
 
-      {/* Background */}
-      <div className="absolute top-0 left-0 z-[-2] h-screen w-screen bg-[#000000] 
-          bg-[radial-gradient(#ffffff33_1px,#00091d_1px)] bg-[size:20px_20px]"></div>
+      {/* 2. Content Layer */}
+      <div className="relative z-10 w-full flex flex-col items-center">
+        <h1 className="text-xl sm:text-2xl md:text-4xl font-bold text-white sm:mb-6 tracking-widest uppercase drop-shadow-md">
+          <span className="text-yellow-500">OUR</span> Secretaries
+        </h1>
 
-      <h1 className="sm:text-4xl text-2xl font-bold text-white sm:mb-6 tracking-widest uppercase">
-        Our Secretaries
-      </h1>
-
-      <div ref={scrollRef} className="flex overflow-x-scroll scrollbar-hide w-full px-16 py-10 gap-6">
-        {loopedMembers.map((m, i) => (
-          <ProfileCard key={i} {...m} />
-        ))}
+        <div 
+          ref={scrollRef} 
+          className="flex overflow-x-scroll scrollbar-hide w-full px-16 py-10 gap-6"
+          // 3️⃣ Event Listeners for Hover Pause
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+          // Optional: Touch support for mobile users
+          onTouchStart={() => setIsPaused(true)}
+          onTouchEnd={() => setTimeout(() => setIsPaused(false), 2000)}
+        >
+          {loopedMembers.map((m, i) => (
+            <ProfileCard key={i} {...m} />
+          ))}
+        </div>
       </div>
 
       <style>
