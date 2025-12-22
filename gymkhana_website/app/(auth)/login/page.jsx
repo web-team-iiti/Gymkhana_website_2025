@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation"; 
+import { signIn } from "next-auth/react"; // <--- Main NextAuth Import
 import { 
   FaUserGraduate, 
   FaUserTie, 
@@ -28,6 +28,15 @@ const Login = () => {
   const [isFocused, setIsFocused] = useState(null);
   const [error, setError] = useState(""); 
   const [isLoading, setIsLoading] = useState(false);
+
+  // Define where each role redirects after a successful login
+  const roleRoutes = {
+    club_head: "/dashboard/club_head",
+    gs: "/dashboard/general_secretary",
+    office: "/dashboard/office",
+    adosa: "/dashboard/adosa",
+    dosa: "/dashboard/dosa",
+  };
 
   const roles = [
     { 
@@ -82,25 +91,44 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(""); 
-    setIsLoading(true); 
-
+    setIsLoading(true);  
+    // --- Validation Checks ---
     if (!formData.email.endsWith("@iiti.ac.in")) {
       setError("Please use your official institute email (@iiti.ac.in)");
       setIsLoading(false);
       return;
-    }
-
+    } 
     if (formData.password.length < 8) {
         setError("Password must be at least 8 characters long");
         setIsLoading(false);
         return;
-    }
-
+    } 
     try {
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        console.log("Logging in with:", formData);
+        // --- NEXTAUTH SIGN IN ---
+        const result = await signIn("credentials", {
+            redirect: false, // We handle redirection manually to show error messages if needed
+            email: formData.email,
+            password: formData.password,
+            // We pass the role to the authorize callback in [...nextauth].js
+            role: formData.role, 
+        }); 
+        if (result?.error) {
+            // NextAuth returns an error string if auth fails
+            throw new Error("Invalid credentials or role mismatch.");
+        } 
+        if (result?.ok) {
+            console.log("Login successful"); 
+            // 1. Determine destination
+            const destination = roleRoutes[formData.role] || "/dashboard";
+            
+            // 2. Refresh router to ensure server components update with new session
+            router.refresh();  
+            // 3. Navigate
+            router.push(destination);
+        } 
     } catch (err) {
-        setError("Login failed. Please try again.");
+        console.error("Login Error:", err);
+        setError(err.message || "Login failed. Please check your connection.");
     } finally {
         setIsLoading(false); 
     }
@@ -129,14 +157,7 @@ const Login = () => {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
       </div>
 
-      {/* --- Login Card (UPDATED) --- */}
-      {/* Changes made:
-         1. Removed 'w-full h-full'
-         2. Added 'w-[95%] sm:w-[85%] md:w-full' to control width on mobile
-         3. Added 'h-auto max-h-[90vh]' so it fits content but doesn't overflow screen
-         4. Added 'rounded-2xl' and 'border border-white/10' for mobile styling
-         5. Added 'overflow-y-auto' to ensure internal scrolling if screens are very small
-      */}
+      {/* --- Login Card --- */}
       <div className="relative z-10 w-[95%] sm:w-[85%] h-auto max-h-[90vh] md:max-w-5xl md:max-h-[90vh] bg-black/40 backdrop-blur-2xl border border-white/10 rounded-2xl md:rounded-3xl shadow-2xl flex flex-col md:flex-row overflow-y-auto md:overflow-hidden scrollbar-hide">
         
         {/* SECTION 1: ROLE SELECTION */}
