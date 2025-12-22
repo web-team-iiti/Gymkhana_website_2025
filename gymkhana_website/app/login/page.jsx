@@ -84,25 +84,21 @@ const Login = () => {
     setError(""); 
     setIsLoading(true); 
 
-    // --- 1. Email Validation ---
     if (!formData.email.endsWith("@iiti.ac.in")) {
       setError("Please use your official institute email (@iiti.ac.in)");
       setIsLoading(false);
       return;
     }
 
-    // --- 2. Password Length Validation ---
     if (formData.password.length < 8) {
         setError("Password must be at least 8 characters long");
         setIsLoading(false);
         return;
     }
 
-    // --- 3. Simulate API Call ---
     try {
         await new Promise(resolve => setTimeout(resolve, 2000));
         console.log("Logging in with:", formData);
-        // Navigate or handle success here
     } catch (err) {
         setError("Login failed. Please try again.");
     } finally {
@@ -133,14 +129,21 @@ const Login = () => {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
       </div>
 
-      {/* --- Login Card --- */}
-      <div className="relative z-10 w-full h-full md:h-auto md:max-w-5xl md:max-h-[90vh] bg-black/40 backdrop-blur-2xl border-none md:border md:border-white/10 md:rounded-3xl shadow-2xl flex flex-col md:flex-row overflow-hidden">
+      {/* --- Login Card (UPDATED) --- */}
+      {/* Changes made:
+         1. Removed 'w-full h-full'
+         2. Added 'w-[95%] sm:w-[85%] md:w-full' to control width on mobile
+         3. Added 'h-auto max-h-[90vh]' so it fits content but doesn't overflow screen
+         4. Added 'rounded-2xl' and 'border border-white/10' for mobile styling
+         5. Added 'overflow-y-auto' to ensure internal scrolling if screens are very small
+      */}
+      <div className="relative z-10 w-[95%] sm:w-[85%] h-auto max-h-[90vh] md:max-w-5xl md:max-h-[90vh] bg-black/40 backdrop-blur-2xl border border-white/10 rounded-2xl md:rounded-3xl shadow-2xl flex flex-col md:flex-row overflow-y-auto md:overflow-hidden scrollbar-hide">
         
         {/* SECTION 1: ROLE SELECTION */}
         <div className="w-full md:w-2/5 p-4 md:p-8 flex flex-col justify-end md:justify-center border-b md:border-b-0 md:border-r border-white/10 bg-white/5 shrink-0">
           
-          <div className="mt-16 md:mt-0 mb-4 md:mb-6 text-center md:text-left">
-            <span className="text-xl font-bold tracking-tighter block mb-1">Gymkhana<span className="text-yellow-500">.</span></span>
+          <div className="mt-8 md:mt-0 mb-4 md:mb-6 text-center md:text-left">
+            <span className="text-xl font-bold tracking-tighter block mb-1">Students' <span className="text-yellow-500">Gymkhana.</span></span>
             <h2 className="text-lg md:text-3xl font-bold text-white">Welcome Back</h2>
             <p className="text-gray-400 text-xs md:text-sm hidden md:block mt-2">Select your role to access the portal.</p>
           </div>
@@ -251,8 +254,8 @@ const Login = () => {
                 flex items-center justify-center gap-2
                 transition-all duration-300 relative overflow-hidden group
                 ${isLoading 
-                    ? 'opacity-70 cursor-not-allowed grayscale-[0.5]' 
-                    : 'hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]'
+                  ? 'opacity-70 cursor-not-allowed grayscale-[0.5]' 
+                  : 'hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]'
                 }
               `}
             >
