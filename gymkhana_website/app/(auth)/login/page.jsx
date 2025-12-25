@@ -1,18 +1,14 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation"; 
-import { signIn } from "next-auth/react"; // <--- Main NextAuth Import
+import { signIn, getSession } from "next-auth/react"; // <--- Added getSession
 import { 
-  FaUserGraduate, 
-  FaUserTie, 
-  FaUniversity, 
-  FaBriefcase, 
-  FaBuilding, 
   FaEye, 
   FaEyeSlash,
   FaArrowLeft,
   FaExclamationCircle,
-  FaSpinner 
+  FaSpinner,
+  FaUserTie // Default icon
 } from "react-icons/fa";
 
 const Login = () => {
@@ -21,7 +17,6 @@ const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    role: "club_head", 
   });
   
   const [showPassword, setShowPassword] = useState(false);
@@ -29,7 +24,7 @@ const Login = () => {
   const [error, setError] = useState(""); 
   const [isLoading, setIsLoading] = useState(false);
 
-  // Define where each role redirects after a successful login
+  // Define where each role redirects after automatic detection
   const roleRoutes = {
     club_head: "/dashboard/club_head",
     gs: "/dashboard/general_secretary",
@@ -38,60 +33,19 @@ const Login = () => {
     dosa: "/dashboard/dosa",
   };
 
-  const roles = [
-    { 
-      id: "club_head", 
-      label: "Club Head", 
-      icon: <FaUserGraduate />, 
-      color: "from-blue-400 to-blue-600",
-      activeBorder: "border-blue-500",
-      activeText: "text-blue-400",
-      activeShadow: "shadow-[0_0_10px_rgba(59,130,246,0.4)]"
-    },
-    { 
-      id: "gs", 
-      label: "Gen. Sec", 
-      icon: <FaUserTie />, 
-      color: "from-yellow-400 to-yellow-600",
-      activeBorder: "border-yellow-500",
-      activeText: "text-yellow-400",
-      activeShadow: "shadow-[0_0_10px_rgba(234,179,8,0.4)]"
-    },
-    { 
-      id: "office", 
-      label: "Office", 
-      icon: <FaBuilding />, 
-      color: "from-green-400 to-green-600",
-      activeBorder: "border-green-500",
-      activeText: "text-green-300",
-      activeShadow: "shadow-[0_0_10px_rgba(156,163,175,0.4)]"
-    },
-    { 
-      id: "adosa", 
-      label: "ADoSA", 
-      icon: <FaUniversity />, 
-      color: "from-purple-400 to-purple-600",
-      activeBorder: "border-purple-500",
-      activeText: "text-purple-400",
-      activeShadow: "shadow-[0_0_10px_rgba(168,85,247,0.4)]"
-    },
-    { 
-      id: "dosa", 
-      label: "DoSA", 
-      icon: <FaBriefcase />, 
-      color: "from-red-400 to-red-600",
-      activeBorder: "border-red-500",
-      activeText: "text-red-400",
-      activeShadow: "shadow-[0_0_10px_rgba(239,68,68,0.4)]"
-    },
-  ];
-
-  const activeRoleObj = roles.find((r) => r.id === formData.role) || roles[0];
+  // Default Theme (Gymkhana Gold)
+  const theme = {
+    color: "from-yellow-400 to-yellow-600",
+    activeText: "text-yellow-400",
+    activeBorder: "border-yellow-500",
+    activeShadow: "shadow-[0_0_10px_rgba(234,179,8,0.4)]"
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(""); 
     setIsLoading(true);  
+
     // --- Validation Checks ---
     if (!formData.email.endsWith("@iiti.ac.in")) {
       setError("Please use your official institute email (@iiti.ac.in)");
@@ -103,28 +57,37 @@ const Login = () => {
         setIsLoading(false);
         return;
     } 
+
     try {
-        // --- NEXTAUTH SIGN IN ---
+        // 1. Sign In with Credentials (No role passed)
         const result = await signIn("credentials", {
-            redirect: false, // We handle redirection manually to show error messages if needed
+            redirect: false, 
             email: formData.email,
             password: formData.password,
-            // We pass the role to the authorize callback in [...nextauth].js
-            role: formData.role, 
         }); 
+
         if (result?.error) {
-            // NextAuth returns an error string if auth fails
-            throw new Error("Invalid credentials or role mismatch.");
+            throw new Error("Invalid credentials.");
         } 
+
         if (result?.ok) {
-            console.log("Login successful"); 
-            // 1. Determine destination
-            const destination = roleRoutes[formData.role] || "/dashboard";
+            console.log("Login successful, detecting role..."); 
             
-            // 2. Refresh router to ensure server components update with new session
-            router.refresh();  
-            // 3. Navigate
-            router.push(destination);
+            // 2. Fetch Session to detect Role automatically
+            const session = await getSession();
+            
+            if (session?.user?.role) {
+                // 3. Determine destination based on database role
+                const detectedRole = session.user.role;
+                const destination = roleRoutes[detectedRole] || "/dashboard";
+                
+                console.log(`Role detected: ${detectedRole}, Redirecting to: ${destination}`);
+                
+                router.refresh();  
+                router.push(destination);
+            } else {
+                throw new Error("User role not found in session.");
+            }
         } 
     } catch (err) {
         console.error("Login Error:", err);
@@ -151,65 +114,29 @@ const Login = () => {
       {/* --- Background Effects --- */}
       <div className="absolute inset-0 pointer-events-none">
         <div 
-          className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r ${activeRoleObj.color} rounded-full blur-[150px] opacity-20 transition-all duration-1000 ease-in-out`} 
+          className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r ${theme.color} rounded-full blur-[150px] opacity-10 transition-all duration-1000 ease-in-out`} 
         />
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150"></div>
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
       </div>
 
       {/* --- Login Card --- */}
-      <div className="relative z-10 w-[95%] sm:w-[85%] h-auto max-h-[90vh] md:max-w-5xl md:max-h-[90vh] bg-black/40 backdrop-blur-2xl border border-white/10 rounded-2xl md:rounded-3xl shadow-2xl flex flex-col md:flex-row overflow-y-auto md:overflow-hidden scrollbar-hide">
+      <div className="relative z-10 w-[90%] sm:w-[450px] bg-black/40 backdrop-blur-2xl border border-white/10 rounded-2xl md:rounded-3xl shadow-2xl flex flex-col overflow-hidden p-8 md:p-10">
         
-        {/* SECTION 1: ROLE SELECTION */}
-        <div className="w-full md:w-2/5 p-4 md:p-8 flex flex-col justify-end md:justify-center border-b md:border-b-0 md:border-r border-white/10 bg-white/5 shrink-0">
-          
-          <div className="mt-8 md:mt-0 mb-4 md:mb-6 text-center md:text-left">
-            <span className="text-xl font-bold tracking-tighter block mb-1">Students' <span className="text-yellow-500">Gymkhana.</span></span>
-            <h2 className="text-lg md:text-3xl font-bold text-white">Welcome Back</h2>
-            <p className="text-gray-400 text-xs md:text-sm hidden md:block mt-2">Select your role to access the portal.</p>
-          </div>
-
-          <div className="flex flex-wrap justify-center gap-2 md:grid md:grid-cols-2">
-            {roles.map((role) => (
-              <button
-                key={role.id}
-                disabled={isLoading} 
-                onClick={() => {
-                  setFormData({ ...formData, role: role.id });
-                  setError(""); 
-                }}
-                className={`
-                  w-[30%] md:w-auto h-20 md:h-auto
-                  relative group flex flex-col items-center justify-center p-2 md:p-3 rounded-xl border transition-all duration-300
-                  ${isLoading ? 'cursor-not-allowed opacity-60' : ''}
-                  ${formData.role === role.id 
-                    ? `bg-white/10 ${role.activeBorder} ${role.activeShadow}`
-                    : "bg-transparent border-white/5 hover:bg-white/5 hover:border-white/20"}
-                `}
-              >
-                <div className={`text-xl md:text-2xl mb-1 md:mb-2 transition-colors duration-300 
-                  ${formData.role === role.id ? role.activeText : "text-gray-500 group-hover:text-gray-300"}`}>
-                  {role.icon}
-                </div>
-                <span className={`text-[10px] md:text-xs font-medium whitespace-nowrap
-                  ${formData.role === role.id ? "text-white" : "text-gray-500 group-hover:text-gray-300"}`}>
-                  {role.label}
-                </span>
-              </button>
-            ))}
-          </div>
+        {/* HEADER */}
+        <div className="text-center mb-8">
+            <div className={`mx-auto w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-4 ${theme.activeShadow}`}>
+                <FaUserTie className={`text-2xl ${theme.activeText}`} />
+            </div>
+            <span className="text-xl font-bold tracking-tighter block mb-1">Students'  <span className="text-yellow-500">Gymkhana</span></span>
+            <h2 className="text-2xl font-bold text-white">Portal Login</h2>
+            <p className="text-gray-400 text-sm mt-2">Enter your credentials to access the dashboard.</p>
         </div>
 
-        {/* SECTION 2: FORM */}
-        <div className="w-full md:w-3/5 p-6 md:p-12 flex flex-col justify-center flex-1 relative">
-          <div className="mb-4 md:mb-8 text-center md:text-left">
-            <h3 className="text-xl md:text-2xl font-bold text-white mb-1">Sign In</h3>
-            <p className="text-gray-400 text-xs md:text-sm">Access as <span className={activeRoleObj.activeText}>{activeRoleObj.label}</span></p>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
+        {/* FORM */}
+        <form onSubmit={handleSubmit} className="space-y-6">
             <div className="relative group">
-              <label className={`absolute left-0 transition-all duration-300 ${isFocused === 'email' || formData.email ? '-top-5 text-[10px] md:-top-6 md:text-xs text-yellow-500' : 'top-2 text-sm text-gray-500'}`}>
+              <label className={`absolute left-0 transition-all duration-300 ${isFocused === 'email' || formData.email ? '-top-5 text-xs text-yellow-500' : 'top-2 text-sm text-gray-500'}`}>
                 Institute Email ID
               </label>
               <input
@@ -230,7 +157,7 @@ const Login = () => {
             </div>
 
             <div className="relative group">
-              <label className={`absolute left-0 transition-all duration-300 ${isFocused === 'password' || formData.password ? '-top-5 text-[10px] md:-top-6 md:text-xs text-yellow-500' : 'top-2 text-sm text-gray-500'}`}>
+              <label className={`absolute left-0 transition-all duration-300 ${isFocused === 'password' || formData.password ? '-top-5 text-xs text-yellow-500' : 'top-2 text-sm text-gray-500'}`}>
                 Password
               </label>
               <input
@@ -245,8 +172,8 @@ const Login = () => {
                 onFocus={() => setIsFocused('password')}
                 onBlur={() => setIsFocused(null)}
                 className={`w-full bg-transparent border-b border-gray-700 py-2 text-white focus:outline-none focus:border-yellow-500 transition-colors pr-10
-                 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}
-                 ${error && formData.password.length < 8 && formData.password.length > 0 ? "border-red-500 focus:border-red-500" : ""}`}
+                  ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}
+                  ${error && formData.password.length < 8 && formData.password.length > 0 ? "border-red-500 focus:border-red-500" : ""}`}
               />
               <button
                 type="button"
@@ -259,8 +186,8 @@ const Login = () => {
             </div>
 
             {error && (
-              <div className="flex items-center gap-2 text-red-400 text-xs bg-red-400/10 p-2 rounded border border-red-400/20 animate-pulse">
-                <FaExclamationCircle />
+              <div className="flex items-center gap-2 text-red-400 text-xs bg-red-400/10 p-3 rounded-lg border border-red-400/20 animate-pulse">
+                <FaExclamationCircle className="shrink-0" />
                 {error}
               </div>
             )}
@@ -269,8 +196,8 @@ const Login = () => {
               type="submit"
               disabled={isLoading}
               className={`
-                w-full py-3 md:py-3.5 mt-2 rounded-xl font-bold text-white tracking-wide
-                bg-gradient-to-r ${activeRoleObj.color}
+                w-full py-3.5 mt-2 rounded-xl font-bold text-white tracking-wide
+                bg-gradient-to-r ${theme.color}
                 shadow-lg 
                 flex items-center justify-center gap-2
                 transition-all duration-300 relative overflow-hidden group
@@ -282,14 +209,13 @@ const Login = () => {
             >
               {isLoading ? (
                 <>
-                  <FaSpinner className="animate-spin" /> Verifying...
+                  <FaSpinner className="animate-spin" /> Authenticating...
                 </>
               ) : (
-                "Login"
+                "Sign In"
               )}
             </button>
-          </form>
-        </div>
+        </form>
       </div>
     </div>
   );

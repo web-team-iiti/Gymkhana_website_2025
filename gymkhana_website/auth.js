@@ -11,16 +11,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             credentials: {
                 email: { label: "Email", type: "email" },
                 password: { label: "Password", type: "password" },
-                role: { label: "Role", type: "text" },
             },
             authorize: async (credentials) => {
                 try {
-                    const { email, password, role } = credentials;
+                    const { email, password } = credentials;
                     const result = await query("SELECT * FROM users WHERE email = $1", [email]);
                     const user = result.rows[0];
                     if (!user) return null;
                     if (user.password !== password) return null;
-                    if (user.role !== role) return null;
                     return {
                         id: user.id,
                         name: user.name,

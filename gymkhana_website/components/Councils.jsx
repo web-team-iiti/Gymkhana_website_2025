@@ -50,12 +50,13 @@ const customStyles = `
 `;
 
 // --- 2. Node Data ---
+// UPDATED: Added 5th Council and adjusted angles to 72 degrees apart for symmetry
 const councils = [
   {
     id: 1,
     color: "#48bb78", // Green
     icon: "snt.jpg",
-    angle: 45,
+    angle: 18,
     title: "Science and Technology Council",
     description: "The SnT Council of IIT Indore is a community of science and technology enthusiasts who love to explore the unthinkable.",
   },
@@ -63,7 +64,7 @@ const councils = [
     id: 2,
     color: "#fcd34d", // Yellow
     icon: "acad.jpg",
-    angle: 135,
+    angle: 90, // Sitting at the top
     title: "Academic Council",
     description: "The Academics Council has been trusted with the responsibility of managing executive activities in two of the most crucial aspects of student life - Academics and Career.",
   },
@@ -71,7 +72,7 @@ const councils = [
     id: 3,
     color: "#63b3ed", // Blue
     icon: "gym.jpg",
-    angle: 225,
+    angle: 162,
     title: "Sports Council",
     description: "The Sports Council is the voice and face of IIT Indore sports community, responsible for management and conduction of all sporting events in the campus.",
   },
@@ -79,9 +80,17 @@ const councils = [
     id: 4,
     color: "#f87171", // Red
     icon: "cult.jpg",
-    angle: 315,
+    angle: 234,
     title: "Cultural Council",
-    description: "The Cultural Council of IIT Indore orchestrates a diverse array of cultural events throughout the year, fostering artistic expression and community engagement among students and faculty alike.",
+    description: "The Cultural Council of IIT Indore orchestrates a diverse array of cultural events throughout the year, fostering artistic expression and community engagement.",
+  },
+  {
+    id: 5,
+    color: "#a855f7", // Purple 
+    icon: "alumni.jpeg",
+    angle: 306,
+    title: "Outreach and Alumni Council",
+    description: "The Outreach and Alumni Council acts as a bridge between the institute, its alumni network, and external organizations to foster long-term relationships and brand building.",
   },
 ];
 
@@ -123,28 +132,49 @@ const RadialMenu = () => {
   const [hoveredNode, setHoveredNode] = useState(null);
 
   // --- Central Node (Suns Intact) ---
+  // --- Central Node (Updated with 5 Suns) ---
   const CentralNode = ({ mobile }) => {
     const centralSunStyle = {
       background: "white",
-      boxShadow: "0 0 15px white, 0 0 30px gold", // This is the "Rosni"
+      boxShadow: "0 0 15px white, 0 0 30px gold", // The "Rosni"
     };
+
+    // Generate 5 suns positioned in a perfect pentagon (72 degrees apart)
+    const suns = Array.from({ length: 5 }).map((_, i) => {
+      const angleDeg = i * 72; // 0, 72, 144, 216, 288
+      const angleRad = (angleDeg * Math.PI) / 180;
+
+      // Calculate percentage position on the circle boundary
+      // 50% is the center. We add/subtract based on sin/cos.
+      return {
+        left: `${50 + 50 * Math.sin(angleRad)}%`,
+        top: `${50 - 50 * Math.cos(angleRad)}%`,
+      };
+    });
 
     return (
       <div className={`z-10 flex items-center justify-center relative ${mobile ? "mb-8" : ""}`}>
+        {/* Rotating Orbit Container */}
         <div
           className={`absolute rounded-full pointer-events-none ${mobile ? "inset-[-12px]" : "inset-[-20px]"}`}
           style={{ animation: "orbit-cw 12s linear infinite" }}
         >
-          {/* Top Sun */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full" style={centralSunStyle} />
-          {/* Right Sun */}
-          <div className="absolute right-0 top-1/2 translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full" style={centralSunStyle} />
-          {/* Bottom Sun */}
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-4 h-4 rounded-full" style={centralSunStyle} />
-          {/* Left Sun */}
-          <div className="absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full" style={centralSunStyle} />
+          {suns.map((pos, index) => (
+            <div
+              key={index}
+              className="absolute w-4 h-4 rounded-full"
+              style={{
+                ...centralSunStyle,
+                left: pos.left,
+                top: pos.top,
+                // This centers the dot exactly on the calculated point
+                transform: "translate(-50%, -50%)",
+              }}
+            />
+          ))}
         </div>
 
+        {/* Central Logo */}
         <div
           className={`
             ${mobile ? "w-28 h-28" : "w-36 h-36"} 
@@ -233,7 +263,7 @@ const RadialMenu = () => {
         {/* 📱 MOBILE LAYOUT (SUNS INCLUDED) */}
         <div className="relative z-10 w-full px-6 py-10 flex flex-col items-center gap-8 md:hidden">
           <CentralNode mobile={true} />
-           
+
           {councils.map((council, index) => (
             <div
               key={council.id}
@@ -241,7 +271,7 @@ const RadialMenu = () => {
               style={{
                 borderColor: council.color,
                 boxShadow: `0 0 15px ${council.color}40`,
-                animation: `float 6s ease-in-out infinite`, 
+                animation: `float 6s ease-in-out infinite`,
                 animationDelay: `${index * 1}s`
               }}
             >
@@ -251,25 +281,25 @@ const RadialMenu = () => {
               >
                 {/* ☀️ Mobile Sun 1 */}
                 <div className="absolute inset-[-6px] rounded-full pointer-events-none" style={{ animation: "orbit-ccw 4s linear infinite" }}>
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white" 
-                         style={{ backgroundColor: council.color, boxShadow: `0 0 8px ${council.color}` }} />
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white"
+                    style={{ backgroundColor: council.color, boxShadow: `0 0 8px ${council.color}` }} />
                 </div>
 
                 {/* ☀️ Mobile Sun 2 */}
                 <div className="absolute inset-[-6px] rounded-full pointer-events-none" style={{ animation: "orbit-cw 7s linear infinite" }}>
-                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-2 h-2 rounded-full bg-white" 
-                         style={{ backgroundColor: council.color, boxShadow: `0 0 8px ${council.color}` }} />
+                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-2 h-2 rounded-full bg-white"
+                    style={{ backgroundColor: council.color, boxShadow: `0 0 8px ${council.color}` }} />
                 </div>
 
                 <div className="w-full h-full rounded-full overflow-hidden z-10">
-                   <img src={council.icon} alt={council.title} className="w-full h-full object-cover" />
+                  <img src={council.icon} alt={council.title} className="w-full h-full object-cover" />
                 </div>
               </div>
-              
+
               <h3 className="text-xl font-bold mb-2" style={{ color: council.color, textShadow: `0 0 10px ${council.color}` }}>
                 {council.title}
               </h3>
-              
+
               <p className="text-sm text-gray-300 leading-relaxed">
                 {council.description}
               </p>
