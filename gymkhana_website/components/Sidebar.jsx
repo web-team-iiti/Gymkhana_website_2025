@@ -29,7 +29,7 @@ const MENU_ITEMS = {
     { name: "Create Proposal", href: "/dashboard/general_secretary/create", icon: <FaFileAlt /> },
     { name: "Pending Approvals", href: "/dashboard/approvals", icon: <FaCheckDouble /> },
     { name: "My Proposals", href: "/dashboard/general_secretary/my-proposals", icon: <FaFileSignature /> },
-    { name: "Verify PORs", href: "/dashboard/verify-members", icon: <FaUsers /> },
+    { name: "Verify PORs", href: "/dashboard/general_secretary/verify-members", icon: <FaUsers /> },
     { name: "Master Inventory", href: "/dashboard/inventory", icon: <FaBoxOpen /> },
   ],
   office: [
