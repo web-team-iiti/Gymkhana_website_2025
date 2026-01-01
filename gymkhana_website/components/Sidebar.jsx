@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import {
-  FaHome,
+  FaHome,FaCalendarAlt,
   FaFileAlt,
   FaCheckDouble,
   FaUsers,
@@ -30,6 +30,7 @@ const MENU_ITEMS = {
     { name: "Pending Approvals", href: "/dashboard/approvals", icon: <FaCheckDouble /> },
     { name: "My Proposals", href: "/dashboard/general_secretary/my-proposals", icon: <FaFileSignature /> },
     { name: "Verify PORs", href: "/dashboard/verify-members", icon: <FaUsers /> },
+    { name: "Manage Events", href: "/dashboard/general_secretary/events", icon: <FaCalendarAlt /> },
     { name: "Master Inventory", href: "/dashboard/inventory", icon: <FaBoxOpen /> },
   ],
   office: [
@@ -91,7 +92,7 @@ const Sidebar = ({ userRole }) => {
         {/* --- Logo Area --- */}
         <div className="h-20 flex flex-col justify-center px-6 border-b border-gray-800 bg-gray-950">
           <h2 className="text-xl font-bold text-yellow-500 tracking-tight">
-            Gymkhana<span className="text-white">Portal</span>
+            Gymkhana <span className="text-white">Portal</span>
           </h2>
           <span className="text-[10px] uppercase tracking-widest text-gray-500 mt-1 font-semibold">
             {userRole?.replace("_", " ") || "Dashboard"}

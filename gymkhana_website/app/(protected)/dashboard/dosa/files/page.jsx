@@ -1,16 +1,17 @@
 import React from "react";
 import Link from "next/link";
 import { query } from "@/config/db";
-import { 
-  FaFilePdf, 
-  FaClock, 
-  FaExclamationCircle, 
-  FaArrowRight, 
-  FaUser 
+import {
+  FaFilePdf,
+  FaClock,
+  FaExclamationCircle,
+  FaArrowRight,
+  FaUser,
+  FaChevronRight,
+  FaCheckCircle
 } from "react-icons/fa";
 
 async function getDosaFiles() {
-  // Fetch files waiting for DOSA Approval
   const sql = `
     SELECT p.*, u.name as creator_name 
     FROM proposals p
@@ -28,62 +29,85 @@ export default async function DosaFilesPage() {
   const files = await getDosaFiles();
 
   return (
-    <div className="p-6 md:p-8 max-w-7xl mx-auto">
-      
-      {/* Page Header */}
-      <div className="flex justify-between items-end mb-8">
+    <div className="p-4 md:p-8 max-w-7xl mx-auto pb-20 md:pb-8">
+
+      {/* --- Page Header --- */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6 md:mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-white">Final Approvals</h1>
-          <p className="text-gray-400 mt-1">Review and sign off on Gymkhana proposals.</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-white">Final Approvals</h1>
+          <p className="text-sm md:text-base text-gray-400 mt-1">Review and sign off on proposals.</p>
         </div>
-        <span className="bg-yellow-500/20 text-yellow-500 border border-yellow-500/30 px-3 py-1 rounded-full text-sm font-bold font-mono">
-          {files.length} Waiting
-        </span>
+        
+        {/* Waiting Count Badge */}
+        <div className="self-start md:self-auto bg-yellow-500/10 border border-yellow-500/30 px-4 py-1.5 rounded-full flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></span>
+            <span className="text-yellow-500 text-xs md:text-sm font-bold font-mono">
+                {files.length} Waiting
+            </span>
+        </div>
       </div>
 
-      {/* Files List */}
-      <div className="grid grid-cols-1 gap-4">
+      {/* --- Files List --- */}
+      <div className="space-y-3 md:space-y-4">
         {files.length === 0 ? (
-          <div className="text-center py-20 bg-gray-900 rounded-2xl border border-gray-800">
-            <p className="text-gray-500">You are all caught up. No pending approvals.</p>
+          <div className="flex flex-col items-center justify-center py-16 px-4 bg-gray-900 rounded-2xl border border-gray-800 text-center">
+             <div className="bg-gray-800 p-4 rounded-full mb-4 text-gray-600">
+                <FaCheckCircle size={32} />
+             </div>
+             <h3 className="text-white font-bold text-lg">All Caught Up!</h3>
+             <p className="text-gray-500 text-sm mt-1 max-w-xs">There are no pending proposals waiting for your approval right now.</p>
           </div>
         ) : (
           files.map((file) => (
-            <Link 
-              key={file.id} 
+            <Link
+              key={file.id}
               href={`/dashboard/dosa/files/${file.id}`}
-              className="group bg-gray-900 border border-gray-800 p-5 rounded-xl flex flex-col md:flex-row items-center justify-between hover:border-green-500/50 transition-all shadow-lg hover:shadow-green-500/10"
+              className="group relative bg-gray-900 border border-gray-800 rounded-xl p-4 transition-all active:scale-[0.98] hover:border-green-500/50 hover:shadow-lg hover:shadow-green-500/10"
             >
-              {/* Left: File Info */}
-              <div className="flex items-start gap-4">
-                <div className={`p-3 rounded-lg ${file.priority === 'URGENT' ? 'bg-red-500/10 text-red-500' : 'bg-gray-800 text-gray-400'}`}>
-                  {file.priority === 'URGENT' ? <FaExclamationCircle size={20} /> : <FaFilePdf size={20} />}
+              {/* Layout: Grid for [Icon] [Content] [Arrow] */}
+              <div className="grid grid-cols-[auto_1fr_auto] gap-4 items-center">
+                
+                {/* 1. LEFT ICON BOX */}
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-xl shrink-0 ${
+                    file.priority === 'URGENT' 
+                    ? 'bg-red-500/10 text-red-500 border border-red-500/20' 
+                    : 'bg-gray-800 text-gray-400 border border-gray-700/50'
+                }`}>
+                  {file.priority === 'URGENT' ? <FaExclamationCircle /> : <FaFilePdf />}
                 </div>
-                <div>
-                  <h3 className="text-white font-bold group-hover:text-green-500 transition-colors text-lg">
-                    {file.title}
-                  </h3>
-                  <div className="flex flex-wrap gap-4 mt-2 text-xs text-gray-500">
-                    <span className="flex items-center gap-1 bg-gray-950 px-2 py-1 rounded border border-gray-800">
-                        <FaUser size={10} /> {file.creator_name || 'Unknown User'}
-                    </span>
-                    <span className="flex items-center gap-1 bg-gray-950 px-2 py-1 rounded border border-gray-800">
-                        <FaClock size={10} /> {new Date(file.created_at).toLocaleDateString()}
-                    </span>
-                  </div>
-                </div>
-              </div>
 
-              {/* Right: Status & Action */}
-              <div className="flex items-center gap-4 mt-4 md:mt-0">
-                {file.priority === 'URGENT' && (
-                    <span className="px-2 py-1 bg-red-500/20 text-red-400 text-[10px] font-bold uppercase rounded border border-red-500/30 animate-pulse">
-                        Urgent
-                    </span>
-                )}
-                <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-500 group-hover:bg-green-600 group-hover:text-white transition-all">
-                  <FaArrowRight size={14} />
+                {/* 2. MIDDLE CONTENT */}
+                <div className="min-w-0"> {/* min-w-0 forces truncation to work */}
+                   <div className="flex items-center gap-2 mb-1">
+                       {file.priority === 'URGENT' && (
+                           <span className="shrink-0 px-1.5 py-0.5 bg-red-500 text-white text-[10px] font-bold uppercase rounded tracking-wider">
+                               Urgent
+                           </span>
+                       )}
+                       <h3 className="text-white font-bold text-base truncate group-hover:text-green-400 transition-colors">
+                           {file.title}
+                       </h3>
+                   </div>
+                   
+                   {/* Metadata Row */}
+                   <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-500">
+                      <span className="flex items-center gap-1">
+                         <FaUser size={10} className="text-gray-600" /> 
+                         <span className="truncate max-w-[100px]">{file.creator_name?.split(' ')[0]}</span>
+                      </span>
+                      <span className="w-1 h-1 rounded-full bg-gray-700"></span>
+                      <span className="flex items-center gap-1">
+                         <FaClock size={10} className="text-gray-600" /> 
+                         {new Date(file.created_at).toLocaleDateString()}
+                      </span>
+                   </div>
                 </div>
+
+                {/* 3. RIGHT ARROW */}
+                <div className="text-gray-600 group-hover:text-green-500 group-hover:translate-x-1 transition-all">
+                    <FaChevronRight size={16} />
+                </div>
+
               </div>
             </Link>
           ))
