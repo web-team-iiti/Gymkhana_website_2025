@@ -13,7 +13,7 @@ import {
   FaBuilding,
   FaFileSignature,
   FaSignOutAlt,
-  FaChevronRight
+  FaChevronRight,FaFileInvoiceDollar
 } from "react-icons/fa";
 
 // Updated Menu Configuration with ADOSA & DOSA
@@ -31,22 +31,29 @@ const MENU_ITEMS = {
     { name: "My Proposals", href: "/dashboard/general_secretary/my-proposals", icon: <FaFileSignature /> },
     { name: "Verify PORs", href: "/dashboard/verify-members", icon: <FaUsers /> },
     { name: "Manage Events", href: "/dashboard/general_secretary/events", icon: <FaCalendarAlt /> },
-    { name: "Master Inventory", href: "/dashboard/inventory", icon: <FaBoxOpen /> },
+    { name: "Master Inventory", href: "/dashboard/general_secretary/inventory", icon: <FaBoxOpen /> },
+    { name: "Bill Repository", href: "/dashboard/general_secretary/bills", icon: <FaFileInvoiceDollar /> },
   ],
   office: [
     { name: "Overview", href: "/dashboard/office", icon: <FaHome /> },
     { name: "Received Files", href: "/dashboard/office/files", icon: <FaBuilding /> },
     { name: "Budget Tracking", href: "/dashboard/office/budget", icon: <FaFileSignature /> },
+    { name: "Master Inventory", href: "/dashboard/office/inventory", icon: <FaBoxOpen /> },
+    { name: "Bill Repository", href: "/dashboard/office/bills", icon: <FaFileInvoiceDollar /> },
   ],
   adosa: [
     { name: "Overview", href: "/dashboard/adosa", icon: <FaHome /> },
     { name: "Pending Approvals", href: "/dashboard/adosa/files", icon: <FaCheckDouble /> }, // ADOSA Inbox
     { name: "Review History", href: "/dashboard/adosa/history", icon: <FaFileAlt /> },
+    { name: "Master Inventory", href: "/dashboard/adosa/inventory", icon: <FaBoxOpen /> },
+    { name: "Bill Repository", href: "/dashboard/adosa/bills", icon: <FaFileInvoiceDollar /> },
   ],
   dosa: [
     { name: "Overview", href: "/dashboard/dosa", icon: <FaHome /> },
     { name: "Final Approvals", href: "/dashboard/dosa/files", icon: <FaCheckDouble /> }, // DOSA Inbox
     { name: "Archive", href: "/dashboard/dosa/archive", icon: <FaBoxOpen /> },
+    { name: "Master Inventory", href: "/dashboard/dosa/inventory", icon: <FaBoxOpen /> },
+    { name: "Bill Repository", href: "/dashboard/dosa/bills", icon: <FaFileInvoiceDollar /> },
   ],
 };
 
