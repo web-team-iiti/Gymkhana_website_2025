@@ -13,9 +13,11 @@ export const authConfig = {
       const isOnGS = nextUrl.pathname.startsWith("/dashboard/general_secretary");
       const isOnOffice = nextUrl.pathname.startsWith("/dashboard/office");
       const isOnADOSA = nextUrl.pathname.startsWith("/dashboard/adosa");
+      const isOnDOSA = nextUrl.pathname.startsWith("/dashboard/dosa");
+      const isOnStudent = nextUrl.pathname.startsWith("/dashboard/student");
 
-      // Rule 1: Always force login for any dashboard page
-      if (isOnDashboard) {
+      // Rule 1: Always force login for any dashboard page or student page
+      if (isOnDashboard || isOnStudent) {
         if (!isLoggedIn) return false; // Redirects to /login
       }
 
@@ -31,6 +33,14 @@ export const authConfig = {
       }
       // Rule 4: Protect ADOSA Routes
       if (isOnADOSA && role !== "adosa") {
+        return Response.redirect(new URL("/dashboard", nextUrl));
+      }
+      // Rule 5: Protect DOSA Routes
+      if (isOnDOSA && role !== "dosa") {
+        return Response.redirect(new URL("/dashboard", nextUrl));
+      }
+      // Rule 6: Protect Student Routes
+      if (isOnStudent && role !== "student") {
         return Response.redirect(new URL("/dashboard", nextUrl));
       }
       return true;

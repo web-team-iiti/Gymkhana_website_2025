@@ -142,3 +142,43 @@ export async function GET() {
     );
   }
 }
+
+
+// // // app/api/club/members/route.js
+// // import { query } from "@/config/db";
+
+// export async function GET(req) {
+//   try {
+//     const url = new URL(req.url);
+//     const status = url.searchParams.get("status") || "PENDING";
+
+//     const sql = `
+//       SELECT
+//         cm.member_id,
+//         u.name,
+//         u.email,
+//         c.club_name,
+//         cm.position,
+//         cm.added_at,
+//         cm.remarks,
+//         cm.status
+//       FROM club_members cm
+//       JOIN users u ON u.id = cm.student_id
+//       JOIN clubs c ON c.club_id = cm.club_id
+//       WHERE cm.status = $1
+//       ORDER BY cm.added_at ASC;
+//     `;
+
+//     const result = await query(sql, [status]);
+//     return new Response(JSON.stringify({ members: result.rows }), {
+//       status: 200,
+//       headers: { "Content-Type": "application/json" },
+//     });
+//   } catch (err) {
+//     console.error(err);
+//     return new Response(JSON.stringify({ error: "Failed to fetch members." }), {
+//       status: 500,
+//       headers: { "Content-Type": "application/json" },
+//     });
+//   }
+// }

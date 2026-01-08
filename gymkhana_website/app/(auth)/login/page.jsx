@@ -31,6 +31,7 @@ const Login = () => {
     office: "/dashboard/office",
     adosa: "/dashboard/adosa",
     dosa: "/dashboard/dosa",
+    student: "/dashboard/student",
   };
 
   // Default Theme (Gymkhana Gold)
