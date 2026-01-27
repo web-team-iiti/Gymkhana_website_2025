@@ -2,10 +2,10 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react"; // 👈 Added useSession
 import {
-  FaHome,
-  FaFileAlt,
+  FaHome, FaCalendarAlt,
+  FaFileAlt, FaRegFileArchive,
   FaCheckDouble,
   FaUsers,
   FaBoxOpen,
@@ -13,15 +13,18 @@ import {
   FaBuilding,
   FaFileSignature,
   FaSignOutAlt,
-  FaChevronRight
+  FaTasks,
+  FaChevronRight, FaFileInvoiceDollar
 } from "react-icons/fa";
 
-// Updated Menu Configuration with ADOSA & DOSA
 const MENU_ITEMS = {
   club_head: [
     { name: "Overview", href: "/dashboard/club_head", icon: <FaHome /> },
     { name: "Create Proposal", href: "/dashboard/club_head/create-proposal", icon: <FaFileAlt /> },
+    { name: "Projects", href: "/dashboard/club_head/projects", icon: <FaTasks /> },
+    {name: "Add Project", href: "/dashboard/club_head/projects/create", icon: <FaChevronRight />},
     { name: "My Members", href: "/dashboard/club_head/members", icon: <FaUsers /> },
+    { name: "Add Member", href: "/dashboard/club_head/members/add", icon: <FaChevronRight />},
     { name: "Club Inventory", href: "/dashboard/club_head/inventory", icon: <FaBoxOpen /> },
   ],
   gs: [
@@ -30,42 +33,51 @@ const MENU_ITEMS = {
     { name: "Pending Approvals", href: "/dashboard/approvals", icon: <FaCheckDouble /> },
     { name: "My Proposals", href: "/dashboard/general_secretary/my-proposals", icon: <FaFileSignature /> },
     { name: "Verify PORs", href: "/dashboard/general_secretary/verify-members", icon: <FaUsers /> },
-    { name: "Master Inventory", href: "/dashboard/inventory", icon: <FaBoxOpen /> },
+    { name: "Manage Events", href: "/dashboard/general_secretary/events", icon: <FaCalendarAlt /> },
+    { name: "Master Inventory", href: "/dashboard/general_secretary/inventory", icon: <FaBoxOpen /> },
+    { name: "Bill Repository", href: "/dashboard/general_secretary/bills", icon: <FaFileInvoiceDollar /> },
   ],
   office: [
     { name: "Overview", href: "/dashboard/office", icon: <FaHome /> },
     { name: "Received Files", href: "/dashboard/office/files", icon: <FaBuilding /> },
     { name: "Budget Tracking", href: "/dashboard/office/budget", icon: <FaFileSignature /> },
+    { name: "Master Inventory", href: "/dashboard/office/inventory", icon: <FaBoxOpen /> },
+    { name: "Bill Repository", href: "/dashboard/office/bills", icon: <FaFileInvoiceDollar /> },
   ],
   adosa: [
     { name: "Overview", href: "/dashboard/adosa", icon: <FaHome /> },
-    { name: "Pending Approvals", href: "/dashboard/adosa/files", icon: <FaCheckDouble /> }, // ADOSA Inbox
+    { name: "Pending Approvals", href: "/dashboard/adosa/files", icon: <FaCheckDouble /> },
     { name: "Review History", href: "/dashboard/adosa/history", icon: <FaFileAlt /> },
+    { name: "Master Inventory", href: "/dashboard/adosa/inventory", icon: <FaBoxOpen /> },
+    { name: "Bill Repository", href: "/dashboard/adosa/bills", icon: <FaFileInvoiceDollar /> },
   ],
   dosa: [
     { name: "Overview", href: "/dashboard/dosa", icon: <FaHome /> },
-    { name: "Final Approvals", href: "/dashboard/dosa/files", icon: <FaCheckDouble /> }, // DOSA Inbox
-    { name: "Archive", href: "/dashboard/dosa/archive", icon: <FaBoxOpen /> },
+    { name: "Final Approvals", href: "/dashboard/dosa/files", icon: <FaCheckDouble /> },
+    { name: "Archive", href: "/dashboard/dosa/archive", icon: <FaRegFileArchive /> },
+    { name: "Master Inventory", href: "/dashboard/dosa/inventory", icon: <FaBoxOpen /> },
+    { name: "Bill Repository", href: "/dashboard/dosa/bills", icon: <FaFileInvoiceDollar /> },
   ],
 };
 
 const Sidebar = ({ userRole }) => {
   const pathname = usePathname();
+  const { data: session } = useSession(); // 👈 Access session data
   const [isOpen, setIsOpen] = useState(false);
 
-  // Logic to determine links based on role
-  // Default to empty array if roleKey is missing
+  // Logic to determine links
   let roleKey = userRole;
-  if (!MENU_ITEMS[roleKey] && (userRole === 'admin')) roleKey = 'dosa'; // Fallback logic if needed
-
+  if (!MENU_ITEMS[roleKey] && (userRole === 'admin')) roleKey = 'dosa';
   const links = MENU_ITEMS[roleKey] || [];
+
+  // 👈 Extract Club Name safely
+  const clubName = session?.user?.club_name;
 
   return (
     <>
       {/* --- BACKDROP (Mobile Only) --- */}
       <div
-        className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden transition-opacity duration-300 ${isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-          }`}
+        className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden transition-opacity duration-300 ${isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
         onClick={() => setIsOpen(false)}
       />
 
@@ -89,13 +101,23 @@ const Sidebar = ({ userRole }) => {
         </button>
 
         {/* --- Logo Area --- */}
-        <div className="h-20 flex flex-col justify-center px-6 border-b border-gray-800 bg-gray-950">
+        <div className="h-24 flex flex-col justify-center px-6 border-b border-gray-800 bg-gray-950">
           <h2 className="text-xl font-bold text-yellow-500 tracking-tight">
-            Gymkhana<span className="text-white">Portal</span>
+            Gymkhana <span className="text-white">Portal</span>
           </h2>
-          <span className="text-[10px] uppercase tracking-widest text-gray-500 mt-1 font-semibold">
-            {userRole?.replace("_", " ") || "Dashboard"}
-          </span>
+
+          <div className="flex flex-col mt-1">
+            <span className="text-[10px] uppercase tracking-widest text-gray-500 font-semibold">
+              {userRole?.replace("_", " ") || "Dashboard"}
+            </span>
+
+            {/* 👇 LOGIC: If Club Head & Club Name exists, show it */}
+            {userRole === 'club_head' && clubName && (
+              <span className="text-xs font-bold text-yellow-500 uppercase tracking-wider truncate mt-0.5">
+                {clubName}
+              </span>
+            )}
+          </div>
         </div>
 
         {/* --- Navigation Links --- */}
@@ -107,7 +129,7 @@ const Sidebar = ({ userRole }) => {
                 <Link
                   key={link.href}
                   href={link.href}
-                  onClick={() => setIsOpen(false)} // Close when link clicked
+                  onClick={() => setIsOpen(false)}
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group
                     ${isActive
                       ? "bg-yellow-500 text-gray-900 font-bold shadow-[0_0_15px_rgba(234,179,8,0.3)]"
@@ -125,6 +147,7 @@ const Sidebar = ({ userRole }) => {
             <div className="text-gray-500 text-center text-sm mt-10">No Access</div>
           )}
         </nav>
+
         {/* --- Footer Actions --- */}
         <div className="p-4 border-t border-gray-800 bg-gray-950 space-y-2">
           <Link

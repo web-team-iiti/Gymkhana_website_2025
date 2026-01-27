@@ -1,12 +1,9 @@
 "use client";
-
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { FaPaperPlane, FaFileUpload, FaExclamationCircle } from "react-icons/fa";
-
-// ❌ REMOVED: No more Supabase Client here. 
-// We upload via our own API now.
+import { FaPaperPlane, FaFileUpload, FaExclamationCircle, FaArrowLeft } from "react-icons/fa";
+import Link from "next/link";
 
 export default function CreateProposalPage() {
     const router = useRouter();
@@ -26,7 +23,6 @@ export default function CreateProposalPage() {
 
     const handleFileChange = (e) => {
         if (e.target.files && e.target.files[0]) {
-            // Security Check: Restrict file size to 5MB
             if (e.target.files[0].size > 5 * 1024 * 1024) {
                 alert("File is too big! Max 5MB allowed.");
                 return;
@@ -39,7 +35,6 @@ export default function CreateProposalPage() {
         e.preventDefault();
         setLoading(true);
 
-        // 1. Validation
         if (!file) {
             alert("Please upload a PDF file.");
             setLoading(false);
@@ -47,24 +42,20 @@ export default function CreateProposalPage() {
         }
 
         try {
-            // 2. Prepare FormData (File + Text)
-            // We use FormData instead of JSON because we are sending a binary file
             const data = new FormData();
             data.append("file", file);
             data.append("title", formData.title);
             data.append("description", formData.description);
             data.append("priority", formData.priority);
-            // We don't need to send user_id, the server gets it from the session securely
 
-            // 3. Send to our Backend API
             const res = await fetch("/api/proposals/create", {
                 method: "POST",
-                body: data, // Browser automatically sets the correct Content-Type for FormData
+                body: data,
             });
 
             if (res.ok) {
                 alert("Proposal Submitted Successfully!");
-                router.push("/dashboard/general_secretary");
+                router.push("/dashboard/general_secretary/my-proposals");
                 router.refresh();
             } else {
                 const errorData = await res.json();
@@ -80,17 +71,24 @@ export default function CreateProposalPage() {
     };
 
     return (
-        <div className="max-w-4xl mx-auto">
+        // Restored max-w-4xl for Desktop width
+        <div className="max-w-4xl mx-auto p-4 md:p-0 pb-20 md:pb-0">
+            
             {/* Header */}
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold text-white">Create New Proposal</h1>
-                <p className="text-gray-400 mt-2">
+            <div className="mb-6 md:mb-8">
+                {/* Back button only visible on mobile for better UX, or keep mostly hidden on desktop if preferred */}
+                <Link href="/dashboard/general_secretary/my-proposals" className="md:hidden inline-flex items-center gap-2 text-gray-400 hover:text-white mb-4 text-sm transition-colors">
+                    <FaArrowLeft /> Back to List
+                </Link>
+                
+                <h1 className="text-2xl md:text-3xl font-bold text-white">Create New Proposal</h1>
+                <p className="text-sm md:text-base text-gray-400 mt-1 md:mt-2">
                     As General Secretary, proposals you create go directly to the <span className="text-yellow-500 font-bold">Office</span> for review.
                 </p>
             </div>
 
             {/* Form Card */}
-            <form onSubmit={handleSubmit} className="bg-gray-900 border border-gray-800 rounded-2xl p-8 shadow-xl">
+            <form onSubmit={handleSubmit} className="bg-gray-900 border border-gray-800 rounded-2xl p-5 md:p-8 shadow-xl">
 
                 {/* Title Input */}
                 <div className="mb-6">
@@ -108,13 +106,13 @@ export default function CreateProposalPage() {
                 {/* Priority Toggle */}
                 <div className="mb-6">
                     <label className="block text-sm font-medium text-gray-400 mb-2">Urgency Level</label>
-                    <div className="grid grid-cols-3 gap-4">
+                    <div className="grid grid-cols-3 gap-2 md:gap-4">
                         {["NORMAL", "HIGH", "URGENT"].map((level) => (
                             <button
                                 key={level}
                                 type="button"
                                 onClick={() => setFormData({ ...formData, priority: level })}
-                                className={`py-3 rounded-xl text-sm font-bold border transition-all ${formData.priority === level
+                                className={`py-3 md:py-3 rounded-xl text-xs md:text-sm font-bold border transition-all flex flex-col md:flex-row items-center justify-center gap-1 ${formData.priority === level
                                     ? level === "URGENT"
                                         ? "bg-red-500/20 border-red-500 text-red-500"
                                         : level === "HIGH"
@@ -123,8 +121,8 @@ export default function CreateProposalPage() {
                                     : "bg-gray-950 border-gray-800 text-gray-500 hover:border-gray-600"
                                     }`}
                             >
+                                {level === "URGENT" && <FaExclamationCircle className="mb-1 md:mb-0 md:mr-2" />}
                                 {level}
-                                {level === "URGENT" && <FaExclamationCircle className="inline ml-2" />}
                             </button>
                         ))}
                     </div>
@@ -136,7 +134,7 @@ export default function CreateProposalPage() {
                     <textarea
                         name="description"
                         rows="4"
-                        className="w-full bg-gray-950 border border-gray-800 text-white rounded-xl px-4 py-3 focus:outline-none focus:border-yellow-500 transition-colors"
+                        className="w-full bg-gray-950 border border-gray-800 text-white rounded-xl px-4 py-3 focus:outline-none focus:border-yellow-500 transition-colors resize-none"
                         placeholder="Describe the purpose and expected outcome..."
                         onChange={handleChange}
                     />
@@ -145,7 +143,7 @@ export default function CreateProposalPage() {
                 {/* File Upload */}
                 <div className="mb-8">
                     <label className="block text-sm font-medium text-gray-400 mb-2">Attach Official PDF</label>
-                    <div className="border-2 border-dashed border-gray-700 rounded-xl p-8 text-center hover:border-yellow-500/50 transition-colors bg-gray-950/50">
+                    <div className={`border-2 border-dashed rounded-xl p-6 md:p-8 text-center transition-all bg-gray-950/50 ${file ? 'border-green-500/50 bg-green-500/5' : 'border-gray-700 hover:border-yellow-500/50'}`}>
                         <input
                             type="file"
                             accept="application/pdf"
@@ -153,12 +151,22 @@ export default function CreateProposalPage() {
                             className="hidden"
                             id="file-upload"
                         />
-                        <label htmlFor="file-upload" className="cursor-pointer flex flex-col items-center">
-                            <FaFileUpload className="text-4xl text-gray-500 mb-3" />
-                            <span className="text-gray-300 font-medium">
-                                {file ? file.name : "Click to upload PDF"}
-                            </span>
-                            <span className="text-gray-600 text-xs mt-1">Max size: 5MB</span>
+                        <label htmlFor="file-upload" className="cursor-pointer flex flex-col items-center justify-center w-full h-full">
+                            {file ? (
+                                <>
+                                    <div className="bg-green-500/20 p-3 rounded-full text-green-500 mb-2">
+                                        <FaFileUpload size={24} />
+                                    </div>
+                                    <span className="text-green-400 font-bold text-sm truncate max-w-[200px] md:max-w-full">{file.name}</span>
+                                    <span className="text-gray-500 text-xs mt-1">Click to change</span>
+                                </>
+                            ) : (
+                                <>
+                                    <FaFileUpload className="text-3xl md:text-4xl text-gray-500 mb-3" />
+                                    <span className="text-gray-300 font-medium text-sm">Click to upload PDF</span>
+                                    <span className="text-gray-600 text-xs mt-1">Max size: 5MB</span>
+                                </>
+                            )}
                         </label>
                     </div>
                 </div>
@@ -167,10 +175,13 @@ export default function CreateProposalPage() {
                 <button
                     type="submit"
                     disabled={loading}
-                    className="w-full bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-bold py-4 rounded-xl transition-all transform active:scale-95 flex items-center justify-center gap-2"
+                    className="w-full bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-bold py-3.5 md:py-4 rounded-xl transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 shadow-lg shadow-yellow-500/20"
                 >
                     {loading ? (
-                        <span>Processing...</span>
+                        <div className="flex items-center gap-2">
+                            <div className="w-4 h-4 border-2 border-gray-900 border-t-transparent rounded-full animate-spin"></div>
+                            <span>Processing...</span>
+                        </div>
                     ) : (
                         <>
                             <FaPaperPlane />
@@ -178,6 +189,7 @@ export default function CreateProposalPage() {
                         </>
                     )}
                 </button>
+
             </form>
         </div>
     );

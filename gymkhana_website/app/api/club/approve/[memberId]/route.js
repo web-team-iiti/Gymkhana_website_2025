@@ -15,7 +15,7 @@ export async function POST(req, { params }) {
     SET status = 'APPROVED',
         approved_by = $1,
         approved_at = NOW()
-    WHERE member_id = $2 AND status = 'PENDING';
+    WHERE member_id = $2 AND status = 'TENURE_ADDED';
   `;
 
   await query(sql, [session.user.id, memberId]);

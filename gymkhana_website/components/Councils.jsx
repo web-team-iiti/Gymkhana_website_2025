@@ -50,7 +50,6 @@ const customStyles = `
 `;
 
 // --- 2. Node Data ---
-// UPDATED: Added 5th Council and adjusted angles to 72 degrees apart for symmetry
 const councils = [
   {
     id: 1,
@@ -64,7 +63,7 @@ const councils = [
     id: 2,
     color: "#fcd34d", // Yellow
     icon: "acad.jpg",
-    angle: 90, // Sitting at the top
+    angle: 90, // Top
     title: "Academic Council",
     description: "The Academics Council has been trusted with the responsibility of managing executive activities in two of the most crucial aspects of student life - Academics and Career.",
   },
@@ -131,47 +130,23 @@ const Connector = ({ angle, hexColor }) => {
 const RadialMenu = () => {
   const [hoveredNode, setHoveredNode] = useState(null);
 
-  // --- Central Node (Suns Intact) ---
-  // --- Central Node (Updated with 5 Suns) ---
+  // --- Central Node (Longer Glow Tail) ---
   const CentralNode = ({ mobile }) => {
-    const centralSunStyle = {
-      background: "white",
-      boxShadow: "0 0 15px white, 0 0 30px gold", // The "Rosni"
-    };
-
-    // Generate 5 suns positioned in a perfect pentagon (72 degrees apart)
-    const suns = Array.from({ length: 5 }).map((_, i) => {
-      const angleDeg = i * 72; // 0, 72, 144, 216, 288
-      const angleRad = (angleDeg * Math.PI) / 180;
-
-      // Calculate percentage position on the circle boundary
-      // 50% is the center. We add/subtract based on sin/cos.
-      return {
-        left: `${50 + 50 * Math.sin(angleRad)}%`,
-        top: `${50 - 50 * Math.cos(angleRad)}%`,
-      };
-    });
-
     return (
       <div className={`z-10 flex items-center justify-center relative ${mobile ? "mb-8" : ""}`}>
-        {/* Rotating Orbit Container */}
+        {/* Revolving Dark Glow Container */}
         <div
-          className={`absolute rounded-full pointer-events-none ${mobile ? "inset-[-12px]" : "inset-[-20px]"}`}
-          style={{ animation: "orbit-cw 12s linear infinite" }}
+          className={`absolute rounded-full pointer-events-none ${mobile ? "inset-[-12px]" : "inset-[-24px]"}`}
+          style={{ animation: "orbit-cw 5s linear infinite" }} 
         >
-          {suns.map((pos, index) => (
-            <div
-              key={index}
-              className="absolute w-4 h-4 rounded-full"
-              style={{
-                ...centralSunStyle,
-                left: pos.left,
-                top: pos.top,
-                // This centers the dot exactly on the calculated point
-                transform: "translate(-50%, -50%)",
-              }}
-            />
-          ))}
+           <div 
+             className="absolute inset-0 rounded-full"
+             style={{
+               background: "conic-gradient(from 0deg, transparent 0%, transparent 15%, rgba(147, 51, 234, 0.3) 45%, rgba(147, 51, 234, 1) 100%)",
+               filter: "blur(12px)", 
+               opacity: 0.8,
+             }}
+           />
         </div>
 
         {/* Central Logo */}
@@ -190,7 +165,7 @@ const RadialMenu = () => {
     );
   };
 
-  // --- Desktop Peripheral Node (NO SUNS) ---
+  // --- Desktop Peripheral Node ---
   const PeripheralNode = ({ id, icon, color, angle, title, description }) => {
     const radius = 250;
     const radian = (angle * Math.PI) / 180;
@@ -210,7 +185,6 @@ const RadialMenu = () => {
           onMouseOver={() => setHoveredNode(id)}
           onMouseOut={() => setHoveredNode(null)}
         >
-          {/* Orbit Line (Dashed) - Kept, but NO SUNS inside */}
           <div className="absolute inset-[-10px] rounded-full border border-dashed opacity-30 pointer-events-none" style={{ borderColor: color }} />
 
           <div
@@ -260,7 +234,7 @@ const RadialMenu = () => {
       >
         <div className="absolute inset-0 bg-black/50"></div>
 
-        {/* 📱 MOBILE LAYOUT (SUNS INCLUDED) */}
+        {/* 📱 MOBILE LAYOUT (UPDATED) */}
         <div className="relative z-10 w-full px-6 py-10 flex flex-col items-center gap-8 md:hidden">
           <CentralNode mobile={true} />
 
@@ -279,16 +253,20 @@ const RadialMenu = () => {
                 className="w-20 h-20 rounded-full border-2 mb-4 relative flex items-center justify-center"
                 style={{ borderColor: council.color }}
               >
-                {/* ☀️ Mobile Sun 1 */}
-                <div className="absolute inset-[-6px] rounded-full pointer-events-none" style={{ animation: "orbit-ccw 4s linear infinite" }}>
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white"
-                    style={{ backgroundColor: council.color, boxShadow: `0 0 8px ${council.color}` }} />
-                </div>
-
-                {/* ☀️ Mobile Sun 2 */}
-                <div className="absolute inset-[-6px] rounded-full pointer-events-none" style={{ animation: "orbit-cw 7s linear infinite" }}>
-                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-2 h-2 rounded-full bg-white"
-                    style={{ backgroundColor: council.color, boxShadow: `0 0 8px ${council.color}` }} />
+                {/* --- UPDATED: Colored Glow Tail for each Council --- */}
+                <div 
+                  className="absolute inset-[-8px] rounded-full pointer-events-none" 
+                  style={{ animation: "orbit-cw 4s linear infinite" }}
+                >
+                   <div 
+                     className="absolute inset-0 rounded-full"
+                     style={{
+                       // Using Hex Alpha: 00 = 0% opacity, 4d = 30% opacity, ff = 100% opacity
+                       background: `conic-gradient(from 0deg, transparent 0%, transparent 15%, ${council.color}4d 45%, ${council.color} 100%)`,
+                       filter: "blur(8px)", 
+                       opacity: 1,
+                     }}
+                   />
                 </div>
 
                 <div className="w-full h-full rounded-full overflow-hidden z-10">
@@ -307,7 +285,7 @@ const RadialMenu = () => {
           ))}
         </div>
 
-        {/* 💻 DESKTOP LAYOUT (SUNS REMOVED) */}
+        {/* 💻 DESKTOP LAYOUT */}
         <div className="hidden md:flex relative w-[600px] h-[600px] items-center justify-center">
           {councils.map((node) => (
             <Connector key={`line-${node.id}`} angle={node.angle} hexColor={node.color} />

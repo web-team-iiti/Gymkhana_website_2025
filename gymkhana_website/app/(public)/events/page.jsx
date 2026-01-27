@@ -1,105 +1,61 @@
-"use client";
 import React from "react";
-import { FaArrowRight, FaCalendarAlt } from "react-icons/fa";
-// Removed unused useRouter since you are using Link
-import Link from "next/link";
-import SpotlightCard from "@/components/Spotlight";
+import { query } from "@/config/db";
+import SearchInput from "@/components/SearchInput";
+import EventFilter from "@/components/EventFilter";
+import PublicEventsList from "@/components/PublicEventsList";
 import FloatingLines from "@/components/Floatingline";
 
-const mockEvents = [
-  {
-    id: 1,
-    title: "Gymkhana Sports",
-    subtitle: "Inter-Hostel Tournament",
-    date: "Oct 28, 2025",
-    description: "Annual inter-hostel sports competition. Come cheer for your hostel!",
-    imageUrl: "https://placehold.co/600x400/1a202c/9ca3af?text=Gymkhana+Sports",
-  },
-  {
-    id: 2,
-    title: "Cultural Night",
-    subtitle: "Rhythm of India",
-    date: "Nov 05, 2025",
-    description: "A celebration of diverse Indian art forms, music, and dance.",
-    imageUrl: "https://placehold.co/600x400/1a202c/9ca3af?text=Cultural+Night",
-  },
-  {
-    id: 3,
-    title: "Tech Workshop",
-    subtitle: "AI & Machine Learning",
-    date: "Nov 12, 2025",
-    description: "Hands-on workshop on the fundamentals of AI and ML with Python.",
-    imageUrl: "https://placehold.co/600x400/1a202c/9ca3af?text=Tech+Workshop",
-  },
-  {
-    id: 4,
-    title: "Academic Seminar",
-    subtitle: "Career Pathways",
-    date: "Nov 15, 2025",
-    description: "Learn about diverse career opportunities after graduation from industry experts.",
-    imageUrl: "https://placehold.co/600x400/1a202c/9ca3af?text=Career+Seminar",
-  },
-  {
-    id: 5,
-    title: "Coding Competition",
-    subtitle: "Code Sprint '25",
-    date: "Nov 20, 2025",
-    description: "Put your problem-solving skills to the test in our annual coding sprint.",
-    imageUrl: "https://placehold.co/600x400/1a202c/9ca3af?text=Code+Sprint",
-  },
-];
+async function getPublicEvents(queryText, filter) {
+  let sql = `SELECT * FROM events WHERE 1=1`;
+  const params = [];
+  let paramIndex = 1;
 
-const EventCard = ({ event }) => (
-  <SpotlightCard
-    className="custom-spotlight-card h-full rounded-lg p-0"
-    spotlightColor="rgba(0, 229, 255, 0.2)"
-  >
-    <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-lg shadow-lg overflow-hidden h-full flex flex-col transition-transform duration-300 hover:scale-[1.02] hover:shadow-blue-500/30 hover:border-blue-400 relative group">
-      <div className="h-40 w-full overflow-hidden">
-        <img
-          className="w-full h-full object-cover transition-all duration-300 group-hover:scale-110 group-hover:opacity-80"
-          src={event.imageUrl}
-          alt={event.title}
-          onError={(e) => {
-            e.target.src =
-              "https://placehold.co/600x400/1a202c/9ca3af?text=Event+Image";
-          }}
-        />
-      </div>
+  // 1. Search Logic
+  if (queryText) {
+    sql += ` AND (title ILIKE $${paramIndex} OR subtitle ILIKE $${paramIndex} OR description ILIKE $${paramIndex})`;
+    params.push(`%${queryText}%`);
+    paramIndex++;
+  }
 
-      <div className="p-5 flex flex-col flex-grow">
-        <h3 className="text-lg font-bold text-white">{event.title}</h3>
-        <p className="text-sm font-medium text-blue-400">{event.subtitle}</p>
+  // 2. Filter Logic
+  if (filter === 'upcoming') {
+    sql += ` AND event_date > CURRENT_DATE`;
+  } else if (filter === 'completed') {
+    sql += ` AND event_date < CURRENT_DATE`;
+  } else if (filter === 'live') {
+    sql += ` AND event_date::date = CURRENT_DATE`;
+  }
 
-        <div className="flex items-center text-xs text-gray-400 mt-3">
-          <FaCalendarAlt className="mr-2 text-gray-400" />
-          <span>{event.date}</span>
-        </div>
+  // 3. SMART SORTING LOGIC
+  if (filter === 'completed') {
+    sql += ` ORDER BY event_date DESC`;
+  } else if (filter === 'upcoming' || filter === 'live') {
+    sql += ` ORDER BY event_date ASC`;
+  } else {
+    // "ALL EVENTS" View (Split Sort)
+    sql += ` 
+      ORDER BY 
+      CASE WHEN event_date >= CURRENT_DATE THEN 0 ELSE 1 END ASC,
+      CASE WHEN event_date >= CURRENT_DATE THEN event_date END ASC,
+      CASE WHEN event_date < CURRENT_DATE THEN event_date END DESC
+    `;
+  }
 
-        <p className="mt-3 text-sm text-gray-300 line-clamp-3 mb-4">
-          {event.description}
-        </p>
+  const res = await query(sql, params);
+  return res.rows;
+}
 
-        <div className="mt-auto">
-          <Link
-            href={`/events/${event.id}`}
-            className="flex items-center gap-2 text-blue-400 font-medium text-sm transition-colors hover:text-blue-300"
-          >
-            Learn More 
-            <FaArrowRight />
-          </Link>
-        </div>
-      </div>
-    </div>
-  </SpotlightCard>
-);
+export default async function EventsPage({ searchParams }) {
+  // Await params (Next.js 15 requirement)
+  const { query: queryText, filter } = await searchParams;
 
-const UpcomingEvents = () => {
+  const events = await getPublicEvents(queryText, filter);
+
   return (
-    <div className="w-full relative min-h-screen bg-[#050505] overflow-hidden text-white">
-      
-      {/* 1. Background Animation Layer */}
-      <div className="absolute inset-0 w-full h-full z-0 opacity-60">
+    <div className="relative min-h-screen bg-[#050505] text-white overflow-hidden">
+
+      {/* Background Animation */}
+      <div className="absolute inset-0 w-full h-full z-0 opacity-60 pointer-events-none">
         <FloatingLines
           linesGradient={["#00e5ff", "#3b82f6", "#9333ea"]}
           animationSpeed={1}
@@ -108,21 +64,40 @@ const UpcomingEvents = () => {
         />
       </div>
 
-      {/* 2. Content Layer (z-index ensures it sits on top) */}
-      <div className="relative z-10 container mx-auto px-4 py-16">
-        <h2 className="text-xl sm:text-2xl md:text-4xl font-bold text-center text-white uppercase tracking-wider mb-12">
-          <span className="text-yellow-500">Upcoming</span> Events
-        </h2>
+      <div className="relative z-10 container mx-auto px-4 py-12 md:py-24">
 
-        {/* Display all cards in grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {mockEvents.map((event) => (
-            <EventCard key={event.id} event={event} />
-          ))}
+        {/* --- HEADER SECTION --- */}
+        <div className="flex flex-col items-center mb-12 space-y-8">
+          <div className="text-center">
+            <h2 className="text-xl sm:text-2xl md:text-4xl font-extrabold text-white uppercase tracking-wider mb-4">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
+                Gymkhana
+              </span> Events
+            </h2>
+            <p className="text-gray-400 max-w-2xl mx-auto text-sm md:text-base">
+              Explore the latest sports, cultural, and technical events.
+            </p>
+          </div>
+
+          {/* SEARCH & FILTER UI (Fixed Mobile Layout) */}
+          <div className="w-full max-w-2xl flex gap-3 items-center justify-center">
+
+            {/* Search Bar - Grows to fill space */}
+            <div className="flex-1">
+              <SearchInput placeholder="Search events..." />
+            </div>
+
+            {/* Filter Button - Fixed width, sits beside search */}
+            <div className="shrink-0">
+              <EventFilter />
+            </div>
+
+          </div>
         </div>
+
+        {/* --- LIST SECTION --- */}
+        <PublicEventsList events={events} />
       </div>
     </div>
   );
-};
-
-export default UpcomingEvents;
+}

@@ -1,57 +1,86 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { query } from "@/config/db";
+import { supabase } from "@/config/supabase"; 
 
-export async function POST(req) {
+export async function PUT(req) { // Changed to PUT to match standard editing practices
   try {
     const session = await auth();
     if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
-    const body = await req.json();
-    const { proposalId, title, description, pdfUrl } = body;
+    const formData = await req.formData();
+    const id = formData.get("id");
+    const title = formData.get("title");
+    const description = formData.get("description");
+    const priority = formData.get("priority"); 
+    const file = formData.get("file"); 
+    const userId = session.user.id;
 
-    // 1. Security Check: Ensure the user owns this proposal
-    // We also check if it is actually in 'NEEDS_CORRECTION' state to prevent editing active files
-    const checkSql = `SELECT created_by, current_stage FROM proposals WHERE id = $1`;
-    const checkRes = await query(checkSql, [proposalId]);
+    if (!id || !title) {
+      return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
+    }
+
+    // 1. FETCH CURRENT PROPOSAL & SECURITY CHECKS
+    const checkSql = `SELECT created_by, current_stage, pdf_url FROM proposals WHERE id = $1`;
+    const checkRes = await query(checkSql, [id]);
 
     if (checkRes.rows.length === 0) return NextResponse.json({ message: "Not found" }, { status: 404 });
-    
     const proposal = checkRes.rows[0];
 
-    if (proposal.created_by !== session.user.id) {
+    // ✅ CHECK 1: Ownership
+    if (proposal.created_by !== userId) {
         return NextResponse.json({ message: "Forbidden" }, { status: 403 });
     }
+    // ✅ CHECK 2: Stage (Must be NEEDS_CORRECTION)
     if (proposal.current_stage !== 'NEEDS_CORRECTION') {
         return NextResponse.json({ message: "Cannot edit proposal unless it needs correction." }, { status: 400 });
     }
 
-    // 2. Perform the Update (The "Overwrite" Logic)
-    // We update title, description, and pdf_url.
-    // We also set current_stage back to 'OFFICE_REVIEW' so it appears in their dashboard again.
+    // 2. FILE HANDLING (The "Garbage Collection" Logic)
+    let finalPdfUrl = proposal.pdf_url; 
+
+    if (file && file.size > 0) {
+      console.log("Replacing PDF...");
+
+      // A. DELETE OLD FILE 🗑️
+      if (proposal.pdf_url && proposal.pdf_url.includes("supabase")) {
+        const oldFileName = proposal.pdf_url.split('/').pop();
+        await supabase.storage.from("proposals").remove([oldFileName]);
+      }
+
+      // B. UPLOAD NEW FILE 📤
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${file.name.split('.').pop()}`;
+      const arrayBuffer = await file.arrayBuffer();
+      
+      const { error: uploadError } = await supabase.storage
+        .from("proposals")
+        .upload(fileName, Buffer.from(arrayBuffer), { contentType: file.type, upsert: false });
+
+      if (uploadError) throw new Error("Upload Error: " + uploadError.message);
+
+      const { data: urlData } = supabase.storage.from("proposals").getPublicUrl(fileName);
+      finalPdfUrl = urlData.publicUrl;
+    }
+
+    // 3. UPDATE DB & RESET STAGE
     const updateSql = `
-        UPDATE proposals 
-        SET title = $1, description = $2, pdf_url = $3, current_stage = 'OFFICE_REVIEW', updated_at = NOW()
-        WHERE id = $4
+      UPDATE proposals 
+      SET title = $1, description = $2, priority = $3, pdf_url = $4, current_stage = 'OFFICE_REVIEW', updated_at = NOW()
+      WHERE id = $5
     `;
+    await query(updateSql, [title, description, priority, finalPdfUrl, id]);
 
-    // Note: If pdfUrl is null (user didn't change file), we should ideally keep the old one.
-    // However, the frontend should send the old URL if no new one is uploaded. 
-    // Assuming the frontend handles "sending the valid URL to save".
-    
-    await query(updateSql, [title, description, pdfUrl, proposalId]);
+    // 4. LOG IT
+    const logSql = `
+      INSERT INTO proposal_logs (proposal_id, action_by, action, remark, previous_stage, new_stage)
+      VALUES ($1, $2, 'RESUBMITTED', 'Corrections made by GS', 'NEEDS_CORRECTION', 'OFFICE_REVIEW');
+    `;
+    await query(logSql, [id, userId]);
 
-    // 3. Log the Resubmission
-    await query(
-        `INSERT INTO proposal_logs (proposal_id, action_by, action, remark, previous_stage, new_stage)
-         VALUES ($1, $2, 'RESUBMITTED', 'Corrections made by GS', 'NEEDS_CORRECTION', 'OFFICE_REVIEW')`,
-        [proposalId, session.user.id]
-    );
-
-    return NextResponse.json({ message: "Proposal updated successfully" });
+    return NextResponse.json({ message: "Resubmitted Successfully" }, { status: 200 });
 
   } catch (error) {
-    console.error("Edit Error:", error);
-    return NextResponse.json({ message: "Server Error" }, { status: 500 });
+    console.error("Edit API Error:", error);
+    return NextResponse.json({ message: "Server Error", error: error.message }, { status: 500 });
   }
 }

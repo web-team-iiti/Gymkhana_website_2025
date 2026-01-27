@@ -1,8 +1,8 @@
 // 
 import { NextResponse } from "next/server";
-import { auth } from "@/auth"; 
+import { auth } from "@/auth";
 import { createClient } from "@supabase/supabase-js";
-import { query } from "@/config/db"; 
+import { query } from "@/config/db";
 
 // Initialize Supabase with SERVICE ROLE KEY
 const supabase = createClient(
@@ -15,8 +15,8 @@ const supabase = createClient(
   }
 );
 export async function POST(req) {
-  try { 
-    const session = await auth(); 
+  try {
+    const session = await auth();
     if (!session) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
@@ -27,7 +27,7 @@ export async function POST(req) {
     const title = formData.get("title");
     const description = formData.get("description");
     const priority = formData.get("priority");
-    const userId = session.user.id; 
+    const userId = session.user.id;
 
     if (!file || !title) {
       return NextResponse.json({ message: "Missing file or title" }, { status: 400 });
@@ -51,7 +51,7 @@ export async function POST(req) {
     const { data: urlData } = supabase.storage
       .from("proposals")
       .getPublicUrl(fileName);
-    
+
     const finalPdfUrl = urlData.publicUrl;
 
     // Database Insert
@@ -60,7 +60,7 @@ export async function POST(req) {
       VALUES ($1, $2, $3, $4, $5, 'OFFICE_REVIEW')
       RETURNING id;
     `;
-    
+
     const proposalResult = await query(proposalSql, [title, description, priority, finalPdfUrl, userId]);
     const newProposalId = proposalResult.rows[0].id;
 
@@ -70,14 +70,9 @@ export async function POST(req) {
       VALUES ($1, $2, 'CREATED', 'Initial Submission by GS', 'OFFICE_REVIEW');
     `;
     await query(logSql, [newProposalId, userId]);
-
     return NextResponse.json({ message: "Success", id: newProposalId }, { status: 201 });
-
   } catch (error) {
     console.error("Backend Error:", error);
-    return NextResponse.json(
-      { message: "Server Error", error: error.message },
-      { status: 500 }
-    );
+    return NextResponse.json({ message: "Server Error", error: error.message }, { status: 500 });
   }
 }

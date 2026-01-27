@@ -1,158 +1,41 @@
-"use client";
+import React from "react";
+import { query } from "@/config/db";
+import PublicEventDetails from "@/components/PublicEventDetails";
+import Link from "next/link";
+import { FaArrowLeft } from "react-icons/fa";
+ 
+async function getEvent(id) {
+  try { 
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(id)) return null;
 
-import React, { useState, useEffect, useRef } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { FaCalendarAlt, FaArrowLeft } from "react-icons/fa";
+    const sql = `SELECT * FROM events WHERE id = $1`;
+    const res = await query(sql, [id]);
+    return res.rows[0];
+  } catch (error) {
+    console.error("Error fetching event:", error);
+    return null;
+  }
+}
 
-import SpotlightCard from "@/components/Spotlight";
-import FloatingLines from "@/components/Floatingline";
-/* ---------------- MOCK DATA ---------------- */
-
-const mockEvents = [
-  {
-    id: "1",
-    title: "Gymkhana Sports",
-    subtitle: "Inter-Hostel Tournament",
-    date: "Oct 28, 2025",
-    description:
-      "Annual inter-hostel sports competition. Come cheer for your hostel!",
-    imageUrl: [
-      "https://placehold.co/800x500/1a202c/9ca3af?text=Gymkhana+Sports",
-      "https://placehold.co/800x500/1a202c/9ca3af?text=Gymkhana+Sports",
-      "https://placehold.co/800x500/1a202c/9ca3af?text=Gymkhana+Sports",
-    ],
-  },
-  {
-    id: "2",
-    title: "Cultural Night",
-    subtitle: "Rhythm of India",
-    date: "Nov 05, 2025",
-    description:
-      "A celebration of diverse Indian art forms, music, and dance.",
-    imageUrl: [
-      "https://placehold.co/800x500/1a202c/9ca3af?text=Cultural+Night",
-      "https://placehold.co/800x500/1a202c/9ca3af?text=Cultural+Night",
-      "https://placehold.co/800x500/1a202c/9ca3af?text=Cultural+Night",
-    ],
-  },
-];
-
-/* ---------------- PAGE ---------------- */
-
-export default function EventDetailsPage() {
-  const { eventId } = useParams();
-  const router = useRouter();
-
-  const event = mockEvents.find((e) => e.id === eventId);
-  const [current, setCurrent] = useState(0);
-  const intervalRef = useRef(null);
-
-  useEffect(() => {
-    if (!event?.imageUrl || event.imageUrl.length <= 1) return;
-
-    intervalRef.current = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % event.imageUrl.length);
-    }, 3000);
-
-    return () => clearInterval(intervalRef.current);
-  }, [event]);
+export default async function EventPage({ params }) {
+  const { eventId } = await params;
+  const event = await getEvent(eventId);
 
   if (!event) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
-        <button
-          onClick={() => router.push("/events")}
-          className="flex items-center gap-2 bg-blue-700 px-6 py-2 rounded-full"
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#050505] text-white gap-4">
+        <h1 className="text-3xl font-bold text-red-500">Event Not Found</h1>
+        <p className="text-gray-400">The event you are looking for does not exist or has been removed.</p>
+        <Link
+          href="/events"
+          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-full font-bold transition-all"
         >
-          <FaArrowLeft />
-          Back to Events
-        </button>
+          <FaArrowLeft /> Back to Events
+        </Link>
       </div>
     );
   }
 
-  return (
-    <div className="relative min-h-screen overflow-hidden text-white">
-      {/* 🌌 FLOATING LINES BACKGROUND */}
-      <div className="absolute inset-0 z-0">
-        <FloatingLines
-          linesGradient={["#00e5ff", "#3b82f6", "#9333ea"]}
-          animationSpeed={1}
-          parallax
-          interactive
-        />
-      </div>
-
-      {/* 🌑 DARK OVERLAY (for contrast) */}
-      <div className="absolute inset-0 bg-gray-950/80 z-10" />
-
-      {/* ✨ CONTENT */}
-      <div className="relative z-20 flex justify-center py-16 px-4">
-        <SpotlightCard
-          className="max-w-3xl w-full rounded-2xl"
-          spotlightColor="rgba(0, 200, 255, 0.25)"
-        >
-          <div className="bg-gray-900/70 backdrop-blur-md border border-gray-800 rounded-2xl p-6 md:p-8 shadow-xl">
-            {/* IMAGE CAROUSEL */}
-            <div className="relative overflow-hidden rounded-xl mb-8 h-[300px] md:h-[500px]">
-              <div
-                className="flex transition-transform duration-700 h-full"
-                style={{ transform: `translateX(-${current * 100}%)` }}
-              >
-                {event.imageUrl.map((src, idx) => (
-                  <img
-                    key={idx}
-                    src={src}
-                    className="min-w-full h-full object-cover"
-                    alt=""
-                  />
-                ))}
-              </div>
-
-              <div className="absolute bottom-4 inset-x-0 flex justify-center gap-2">
-                {event.imageUrl.map((_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setCurrent(idx)}
-                    className={`w-3 h-3 rounded-full ${
-                      current === idx
-                        ? "bg-blue-500 scale-110"
-                        : "bg-gray-400/70"
-                    }`}
-                  />
-                ))}
-              </div>
-            </div>
-
-            {/* CONTENT */}
-            <h1 className="text-4xl font-bold text-center mb-2">
-              {event.title}
-            </h1>
-            <p className="text-blue-400 text-center mb-2">
-              {event.subtitle}
-            </p>
-
-            <div className="flex justify-center text-gray-400 mb-6">
-              <FaCalendarAlt className="mr-2" />
-              {event.date}
-            </div>
-
-            <p className="text-gray-300 text-center mb-10">
-              {event.description}
-            </p>
-
-            <div className="flex justify-center">
-              <button
-                onClick={() => router.push("/events")}
-                className="flex items-center gap-2 bg-blue-700 hover:bg-blue-800 px-6 py-2 rounded-full"
-              >
-                <FaArrowLeft />
-                Back to Events
-              </button>
-            </div>
-          </div>
-        </SpotlightCard>
-      </div>
-    </div>
-  );
+  return <PublicEventDetails event={event} />;
 }

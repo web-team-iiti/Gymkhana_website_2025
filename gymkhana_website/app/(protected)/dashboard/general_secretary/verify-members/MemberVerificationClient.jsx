@@ -245,6 +245,7 @@
 
 
 "use client";
+import Link from "next/link";
 
 import React, { useState } from "react";
 import {
@@ -261,7 +262,31 @@ import {
    CLIENT COMPONENT
 =========================== */
 
-export default function MemberVerificationClient({ stats, members, success, action }) {
+export default function MemberVerificationClient({ stats, members, success, action , activeStatus, }) {
+const [search, setSearch] = useState("");
+const [sortOrder, setSortOrder] = useState("latest");
+  // const filteredMembers = members.filter(m =>
+  //   `${m.name} ${m.email} ${m.club_name} ${m.position}`
+  //     .toLowerCase()
+  //     .includes(search.toLowerCase())
+  // );
+
+  const filteredMembers = members
+  .filter(m =>
+    `${m.name} ${m.email} ${m.club_name} ${m.position}`
+      .toLowerCase()
+      .includes(search.toLowerCase())
+  )
+  .sort((a, b) => {
+    const dateA = new Date(a.added_at);
+    const dateB = new Date(b.added_at);
+
+    return sortOrder === "latest"
+      ? dateB - dateA   // newest first
+      : dateA - dateB;  // oldest first
+  });
+
+
   return (
     <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-8">
 
@@ -293,29 +318,178 @@ export default function MemberVerificationClient({ stats, members, success, acti
       )}
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <StatsCard icon={<FaClock />} color="text-yellow-500" title="Pending" value={stats.pending} />
         <StatsCard icon={<FaCheckCircle />} color="text-green-500" title="Approved" value={stats.approved} />
         <StatsCard icon={<FaTimesCircle />} color="text-red-500" title="Rejected" value={stats.rejected} />
-      </div>
+      </div> */}
+
+      {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+  <Link href="/dashboard/general_secretary/verify-members">
+    <StatsCard
+      icon={<FaClock />}
+      color="text-yellow-500"
+      title="Pending"
+      value={stats.pending}
+    />
+  </Link>
+
+  <Link href="/dashboard/general_secretary/verify-members?status=approved">
+    <StatsCard
+      icon={<FaCheckCircle />}
+      color="text-green-500"
+      title="Approved"
+      value={stats.approved}
+    />
+  </Link>
+
+  <Link href="/dashboard/general_secretary/verify-members?status=rejected">
+    <StatsCard
+      icon={<FaTimesCircle />}
+      color="text-red-500"
+      title="Rejected"
+      value={stats.rejected}
+    />
+  </Link>
+</div> */}
+
+
+<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+  <Link href="/dashboard/general_secretary/verify-members">
+    <StatsCard
+      icon={<FaClock />}
+      color="text-yellow-500"
+      title="Pending"
+      value={stats.pending}
+    />
+  </Link>
+
+  <Link href="/dashboard/general_secretary/verify-members?status=approved">
+    <StatsCard
+      icon={<FaCheckCircle />}
+      color="text-green-500"
+      title="Approved"
+      value={stats.approved}
+    />
+  </Link>
+
+  <Link href="/dashboard/general_secretary/verify-members?status=rejected">
+    <StatsCard
+      icon={<FaTimesCircle />}
+      color="text-red-500"
+      title="Rejected"
+      value={stats.rejected}
+    />
+  </Link>
+</div>
+
 
       {/* Pending Requests */}
       <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 hover:border-gray-700 transition">
-        <h3 className="text-lg font-bold text-white mb-6">
+        {/* <h3 className="text-lg font-bold text-white mb-6">
           Pending Requests
-        </h3>
+        </h3> */}
+        {/* <h3 className="text-lg font-bold text-white mb-6">
+  {activeStatus === "TENURE_ADDED"
+    ? "Pending Requests"
+    : `${activeStatus.charAt(0) + activeStatus.slice(1).toLowerCase()} Requests`} 
+</h3> */}
+{/* <div className="flex justify-between items-center mb-6">
+  <h3 className="text-lg font-bold text-white">
+    {activeStatus === "TENURE_ADDED"
+      ? "Pending Requests"
+      : `${activeStatus.charAt(0) + activeStatus.slice(1).toLowerCase()} Requests`}
+  </h3>
 
+  <input
+    type="text"
+    placeholder="Search name, email, club..."
+    value={search}
+    onChange={e => setSearch(e.target.value)}
+    className="
+      w-64 px-3 py-2 text-sm
+      bg-gray-950 border border-gray-700
+      rounded-lg text-white
+      placeholder-gray-500
+      focus:outline-none focus:border-blue-500
+    "
+  />
+</div> */}
+
+<div className="flex justify-between items-center mb-6 gap-4">
+  <h3 className="text-lg font-bold text-white">
+    {activeStatus === "TENURE_ADDED"
+      ? "Pending Requests"
+      : `${activeStatus.charAt(0) + activeStatus.slice(1).toLowerCase()} Requests`}
+  </h3>
+
+  <div className="flex items-center gap-3">
+    {/* Search */}
+    <input
+      type="text"
+      placeholder="Search name, email, club..."
+      value={search}
+      onChange={e => setSearch(e.target.value)}
+      className="
+        w-64 px-3 py-2 text-sm
+        bg-gray-950 border border-gray-700
+        rounded-lg text-white
+        placeholder-gray-500
+        focus:outline-none focus:border-blue-500
+      "
+    />
+
+    {/* Sort */}
+    <select
+      value={sortOrder}
+      onChange={e => setSortOrder(e.target.value)}
+      className="
+        px-3 py-2 text-sm
+        bg-gray-950 border border-gray-700
+        rounded-lg text-white
+        focus:outline-none focus:border-blue-500
+      "
+    >
+      <option value="latest">Latest → Oldest</option>
+      <option value="oldest">Oldest → Latest</option>
+    </select>
+  </div>
+</div>
+
+
+
+{/* 
         {members.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">
-            No pending club member requests.
+          <div className="text-center py-12 text-gray-500"> */}
+            {/* No pending club member requests. */}
+            {/* {activeStatus === "TENURE_ADDED"
+    ? "No pending club member requests."
+    : `No ${activeStatus.charAt(0) + activeStatus.slice(1).toLowerCase()} club member requests`}
           </div>
         ) : (
           <div className="space-y-4">
             {members.map(m => (
-              <MemberRequestCard key={m.member_id} member={m} />
+              <MemberRequestCard key={m.member_id} member={m} activeStatus={activeStatus} />
             ))}
           </div>
-        )}
+        )} */}
+
+        {filteredMembers.length === 0 ? (
+  <div className="text-center py-12 text-gray-500">
+    No matching requests found.
+  </div>
+) : (
+  <div className="space-y-4">
+    {filteredMembers.map(m => (
+      <MemberRequestCard
+        key={m.member_id}
+        member={m}
+        activeStatus={activeStatus}
+      />
+    ))}
+  </div>
+)}
+
       </div>
     </div>
   );
@@ -359,7 +533,7 @@ const StatsCard = ({ icon, color, title, value }) => (
    MEMBER REQUEST CARD
 =========================== */
 
-const MemberRequestCard = ({ member }) => {
+const MemberRequestCard = ({ member, activeStatus }) => {
   const [showConfirmApprove, setShowConfirmApprove] = useState(false);
   const [showConfirmReject, setShowConfirmReject] = useState(false);
 
@@ -444,33 +618,36 @@ const MemberRequestCard = ({ member }) => {
           )}
         </div>
 
-        <div className="flex gap-3">
-          <button
-            onClick={() => setShowConfirmApprove(true)}
-            className="
-              flex items-center gap-2 px-4 py-2
-              bg-green-600 hover:bg-green-500
-              rounded-lg text-sm font-bold
-              transition-all duration-200
-            "
-          >
-            <FaCheck />
-            Approve
-          </button>
+        {/* Only show action buttons for PENDING requests */}
+        {activeStatus === "TENURE_ADDED" && (
+          <div className="flex gap-3">
+            <button
+              onClick={() => setShowConfirmApprove(true)}
+              className="
+                flex items-center gap-2 px-4 py-2
+                bg-green-600 hover:bg-green-500
+                rounded-lg text-sm font-bold
+                transition-all duration-200
+              "
+            >
+              <FaCheck />
+              Approve
+            </button>
 
-          <button
-            onClick={() => setShowConfirmReject(true)}
-            className="
-              flex items-center gap-2 px-4 py-2
-              bg-red-600 hover:bg-red-500
-              rounded-lg text-sm font-bold
-              transition-all duration-200
-            "
-          >
-            <FaTimes />
-            Reject
-          </button>
-        </div>
+            <button
+              onClick={() => setShowConfirmReject(true)}
+              className="
+                flex items-center gap-2 px-4 py-2
+                bg-red-600 hover:bg-red-500
+                rounded-lg text-sm font-bold
+                transition-all duration-200
+              "
+            >
+              <FaTimes />
+              Reject
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Approve Confirmation */}
@@ -540,10 +717,6 @@ const ConfirmationDialog = ({ title, message, confirmText, confirmColor, onConfi
     </div>
   );
 };
-
-
-
-
 
 
 
