@@ -55,7 +55,7 @@ const councils = [
     id: 1,
     color: "#48bb78", // Green
     icon: "snt.jpg",
-    angle: 45,
+    angle: 18,
     title: "Science and Technology Council",
     description: "The SnT Council of IIT Indore is a community of science and technology enthusiasts who love to explore the unthinkable.",
   },
@@ -63,7 +63,7 @@ const councils = [
     id: 2,
     color: "#fcd34d", // Yellow
     icon: "acad.jpg",
-    angle: 135,
+    angle: 90, // Top
     title: "Academic Council",
     description: "The Academics Council has been trusted with the responsibility of managing executive activities in two of the most crucial aspects of student life - Academics and Career.",
   },
@@ -71,7 +71,7 @@ const councils = [
     id: 3,
     color: "#63b3ed", // Blue
     icon: "gym.jpg",
-    angle: 225,
+    angle: 162,
     title: "Sports Council",
     description: "The Sports Council is the voice and face of IIT Indore sports community, responsible for management and conduction of all sporting events in the campus.",
   },
@@ -79,9 +79,17 @@ const councils = [
     id: 4,
     color: "#f87171", // Red
     icon: "cult.jpg",
-    angle: 315,
+    angle: 234,
     title: "Cultural Council",
-    description: "The Cultural Council of IIT Indore orchestrates a diverse array of cultural events throughout the year, fostering artistic expression and community engagement among students and faculty alike.",
+    description: "The Cultural Council of IIT Indore orchestrates a diverse array of cultural events throughout the year, fostering artistic expression and community engagement.",
+  },
+  {
+    id: 5,
+    color: "#a855f7", // Purple 
+    icon: "alumni.jpeg",
+    angle: 306,
+    title: "Outreach and Alumni Council",
+    description: "The Outreach and Alumni Council acts as a bridge between the institute, its alumni network, and external organizations to foster long-term relationships and brand building.",
   },
 ];
 
@@ -122,29 +130,26 @@ const Connector = ({ angle, hexColor }) => {
 const RadialMenu = () => {
   const [hoveredNode, setHoveredNode] = useState(null);
 
-  // --- Central Node (Suns Intact) ---
+  // --- Central Node (Longer Glow Tail) ---
   const CentralNode = ({ mobile }) => {
-    const centralSunStyle = {
-      background: "white",
-      boxShadow: "0 0 15px white, 0 0 30px gold", // This is the "Rosni"
-    };
-
     return (
       <div className={`z-10 flex items-center justify-center relative ${mobile ? "mb-8" : ""}`}>
+        {/* Revolving Dark Glow Container */}
         <div
-          className={`absolute rounded-full pointer-events-none ${mobile ? "inset-[-12px]" : "inset-[-20px]"}`}
-          style={{ animation: "orbit-cw 12s linear infinite" }}
+          className={`absolute rounded-full pointer-events-none ${mobile ? "inset-[-12px]" : "inset-[-24px]"}`}
+          style={{ animation: "orbit-cw 5s linear infinite" }} 
         >
-          {/* Top Sun */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full" style={centralSunStyle} />
-          {/* Right Sun */}
-          <div className="absolute right-0 top-1/2 translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full" style={centralSunStyle} />
-          {/* Bottom Sun */}
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-4 h-4 rounded-full" style={centralSunStyle} />
-          {/* Left Sun */}
-          <div className="absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full" style={centralSunStyle} />
+           <div 
+             className="absolute inset-0 rounded-full"
+             style={{
+               background: "conic-gradient(from 0deg, transparent 0%, transparent 15%, rgba(147, 51, 234, 0.3) 45%, rgba(147, 51, 234, 1) 100%)",
+               filter: "blur(12px)", 
+               opacity: 0.8,
+             }}
+           />
         </div>
 
+        {/* Central Logo */}
         <div
           className={`
             ${mobile ? "w-28 h-28" : "w-36 h-36"} 
@@ -160,7 +165,7 @@ const RadialMenu = () => {
     );
   };
 
-  // --- Desktop Peripheral Node (NO SUNS) ---
+  // --- Desktop Peripheral Node ---
   const PeripheralNode = ({ id, icon, color, angle, title, description }) => {
     const radius = 250;
     const radian = (angle * Math.PI) / 180;
@@ -180,7 +185,6 @@ const RadialMenu = () => {
           onMouseOver={() => setHoveredNode(id)}
           onMouseOut={() => setHoveredNode(null)}
         >
-          {/* Orbit Line (Dashed) - Kept, but NO SUNS inside */}
           <div className="absolute inset-[-10px] rounded-full border border-dashed opacity-30 pointer-events-none" style={{ borderColor: color }} />
 
           <div
@@ -230,10 +234,10 @@ const RadialMenu = () => {
       >
         <div className="absolute inset-0 bg-black/50"></div>
 
-        {/* 📱 MOBILE LAYOUT (SUNS INCLUDED) */}
+        {/* 📱 MOBILE LAYOUT (UPDATED) */}
         <div className="relative z-10 w-full px-6 py-10 flex flex-col items-center gap-8 md:hidden">
           <CentralNode mobile={true} />
-           
+
           {councils.map((council, index) => (
             <div
               key={council.id}
@@ -241,7 +245,7 @@ const RadialMenu = () => {
               style={{
                 borderColor: council.color,
                 boxShadow: `0 0 15px ${council.color}40`,
-                animation: `float 6s ease-in-out infinite`, 
+                animation: `float 6s ease-in-out infinite`,
                 animationDelay: `${index * 1}s`
               }}
             >
@@ -249,27 +253,31 @@ const RadialMenu = () => {
                 className="w-20 h-20 rounded-full border-2 mb-4 relative flex items-center justify-center"
                 style={{ borderColor: council.color }}
               >
-                {/* ☀️ Mobile Sun 1 */}
-                <div className="absolute inset-[-6px] rounded-full pointer-events-none" style={{ animation: "orbit-ccw 4s linear infinite" }}>
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white" 
-                         style={{ backgroundColor: council.color, boxShadow: `0 0 8px ${council.color}` }} />
-                </div>
-
-                {/* ☀️ Mobile Sun 2 */}
-                <div className="absolute inset-[-6px] rounded-full pointer-events-none" style={{ animation: "orbit-cw 7s linear infinite" }}>
-                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-2 h-2 rounded-full bg-white" 
-                         style={{ backgroundColor: council.color, boxShadow: `0 0 8px ${council.color}` }} />
+                {/* --- UPDATED: Colored Glow Tail for each Council --- */}
+                <div 
+                  className="absolute inset-[-8px] rounded-full pointer-events-none" 
+                  style={{ animation: "orbit-cw 4s linear infinite" }}
+                >
+                   <div 
+                     className="absolute inset-0 rounded-full"
+                     style={{
+                       // Using Hex Alpha: 00 = 0% opacity, 4d = 30% opacity, ff = 100% opacity
+                       background: `conic-gradient(from 0deg, transparent 0%, transparent 15%, ${council.color}4d 45%, ${council.color} 100%)`,
+                       filter: "blur(8px)", 
+                       opacity: 1,
+                     }}
+                   />
                 </div>
 
                 <div className="w-full h-full rounded-full overflow-hidden z-10">
-                   <img src={council.icon} alt={council.title} className="w-full h-full object-cover" />
+                  <img src={council.icon} alt={council.title} className="w-full h-full object-cover" />
                 </div>
               </div>
-              
+
               <h3 className="text-xl font-bold mb-2" style={{ color: council.color, textShadow: `0 0 10px ${council.color}` }}>
                 {council.title}
               </h3>
-              
+
               <p className="text-sm text-gray-300 leading-relaxed">
                 {council.description}
               </p>
@@ -277,7 +285,7 @@ const RadialMenu = () => {
           ))}
         </div>
 
-        {/* 💻 DESKTOP LAYOUT (SUNS REMOVED) */}
+        {/* 💻 DESKTOP LAYOUT */}
         <div className="hidden md:flex relative w-[600px] h-[600px] items-center justify-center">
           {councils.map((node) => (
             <Connector key={`line-${node.id}`} angle={node.angle} hexColor={node.color} />
