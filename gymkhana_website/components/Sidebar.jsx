@@ -36,14 +36,14 @@ const MENU_ITEMS = {
   office: [
     { name: "Overview", href: "/dashboard/office", icon: <FaHome /> },
     { name: "Received Files", href: "/dashboard/office/files", icon: <FaBuilding /> },
-    { name: "Budget Tracking", href: "/dashboard/office/budget", icon: <FaFileSignature /> },
+    // { name: "Budget Tracking", href: "/dashboard/office/budget", icon: <FaFileSignature /> },
     { name: "Master Inventory", href: "/dashboard/office/inventory", icon: <FaBoxOpen /> },
     { name: "Bill Repository", href: "/dashboard/office/bills", icon: <FaFileInvoiceDollar /> },
   ],
   adosa: [
     { name: "Overview", href: "/dashboard/adosa", icon: <FaHome /> },
     { name: "Pending Approvals", href: "/dashboard/adosa/files", icon: <FaCheckDouble /> },
-    { name: "Review History", href: "/dashboard/adosa/history", icon: <FaFileAlt /> },
+    // { name: "Review History", href: "/dashboard/adosa/history", icon: <FaFileAlt /> },
     { name: "Master Inventory", href: "/dashboard/adosa/inventory", icon: <FaBoxOpen /> },
     { name: "Bill Repository", href: "/dashboard/adosa/bills", icon: <FaFileInvoiceDollar /> },
   ],
