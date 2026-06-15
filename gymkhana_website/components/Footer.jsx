@@ -6,6 +6,7 @@ import {
   FaTwitter,
 } from "react-icons/fa";
 import { MdEmail, MdLocationOn } from "react-icons/md";
+import Image from "next/image";
 
 const Footer = () => {
   return (
@@ -15,10 +16,12 @@ const Footer = () => {
         {/* Left Section */}
         <div className="md:max-w-lg">
           <div className="flex items-center space-x-3">
-            <img
+            <Image
               src="/main_logo.png"
-              className="h-10 sm:h-20 md:h-30"
               alt="Logo"
+              width={120}
+              height={120}
+              className="h-10 w-auto sm:h-20 md:h-30"
             />
             <h2 className="text-white pt-2 text-xl md:text-2xl font-bold">
               <span className=" text-yellow-500">Students' Gymkhana</span> IIT Indore

@@ -4,7 +4,7 @@
     font-family: serif;
 }
 /* To hide scroll bars */
-body::-webkit-scrollbar {
+::-webkit-scrollbar {
     display: none;
 }
 

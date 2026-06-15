@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import Link from "next/link";
 
 // --- 1. Custom CSS ---
 const customStyles = `
@@ -127,11 +128,17 @@ const Connector = ({ angle, hexColor }) => {
 };
 
 // --- 4. Main Component ---
-const RadialMenu = () => {
+export default function RadialMenu({ dbCouncils = [] }) {
   const [hoveredNode, setHoveredNode] = useState(null);
 
+  // Map db UUIDs to the hardcoded councils list by matching title/name
+  const mergedCouncils = councils.map(c => {
+    const dbC = dbCouncils.find(db => db.name === c.title);
+    return { ...c, uuid: dbC ? dbC.id : c.id }; // Fallback to local id if not found
+  });
+
   // --- Central Node (Longer Glow Tail) ---
-  const CentralNode = ({ mobile }) => {
+  const CentralNode = ({ mobile = false }) => {
     return (
       <div className={`z-10 flex items-center justify-center relative ${mobile ? "mb-8" : ""}`}>
         {/* Revolving Dark Glow Container */}
@@ -166,7 +173,7 @@ const RadialMenu = () => {
   };
 
   // --- Desktop Peripheral Node ---
-  const PeripheralNode = ({ id, icon, color, angle, title, description }) => {
+  const PeripheralNode = ({ id, uuid, icon, color, angle, title, description }) => {
     const radius = 250;
     const radian = (angle * Math.PI) / 180;
     const nodeSize = 128;
@@ -179,7 +186,8 @@ const RadialMenu = () => {
 
     return (
       <>
-        <div
+        <Link
+          href={`/councils/${uuid}`}
           className="absolute flex flex-col items-center justify-center transition-all duration-300 hover:z-30 cursor-pointer"
           style={{ left: `${nodePosX}px`, top: `${nodePosY}px`, width: `${nodeSize}px`, height: `${nodeSize}px` }}
           onMouseOver={() => setHoveredNode(id)}
@@ -197,7 +205,7 @@ const RadialMenu = () => {
           >
             <img src={icon} alt={title} className="w-28 h-28 rounded-full object-cover" />
           </div>
-        </div>
+        </Link>
 
         {isHovered && (
           <div
@@ -238,10 +246,11 @@ const RadialMenu = () => {
         <div className="relative z-10 w-full px-6 py-10 flex flex-col items-center gap-8 md:hidden">
           <CentralNode mobile={true} />
 
-          {councils.map((council, index) => (
-            <div
+          {mergedCouncils.map((council, index) => (
+            <Link
+              href={`/councils/${council.uuid}`}
               key={council.id}
-              className="w-full max-w-sm rounded-2xl border bg-black/60 backdrop-blur-md p-5 flex flex-col items-center text-center transition-transform active:scale-95"
+              className="w-full max-w-sm rounded-2xl border bg-black/60 backdrop-blur-md p-5 flex flex-col items-center text-center transition-transform hover:scale-105 active:scale-95 cursor-pointer"
               style={{
                 borderColor: council.color,
                 boxShadow: `0 0 15px ${council.color}40`,
@@ -281,7 +290,7 @@ const RadialMenu = () => {
               <p className="text-sm text-gray-300 leading-relaxed">
                 {council.description}
               </p>
-            </div>
+            </Link>
           ))}
         </div>
 
@@ -291,7 +300,7 @@ const RadialMenu = () => {
             <Connector key={`line-${node.id}`} angle={node.angle} hexColor={node.color} />
           ))}
           <CentralNode mobile={false} />
-          {councils.map((node) => (
+          {mergedCouncils.map((node) => (
             <PeripheralNode key={node.id} {...node} />
           ))}
         </div>
@@ -299,5 +308,3 @@ const RadialMenu = () => {
     </>
   );
 };
-
-export default RadialMenu;

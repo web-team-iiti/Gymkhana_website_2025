@@ -13,7 +13,7 @@ import {
   FaBuilding,
   FaFileSignature,
   FaSignOutAlt,
-  FaChevronRight, FaFileInvoiceDollar
+  FaChevronRight, FaFileInvoiceDollar, FaTrophy
 } from "react-icons/fa";
 
 const MENU_ITEMS = {
@@ -30,6 +30,7 @@ const MENU_ITEMS = {
     { name: "My Proposals", href: "/dashboard/general_secretary/my-proposals", icon: <FaFileSignature /> },
     { name: "Verify PORs", href: "/dashboard/verify-members", icon: <FaUsers /> },
     { name: "Manage Events", href: "/dashboard/general_secretary/events", icon: <FaCalendarAlt /> },
+    { name: "Manage Achievements", href: "/dashboard/general_secretary/achievements", icon: <FaTrophy /> },
     { name: "Master Inventory", href: "/dashboard/general_secretary/inventory", icon: <FaBoxOpen /> },
     { name: "Bill Repository", href: "/dashboard/general_secretary/bills", icon: <FaFileInvoiceDollar /> },
   ],

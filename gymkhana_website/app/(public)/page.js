@@ -22,14 +22,25 @@ async function getHomeEvents() {
   }
 }
 
+async function getCouncils() {
+  try {
+    const sql = "SELECT id, name FROM councils";
+    const res = await query(sql);
+    return res.rows;
+  } catch (error) {
+    return [];
+  }
+}
+
 // 2. Async Server Component
 const Page = async () => {
   const events = await getHomeEvents();
+  const dbCouncils = await getCouncils();
 
   return (
     <div>
       {/* Radial Menu */}
-      <RadialMenu />
+      <RadialMenu dbCouncils={dbCouncils} />
 
       {/* 🌌 Unified Galaxy Wrapper */}
       <div className="relative w-full overflow-hidden bg-gray-950">
