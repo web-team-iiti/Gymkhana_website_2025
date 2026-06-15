@@ -20,7 +20,10 @@ const MENU_ITEMS = {
   club_head: [
     { name: "Overview", href: "/dashboard/club_head", icon: <FaHome /> },
     { name: "Create Proposal", href: "/dashboard/club_head/create-proposal", icon: <FaFileAlt /> },
+    { name: "Projects", href: "/dashboard/club_head/projects", icon: <FaTasks /> },
+    {name: "Add Project", href: "/dashboard/club_head/projects/create", icon: <FaChevronRight />},
     { name: "My Members", href: "/dashboard/club_head/members", icon: <FaUsers /> },
+    { name: "Add Member", href: "/dashboard/club_head/members/add", icon: <FaChevronRight />},
     { name: "Club Inventory", href: "/dashboard/club_head/inventory", icon: <FaBoxOpen /> },
   ],
   gs: [
@@ -28,7 +31,7 @@ const MENU_ITEMS = {
     { name: "Create Proposal", href: "/dashboard/general_secretary/create", icon: <FaFileAlt /> },
     { name: "Pending Approvals", href: "/dashboard/approvals", icon: <FaCheckDouble /> },
     { name: "My Proposals", href: "/dashboard/general_secretary/my-proposals", icon: <FaFileSignature /> },
-    { name: "Verify PORs", href: "/dashboard/verify-members", icon: <FaUsers /> },
+    { name: "Verify PORs", href: "/dashboard/general_secretary/verify-members", icon: <FaUsers /> },
     { name: "Manage Events", href: "/dashboard/general_secretary/events", icon: <FaCalendarAlt /> },
     { name: "Manage Achievements", href: "/dashboard/general_secretary/achievements", icon: <FaTrophy /> },
     { name: "Master Inventory", href: "/dashboard/general_secretary/inventory", icon: <FaBoxOpen /> },

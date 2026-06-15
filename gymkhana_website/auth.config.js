@@ -2,11 +2,13 @@ export const authConfig = {
   pages: {
     signIn: "/login",
   },
+
   callbacks: {
     // 1. MIDDLEWARE PROTECTION LOGIC
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
       const role = auth?.user?.role;
+      const pathname = nextUrl.pathname;
 
       const isOnDashboard = nextUrl.pathname.startsWith("/dashboard");
 
@@ -27,7 +29,6 @@ export const authConfig = {
         return Response.redirect(new URL("/dashboard", nextUrl));
       }
 
-      // Rule 3: Protect Office Routes
       if (isOnOffice && role !== "office") {
         return Response.redirect(new URL("/dashboard", nextUrl));
       }
@@ -72,5 +73,6 @@ export const authConfig = {
       return session;
     },
   },
+
   providers: [],
 };
