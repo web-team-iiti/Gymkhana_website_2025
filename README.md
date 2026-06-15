@@ -44,34 +44,138 @@ The Student's Gymkhana website serves as the **central digital hub** for all stu
 
 ---
 
-## ✨ Key Features
+## 🌟 Major Features
 
-### 🌐 Public Portal
+### 🌐 Public & Protected Website Architecture
+
+The platform is split into two distinct layers using **Next.js Route Groups**:
+
+| Layer | Routes | Description |
+|---|---|---|
+| **🌍 Public Website** | `(public)/*` | Accessible to everyone — Homepage, Councils, Clubs, Events, Members, Contact |
+| **🔒 Protected Website** | `(protected)/*` | Requires authentication — Role-specific dashboards with middleware-enforced access |
+| **🔑 Auth Layer** | `(auth)/*` | Login/authentication flow |
+
+> Public pages are **server-rendered** for SEO and performance. Protected routes are guarded at the **edge middleware level** before any page code executes.
+
+---
+
+### 🔐 Secure Authentication System (NextAuth.js v5)
+
+A production-grade authentication system built with **NextAuth.js v5 (Auth.js)**:
+
+- **Credentials-based Login** — Email/password authentication against PostgreSQL user records
+- **JWT Session Management** — Stateless, secure token-based sessions with custom claims (role, club_id, club_name)
+- **Edge Middleware Protection** — Every request to `/dashboard/*` is intercepted and validated before reaching the server
+- **Role Injection** — User role and scope data are embedded in the JWT token and exposed via `useSession()` on the client
+- **Granular Route Guards** — Each dashboard path (`/dashboard/general_secretary`, `/dashboard/office`, etc.) is locked to its specific role; unauthorized users are redirected automatically
+
+```
+Request → Edge Middleware (auth check) → Role Validation → Page Render
+                  ↓ (if unauthorized)
+              Redirect to /login or /dashboard
+```
+
+---
+
+### 📊 Multiple Role-Based Dashboards
+
+**6 dedicated dashboards**, each tailored with unique interfaces and capabilities:
+
+| Role | Dashboard | Key Capabilities |
+|---|---|---|
+| **🎓 Student** | `/dashboard/student` | Personal dashboard with relevant student information |
+| **🏅 Club Head** | `/dashboard/club_head` | Manage club inventory, members, and projects |
+| **📋 General Secretary** | `/dashboard/general_secretary` | Create & manage events, submit proposals, handle bills, manage achievements, oversee inventory, verify club members |
+| **👨‍💼 ADOSA** | `/dashboard/adosa` | Review & approve bills, manage files, oversee inventory across all councils |
+| **🎯 DOSA** | `/dashboard/dosa` | Archive management, bills oversight, file management, inventory tracking |
+| **🏢 Office** | `/dashboard/office` | Administrative bill management, file handling, and inventory control |
+
+> Each dashboard is a **fully isolated route group** with its own page layout, data fetching, and permission checks.
+
+---
+
+### 📝 Proposal Management System
+
+An end-to-end proposal lifecycle management system for General Secretaries:
+
+- **Create Proposals** — Submit new proposals with detailed descriptions and supporting documents
+- **Edit & Update** — Modify proposals before and after review
+- **Track Status** — Monitor proposal progress through the approval pipeline
+- **Review Workflow** — Administrative roles can review, approve, or reject proposals
+- **API-Driven** — Full CRUD operations via `/api/proposals` endpoints
+
+---
+
+### 📦 Inventory Management System
+
+A comprehensive inventory tracking system used across all administrative roles:
+
+- **Add & Edit Items** — Club Heads and GS can add new inventory items with detailed forms
+- **Search & Filter** — Advanced filtering and search capabilities across all inventory records
+- **Role-Scoped Views** — Club Heads see their club's inventory; GS, ADOSA, DOSA, and Office see cross-council inventory
+- **Dedicated Interfaces** — Custom `AddInventoryForm`, `EditInventoryForm`, `InventoryList`, `InventoryFilters`, and `InventoryControls` components
+- **Accessible from every dashboard** — Inventory routes exist under Club Head, GS, ADOSA, DOSA, and Office dashboards
+
+---
+
+### 💰 Bill Repository & Financial Management
+
+A centralized bill management system for transparent financial operations:
+
+- **Bill Submission** — General Secretaries submit bills with supporting documents uploaded to **Supabase Storage**
+- **Bill Review Pipeline** — Bills flow through ADOSA → DOSA → Office for multi-level approval
+- **Master Bill Manager** — Dedicated `MasterBillManager` component with advanced controls and filtering (`BillsControls`, `BillsFilter`)
+- **PDF Generation** — Generate bill reports and documents using **pdf-lib**
+- **Audit Trail** — Complete visibility into bill status across all administrative levels
+
+---
+
+### 🎪 Event Management System
+
+A complete event lifecycle management system with both public and admin interfaces:
+
+- **Public Events Page** — Server-rendered events listing with **search** and **smart filtering** (All, Upcoming, Live Now, Completed)
+- **Smart Sorting** — Upcoming events sorted ascending (nearest first), completed events sorted descending (most recent first), "All" view shows upcoming first then past
+- **Event Detail Pages** — Dynamic `[eventId]` routes with full event details, descriptions, and media via `PublicEventDetails` component
+- **Create & Edit Events** — General Secretaries can create new events and edit existing ones through dedicated dashboard pages
+- **Homepage Integration** — Upcoming events are automatically fetched and displayed on the homepage with the `NewsEvents` component
+- **Responsive Filters** — Desktop horizontal filter bar + mobile dropdown with `EventFilter` component
+- **API-Driven** — Full CRUD operations via `/api/events` endpoints with parameterized SQL queries
+
+---
+
+### 🏛️ Councils & Clubs Management
+
+A dynamic system for showcasing and managing the 5 major councils and their affiliated clubs:
+
+- **Interactive Radial Menu** — Desktop: animated orbital layout with glowing connectors, hover tooltips, and WebGL effects; Mobile: card-based layout with floating animations
+- **5 Councils** — Science & Technology, Academic, Sports, Cultural, and Outreach & Alumni — each with unique color theming and visual identity
+- **Dynamic Council Pages** — `[id]` dynamic routes fetching council data from PostgreSQL, displaying affiliated clubs and council details
+- **Club Showcase** — Interactive club grid on the homepage with detailed club pages accessible via `/club` routes
+- **Database-Driven** — Councils and clubs are fetched from PostgreSQL, with client-side data merged for rich visual rendering
+- **Council Filtering** — Dedicated `CouncilFilter` component for browsing and filtering council content
+- **Club Head Integration** — Club heads manage their club data through the protected dashboard
+
+---
+
+### ✨ Additional Features
+
+#### 🌐 Public Portal
 | Feature | Description |
 |---|---|
 | **Homepage** | Interactive landing page with galaxy background, council radial menu, and club showcase |
-| **Councils & Clubs** | Browse all councils and their affiliated clubs with detailed information |
-| **Events** | View upcoming events with filtering, search, and individual event detail pages |
+| **Achievements** | Create, edit, and showcase student and club achievements |
 | **Members Directory** | Explore the student body and council/club members |
 | **Contact** | Get in touch with the Gymkhana office |
 
-### 🔐 Authenticated Dashboards
-
-| Role | Capabilities |
-|---|---|
-| **Club Head** | Manage club inventory, members, and projects |
-| **General Secretary** | Create & manage events, submit & track proposals, manage achievements, handle bills, oversee inventory, verify club members |
-| **ADOSA** | Review & manage bills, files, and inventory across councils |
-| **DOSA** | Archive management, bills oversight, file management, inventory tracking |
-| **Office** | Administrative bill management, file handling, and inventory control |
-| **Student** | Personal dashboard with relevant information |
-
-### 💎 UI/UX Highlights
-- 🌌 **Interactive Galaxy Background** — WebGL-powered star field with mouse repulsion
-- ✨ **Particle Effects** — Dynamic floating particles across the interface
+#### 💎 UI/UX Highlights
+- 🌌 **Interactive Galaxy Background** — WebGL-powered star field with mouse repulsion (Three.js)
+- ✨ **Particle Effects** — Dynamic floating particles across the interface (p5.js)
 - 🎯 **Radial Council Menu** — Unique circular navigation for exploring councils
 - 🌊 **Floating Line Animations** — Smooth animated decorative elements
 - 🎨 **Dark Theme** — Sleek, modern dark-mode-first design
+- 🧩 **35+ Reusable Components** — Modular component architecture for scalability
 
 ---
 
