@@ -6,7 +6,8 @@ export const authConfig = {
 
   callbacks: {
     // MIDDLEWARE PROTECTION LOGIC (runs on Edge)
-    authorized({ auth, request: { nextUrl } }) {
+    authorized({ auth, request }) {
+      const { nextUrl } = request;
       const isLoggedIn = !!auth?.user;
       const role = auth?.user?.role;
 
@@ -54,6 +55,17 @@ export const authConfig = {
       // Rule 8: Protect GS Cult Routes
       if (isOnGsCult && role !== "gs_cult") {
         return Response.redirect(new URL("/dashboard", nextUrl));
+      }
+
+      // Rule 9: Edge Protection for API Routes
+      const isOnApi = nextUrl.pathname.startsWith("/api");
+      if (isOnApi) {
+        // Allow public GET requests to specific API routes (like events)
+        // If it's a mutation (POST, PUT, DELETE, PATCH) and not logged in, block at edge
+        const isMutation = ["POST", "PUT", "PATCH", "DELETE"].includes(request.method);
+        if (isMutation && !isLoggedIn) {
+          return false;
+        }
       }
 
       return true;

@@ -95,18 +95,21 @@ const SportsClubsPage = () => {
 
 
 const clubHeads = [
-  { name: "Sanjay S", role: "Head", club: "Athletics Club", photo: "👤", instagram: "#", linkedin: "#" },
-  { name: "Ommkar Sahoo", role: "Head", club: "Aquatics Club", photo: "👤", instagram: "#", linkedin: "#" },
-  { name: "Siddhant Gupta", role: "Head", club: "Badminton Club", photo: "👤", instagram: "#", linkedin: "#" },
-  { name: "Rahul", role: "Head", club: "Basketball Club", photo: "👤", instagram: "#", linkedin: "#" },
-  { name: "Sarang Jagdish", role: "Head", club: "Chess Club", photo: "👤", instagram: "#", linkedin: "#" },
-  { name: "Monik Dodiya", role: "Head", club: "Cricket Club", photo: "👤", instagram: "#", linkedin: "#" },
-  { name: "Muhamed Nihal", role: "Head", club: "Football Club", photo: "👤", instagram: "#", linkedin: "#" },
-  { name: "Samarth Sharma", role: "Head", club: "Squash Club", photo: "👤", instagram: "#", linkedin: "#" },
-  { name: "Akarsh", role: "Head", club: "Tennis Club", photo: "👤", instagram: "#", linkedin: "#" },
-  { name: "Kushagra Shrikhande", role: "Head", club: "Table Tennis Club", photo: "👤", instagram: "#", linkedin: "#" },
-  { name: "Aman", role: "Head", club: "Volleyball Club", photo: "👤", instagram: "#", linkedin: "#" },
-  { name: "Gouriveni Gokul", role: "Head", club: "Yoga and Fitness Club", photo: "👤", instagram: "#", linkedin: "#" }
+  { name: "Ayush Raj", role: "Head", club: "Athletics Club", photo: "👤", instagram: "https://www.instagram.com/ayushraj93jh?igsh=MXBhaTd6NDh0bzUzcQ==", linkedin: "#" },
+  { name: "Harshavardhan Pawar", role: "Head", club: "Aquatics Club", photo: "👤", instagram: "https://www.instagram.com/aquaticsclub.iiti/", linkedin: "#" },
+  { name: "Parv Khandelwal", role: "Head", club: "Badminton Club", photo: "👤", instagram: "https://www.instagram.com/parv_khandelwal2006?igsh=MjF0c3hvYmhkOHVl&utm_source=qr", linkedin: "#" },
+  { name: "Swarit Porwal", role: "Head", club: "Basketball Club", photo: "👤", instagram: "https://www.instagram.com/_swarit_7?igsh=YXg1YnphZTA2enM1", linkedin: "#" },
+  { name: "Shriram Naik", role: "Head", club: "Chess Club", photo: "👤", instagram: "https://www.instagram.com/theberserkers_iiti/", linkedin: "#" },
+  { name: "Sanyam Babel", role: "Head", club: "Cricket Club", photo: "👤", instagram: "https://www.instagram.com/cricket_iiti/", linkedin: "#" },
+  { name: "Aniket Baskey", role: "Head", club: "Football Club", photo: "👤", instagram: "https://www.instagram.com/s_h_i_l_0_h?utm_source=qr", linkedin: "#" },
+  { name: "Paholpreat Kaur", role: "Head", club: "Squash Club", photo: "👤", instagram: "https://www.instagram.com/squash_club_iiti_/", linkedin: "#" },
+  { name: "Kavin Krishnan S", role: "Head", club: "Tennis Club", photo: "👤", instagram: "https://www.instagram.com/tennis_iiti/", linkedin: "#" },
+  { name: "Aarush Bindod", role: "Head", club: "Table Tennis Club", photo: "👤", instagram: "https://www.instagram.com/not_aaaarushh?igsh=aGo1aTFxdnQ3MmFy", linkedin: "#" },
+  { name: "Pramod", role: "Head", club: "Volleyball Club", photo: "👤", instagram: "https://www.instagram.com/volleyball.iiti/?hl=en", linkedin: "#" },
+  { name: "Savan Gorasiya", role: "Head", club: "Yoga and Fitness Club", photo: "👤", instagram: "#", linkedin: "#" },
+  { name: "Krushna Satish More", role: "Head", club: "Cycling Club", photo: "👤", instagram: "https://drive.google.com/u/8/open?usp=forms_web&id=1nayfzKRzgUWURVb_BtUTlOZalbG6yOus", linkedin: "#" },
+  { name: "SetuMadhav", role: "Head", club: "Hockey Club", photo: "👤", instagram: "https://www.instagram.com/sethumadhav_19?igsh=eWZ4bG1kNGtwNTll", linkedin: "#" },
+  { name: "Gaurav Tiwari", role: "Head", club: "Weightlifting Club", photo: "👤", instagram: "#", linkedin: "#" }
 ];
 
 

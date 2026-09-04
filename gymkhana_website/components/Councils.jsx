@@ -139,8 +139,13 @@ export default function RadialMenu({ dbCouncils = [] }) {
 
   // --- Central Node (Longer Glow Tail) ---
   const CentralNode = ({ mobile = false }) => {
+    const isHovered = hoveredNode === 'center';
+    const color = "#9333ea"; // Purple
+
     return (
-      <div className={`z-10 flex items-center justify-center relative ${mobile ? "mb-8" : ""}`}>
+      <div 
+        className={`z-10 flex items-center justify-center relative ${mobile ? "mb-8" : ""}`}
+      >
         {/* Revolving Dark Glow Container */}
         <div
           className={`absolute rounded-full pointer-events-none ${mobile ? "inset-[-12px]" : "inset-[-24px]"}`}
@@ -162,12 +167,38 @@ export default function RadialMenu({ dbCouncils = [] }) {
             ${mobile ? "w-28 h-28" : "w-36 h-36"} 
             p-2 rounded-full bg-black border-4 border-white 
             flex items-center justify-center text-4xl font-bold 
-            shadow-[0_0_15px_rgba(255,255,255,0.8),inset_0_0_10px_rgba(255,255,255,0.6)]
-            transition-all duration-300 hover:scale-105 cursor-pointer relative z-20
+            transition-all duration-300 cursor-pointer relative z-20
           `}
+          style={{
+            boxShadow: isHovered && !mobile ? `0 0 25px 6px ${color}, 0 0 40px 10px ${color}` : `0 0 15px rgba(255,255,255,0.8), inset 0 0 10px rgba(255,255,255,0.6)`,
+            transform: isHovered && !mobile ? "scale(1.15)" : "scale(1)",
+            borderColor: isHovered && !mobile ? color : "white"
+          }}
+          onMouseOver={() => !mobile && setHoveredNode('center')}
+          onMouseOut={() => !mobile && setHoveredNode(null)}
         >
           <img src="main_logo.png" alt="Main Logo" className="w-full h-full rounded-full object-cover" />
         </div>
+        
+        {!mobile && isHovered && (
+          <div
+            className="absolute z-50 transition-all w-[384px] duration-300 opacity-100 backdrop-blur-md rounded-2xl p-4 text-center shadow-lg pointer-events-none"
+            style={{
+              top: "140%",
+              transform: "translate(-50%, 0)",
+              left: "50%",
+              background: "rgba(0, 0, 0, 0.75)",
+              border: `2px solid ${color}`,
+              boxShadow: `0 0 20px ${color}, 0 0 40px ${color}55`,
+              color,
+            }}
+          >
+            <h3 className="text-lg font-semibold mb-2 glow-text">Presidential Council</h3>
+            <p className="text-sm leading-snug text-gray-200">
+              The Presidential Council of IIT Indore assists the president in discharging his/her duties, and any other duty assigned by the student senate.
+            </p>
+          </div>
+        )}
       </div>
     );
   };

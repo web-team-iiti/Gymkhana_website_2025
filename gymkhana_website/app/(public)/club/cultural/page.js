@@ -17,102 +17,104 @@ const CulturalClubsPage = () => {
   const galleryRef = useRef(null);
   const clubScrollRef = useRef(null);
   const headScrollRef = useRef(null);
-const clubs = [
-  {
-    name: "Aaina Club",
-    logo: "/aaina_logo.png",
-    description: "A group of enthusiastic people who love to make UAVs. We deal with designing, building, and flying miniaturized aircraft. The club participates in various technical fests and competitions across the country."
-  },
-  {
-    name: "Avana Club",
-    logo: "/avana.png",
-    description: "A hub of cosmic exploration open to everyone with curiosity about the universe. We offer stargazing sessions, astronomy workshops, and provide advanced resources for those who want to dive deeper."
-  },
-  {
-    name: "Cinephiles",
-    logo: "/cinephiles.jpg",
-    description: "Computer-Aided Engineering Club deals with common engineering problems and develops optimum solutions using CAE software. We conduct workshops, seminars, webinars, and CAD competitions."
-  },
-  {
-    name: "Kaizen Dance Crew",
-    logo: "/alphad.jpg",
-    description: "The Finance and Analytics Club aims to prepare students for corporate and research-based financial problems. We focus on financial modeling, data analysis, and investment strategies."
-  },
-  {
-    name: "The Debating Society",
-    logo: "/Debsoc.jpg",
-    description: "Dedicated to exploring concrete technology and civil engineering applications. The club conducts workshops on construction materials, structural design, and sustainable building practices."
-  },
-  {
-    name: "EBSB Club",
-    logo: "/ebsb.png",
-    description: "A motley of electronics fanatics providing a platform to explore the fascinating field of electronics. We conduct lecture series, workshops, seminars, and competitions with hands-on experience."
-  },
-  {
-    name: "Gaming Club",
-    logo: "/gaming.png",
-    description: "Focused on artificial intelligence, machine learning, and neural networks. The club works on cutting-edge AI projects, organizes workshops on deep learning, and participates in AI competitions."
-  },
-  {
-    name: "Kalakriti Club",
-    logo: "/kalakriti.png",
-    description: "Google Developer Student Club - A vibrant community of developers exploring web development, AI/ML, Android development, and cloud computing. We empower students through workshops and hackathons."
-  },
-  {
-    name: "Literary Club",
-    logo: "/literary.jpg",
-    description: "The technical backbone of Student Gymkhana, responsible for developing and maintaining the official Gymkhana website and various web applications using modern web technologies."
-  },
-  {
-    name: "Mystic Hues",
-    logo: "/Mystichues.png",
-    description: "Intelligent Vehicle Design Club focuses on automotive engineering, autonomous vehicles, and intelligent transportation systems. We design concept vehicles and participate in Formula Student competitions."
-  },
-  {
-    name: "Music Club",
-    logo: "/Music.jpg",
-    description: "A club dedicated to materials science and crystallography. We explore the structure, properties, and applications of various materials, conduct research projects in materials engineering."
-  },
-  {
-    name: "Prakriti",
-    logo: "/Prakriti.jpg",
-    description: "A community of highly enthusiastic students focused on development, algorithms, security, ML, and all aspects of programming. We organize coding competitions, hackathons, and workshops."
-  },
-  {
-    name: "The Quiz Club",
-    logo: "/quiz.jpg",
-    description: "Exploring the revolutionary field of quantum computing. The club conducts workshops on quantum algorithms, quantum cryptography, and provides hands-on experience with quantum platforms."
-  },
-  {
-    name: "Srijan",
-    logo: "/Srijan.jpg",
-    description: "A diverse group of students who loves to build robots. We build micromouse, hexapod, line followers, humanoids, and robotic arms. If you're thrilled by robots, this is the place to be."
-  },
-  {
-    name: "VLR Club",
-    logo: "/vlr.png",
-    description: "Dedicated to biological sciences, biotechnology, and biomedical engineering. We conduct workshops on bioinformatics, synthetic biology, and organize seminars on the latest advances."
-  }
-];
+  const clubs = [
+    {
+      name: "Aaina Club",
+      logo: "/aaina_logo.png",
+      description: "A group of enthusiastic people who love to make UAVs. We deal with designing, building, and flying miniaturized aircraft. The club participates in various technical fests and competitions across the country."
+    },
+    {
+      name: "Avana Club",
+      logo: "/avana.png",
+      description: "A hub of cosmic exploration open to everyone with curiosity about the universe. We offer stargazing sessions, astronomy workshops, and provide advanced resources for those who want to dive deeper."
+    },
+    {
+      name: "Cinephiles",
+      logo: "/cinephiles.jpg",
+      description: "Computer-Aided Engineering Club deals with common engineering problems and develops optimum solutions using CAE software. We conduct workshops, seminars, webinars, and CAD competitions."
+    },
+    {
+      name: "Kaizen Dance Crew",
+      logo: "/alphad.jpg",
+      description: "The Finance and Analytics Club aims to prepare students for corporate and research-based financial problems. We focus on financial modeling, data analysis, and investment strategies."
+    },
+    {
+      name: "The Debating Society",
+      logo: "/Debsoc.jpg",
+      description: "Dedicated to exploring concrete technology and civil engineering applications. The club conducts workshops on construction materials, structural design, and sustainable building practices."
+    },
+    {
+      name: "EBSB Club",
+      logo: "/ebsb.png",
+      description: "A motley of electronics fanatics providing a platform to explore the fascinating field of electronics. We conduct lecture series, workshops, seminars, and competitions with hands-on experience."
+    },
+    {
+      name: "Gaming Club",
+      logo: "/gaming.png",
+      description: "Focused on artificial intelligence, machine learning, and neural networks. The club works on cutting-edge AI projects, organizes workshops on deep learning, and participates in AI competitions."
+    },
+    {
+      name: "Kalakriti Club",
+      logo: "/kalakriti.png",
+      description: "Google Developer Student Club - A vibrant community of developers exploring web development, AI/ML, Android development, and cloud computing. We empower students through workshops and hackathons."
+    },
+    {
+      name: "Literary Club",
+      logo: "/literary.jpg",
+      description: "The technical backbone of Student Gymkhana, responsible for developing and maintaining the official Gymkhana website and various web applications using modern web technologies."
+    },
+    {
+      name: "Mystic Hues",
+      logo: "/Mystichues.png",
+      description: "Intelligent Vehicle Design Club focuses on automotive engineering, autonomous vehicles, and intelligent transportation systems. We design concept vehicles and participate in Formula Student competitions."
+    },
+    {
+      name: "Music Club",
+      logo: "/Music.jpg",
+      description: "A club dedicated to materials science and crystallography. We explore the structure, properties, and applications of various materials, conduct research projects in materials engineering."
+    },
+    {
+      name: "Prakriti",
+      logo: "/Prakriti.jpg",
+      description: "A community of highly enthusiastic students focused on development, algorithms, security, ML, and all aspects of programming. We organize coding competitions, hackathons, and workshops."
+    },
+    {
+      name: "The Quiz Club",
+      logo: "/quiz.jpg",
+      description: "Exploring the revolutionary field of quantum computing. The club conducts workshops on quantum algorithms, quantum cryptography, and provides hands-on experience with quantum platforms."
+    },
+    {
+      name: "Srijan",
+      logo: "/Srijan.jpg",
+      description: "A diverse group of students who loves to build robots. We build micromouse, hexapod, line followers, humanoids, and robotic arms. If you're thrilled by robots, this is the place to be."
+    },
+    {
+      name: "VLR Club",
+      logo: "/vlr.png",
+      description: "Dedicated to biological sciences, biotechnology, and biomedical engineering. We conduct workshops on bioinformatics, synthetic biology, and organize seminars on the latest advances."
+    }
+  ];
 
-const clubHeads = [
-  { name: "Arnav Deshpande", role: "Head", club: "Aaina Club", photo: "👤", instagram: "#", linkedin: "#" },
-  { name: "Anurag Singh", role: "Head", club: "Avana Club", photo: "👤", instagram: "#", linkedin: "#" },
-  { name: "Viswajith Manthripragada", role: "Head", club: "Cinephiles", photo: "👤", instagram: "#", linkedin: "#" },
-  { name: "Bogi Kartheek Sashank", role: "Head", club: "Kaizen Dance Crew", photo: "👤", instagram: "#", linkedin: "#" }, // Kaizen Dance Crew = D' Alpha Crewz
-  { name: "Chanakya Cherukumalli", role: "Head", club: "The Debating Society", photo: "👤", instagram: "#", linkedin: "#" }, // Debsoc
-  { name: "Rajeev Kadali", role: "Head", club: "EBSB Club", photo: "👤", instagram: "#", linkedin: "#" },
-  { name: "Aman Choudhary", role: "Head", club: "Gaming Club", photo: "👤", instagram: "#", linkedin: "#" },
-  { name: "Hilori Jain", role: "Head", club: "Kalakriti Club", photo: "👤", instagram: "#", linkedin: "#" },
-  { name: "Prakrut Moon", role: "Head", club: "Music Club", photo: "👤", instagram: "#", linkedin: "#" },
-  { name: "Kavya Patel", role: "Head", club: "Mystic Hues", photo: "👤", instagram: "#", linkedin: "#" },
-  { name: "Sai Abhilash Dash", role: "Head", club: "Prakriti", photo: "👤", instagram: "#", linkedin: "#" }, // Prakriti Club
-  { name: "Anuj Pal", role: "Head", club: "Srijan", photo: "👤", instagram: "#", linkedin: "#" },
-  { name: "Praneet Masiya", role: "Head", club: "VLR Club", photo: "👤", instagram: "#", linkedin: "#" },
-  { name: "Ayush Jindal", role: "Head", club: "Literary Club", photo: "👤", instagram: "#", linkedin: "#" },
-  { name: "Rayavarapu Sreechand", role: "Head", club: "The Quiz Club", photo: "👤", instagram: "#", linkedin: "#" },
-  { name: "Saurabh Yadav", role: "Head", club: "BGA Club", photo: "👤", instagram: "#", linkedin: "#" }
-];
+  const clubHeads = [
+    { name: "Mapansh Phogat", role: "Head", club: "AAINA", photo: "👤", instagram: "https://www.instagram.com/dramaticsclubiiti/", linkedin: "https://www.linkedin.com/in/aaina-iit-indore-832082273/" },
+    { name: "Mohnish Raj", role: "Head", club: "Avana", photo: "👤", instagram: "https://www.instagram.com/avana_iiti/", linkedin: "https://in.linkedin.com/in/mohnish-raj-77b9aa230" },
+    { name: "Harsh Pathak", role: "Head", club: "Cinephiles", photo: "👤", instagram: "https://www.instagram.com/cinephiles_iiti/", linkedin: "https://www.linkedin.com/in/harsh-pathak-12b1a7318?utm_source=share_via&utm_content=profile&utm_medium=member_android" },
+    { name: "Sai venkat", role: "Head", club: "Kaizen Dance Crew", photo: "👤", instagram: "https://www.instagram.com/d_alphazcrew/", linkedin: "https://www.linkedin.com/in/sai-venkata-krishna-payam-676966335?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app#" },
+    { name: "Sanskriti Jain", role: "Head", club: "Debsoc", photo: "👤", instagram: "https://www.instagram.com/debsociiti/", linkedin: "https://www.linkedin.com/in/sanskriti-jain-000588319/" },
+    { name: "Yalavarthi Udayasri", role: "Head", club: "EBSB", photo: "👤", instagram: "https://www.instagram.com/ebsbclub_iiti/", linkedin: "https://www.linkedin.com/company/ek-bharat-shreshtha-bharat-iit-indore/" },
+    { name: "Rubal Dhoke", role: "Head", club: "Gaming Club", photo: "👤", instagram: "https://www.instagram.com/gamingclubiiti/", linkedin: "https://www.linkedin.com/in/rubal-dhoke-978a64312/" },
+    { name: "Shruti Turare", role: "Head", club: "Kalakriti", photo: "👤", instagram: "https://www.instagram.com/kalakriti_iiti/", linkedin: "https://www.linkedin.com/in/shruti-turare-a5184a286/" },
+    { name: "Rohan Jain", role: "Head", club: "Music Club", photo: "👤", instagram: "https://www.instagram.com/themusicclub.iiti/", linkedin: "https://www.linkedin.com/in/rohan-jain-61804b320?utm_source=share_via&utm_content=profile&utm_medium=member_android" },
+    { name: "Yash Modi", role: "Head", club: "Mystic Hues", photo: "👤", instagram: "https://www.instagram.com/mystichues?igsh-N2RxeWU4dmcyb3L/3", linkedin: "https://www.linkedin.com/in/yash-modi-6b8644332?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" },
+    { name: "Vikas", role: "Head", club: "Prakriti Club", photo: "👤", instagram: "https://www.instagram.com/prakriti.iiti/", linkedin: "https://www.linkedin.com/in/vikas-b76876325?utm_source=share_via&utm_content=profile&utm_medium=member_android" },
+    { name: "Aashish Sharma", role: "Head", club: "Srijan Club", photo: "👤", instagram: "https://www.instagram.com/srijan_iit_indore/", linkedin: "https://www.linkedin.com/in/aashish-sharma-2a0b56379" },
+    { name: "Hemant Santosh Yadav", role: "Head", club: "VLR", photo: "👤", instagram: "https://www.instagram.com/vlr_iiti/", linkedin: "https://www.linkedin.com/in/hemant-yadav-a86497327/" },
+    { name: "Aaradhya Sharma", role: "Head", club: "Literary Club", photo: "👤", instagram: "https://www.instagram.com/thelitclub.iiti/", linkedin: "https://www.linkedin.com/in/aars10?utm_source=share_via&utm_content=profile&utm_medium=member_android#" },
+    { name: "Aayush Sharma", role: "Head", club: "Quiz Club", photo: "👤", instagram: "#", linkedin: "https://in.linkedin.com/in/aayush-sharma-88b1b3321" },
+    { name: "Saurabh Yadav", role: "Head", club: "BGA Club", photo: "👤", instagram: "#", linkedin: "#" },
+    { name: "Attuluru Rahul", role: "Head", club: "Fashion Club", photo: "👤", instagram: "#", linkedin: "https://www.linkedin.com/in/rahul-attuluru-940866312" },
+    { name: "Pipalva Krisha", role: "Head", club: "Nirtyanjali", photo: "👤", instagram: "#", linkedin: "https://www.linkedin.com/in/krisha-pipalva" }
+  ];
 
 
   const galleryImages = [
@@ -153,11 +155,11 @@ const clubHeads = [
 
       const smoothScroll = () => {
         clubScrollPosition.current += scrollSpeed;
-        
+
         if (clubScrollPosition.current >= totalWidth) {
           clubScrollPosition.current = 0;
         }
-        
+
         setCurrentClubIndex(Math.floor(clubScrollPosition.current / cardWidth));
         forceUpdate(prev => prev + 1);
       };
@@ -178,11 +180,11 @@ const clubHeads = [
 
       const smoothScroll = () => {
         headScrollPosition.current += scrollSpeed;
-        
+
         if (headScrollPosition.current >= totalWidth) {
           headScrollPosition.current = 0;
         }
-        
+
         setCurrentHeadIndex(Math.floor(headScrollPosition.current / cardWidth));
         forceUpdate(prev => prev + 1);
       };
@@ -220,7 +222,7 @@ const clubHeads = [
           />
         ))}
       </div> */}
-       <CulturalBackground />
+      <CulturalBackground />
 
       <div className="relative z-10 max-w-7xl mx-auto p-8">
         {/* Page Title */}
@@ -261,8 +263,8 @@ const clubHeads = [
                         }}
                       >
                         <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 h-40 flex flex-col items-center justify-center border border-gray-700 hover:border-blue-500 hover:bg-gray-700/30 transition-all duration-300 hover:scale-105">
-                          <img 
-                            src={club.logo} 
+                          <img
+                            src={club.logo}
                             alt={`${club.name} logo`}
                             className="w-20 h-20 object-contain mb-3 rounded-lg group-hover:opacity-70 transition-opacity duration-300"
                             onError={(e) => {
@@ -270,7 +272,7 @@ const clubHeads = [
                               e.target.nextSibling.style.display = 'block';
                             }}
                           />
-                          <div className="text-5xl mb-3 group-hover:opacity-70 transition-opacity duration-300" style={{display: 'none'}}>🎨</div>
+                          <div className="text-5xl mb-3 group-hover:opacity-70 transition-opacity duration-300" style={{ display: 'none' }}>🎨</div>
                           <h3 className="text-sm font-semibold text-center text-gray-300 group-hover:text-white line-clamp-2">
                             {club.name}
                           </h3>
@@ -299,11 +301,10 @@ const clubHeads = [
                       clubScrollPosition.current = index * 220;
                       setCurrentClubIndex(index);
                     }}
-                    className={`h-2 rounded-full transition-all ${
-                      index === (currentClubIndex % clubs.length)
+                    className={`h-2 rounded-full transition-all ${index === (currentClubIndex % clubs.length)
                         ? 'w-8 bg-pink-500'
                         : 'w-2 bg-gray-700 hover:bg-gray-600'
-                    }`}
+                      }`}
                   />
                 ))}
               </div>
@@ -312,7 +313,7 @@ const clubHeads = [
             {/* Club Heads Carousel - FIXED: Now shows contacts on ANY hovered card */}
             <div className="bg-gray-900/50 backdrop-blur-xl rounded-2xl p-6 border border-gray-800 hover:border-pink-500/50 transition-all duration-300 shadow-2xl overflow-hidden">
               <h3 className="text-2xl font-bold mb-4 text-center text-pink-400">Club Heads</h3>
-              
+
               <div className="relative overflow-hidden">
                 <div
                   className="flex gap-4"
@@ -323,7 +324,7 @@ const clubHeads = [
                 >
                   {[...clubHeads, ...clubHeads, ...clubHeads].map((head, index) => {
                     const actualIndex = index % clubHeads.length;
-                    
+
                     return (
                       <div
                         key={index}
@@ -395,11 +396,10 @@ const clubHeads = [
                       headScrollPosition.current = index * 220;
                       setCurrentHeadIndex(index);
                     }}
-                    className={`h-2 rounded-full transition-all ${
-                      index === (currentHeadIndex % clubHeads.length)
+                    className={`h-2 rounded-full transition-all ${index === (currentHeadIndex % clubHeads.length)
                         ? 'w-8 bg-pink-500'
                         : 'w-2 bg-gray-700 hover:bg-gray-600'
-                    }`}
+                      }`}
                   />
                 ))}
               </div>

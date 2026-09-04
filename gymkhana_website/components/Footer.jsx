@@ -4,6 +4,7 @@ import {
   FaInstagram,
   FaLinkedinIn,
   FaTwitter,
+  FaCode
 } from "react-icons/fa";
 import { MdEmail, MdLocationOn } from "react-icons/md";
 import Image from "next/image";
@@ -67,9 +68,22 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Social Media */}
+          {/* Social Media & Dev Team */}
           <div>
-            <h2 className="font-semibold text-xl mb-5 text-white"><span className=" text-yellow-500">Follow</span> Us</h2>
+            <div className="flex items-center gap-10 mb-5">
+              <h2 className="font-semibold text-xl text-white"><span className=" text-yellow-500">Follow</span> Us</h2>
+              <span className="text-gray-700 font-light text-xl hidden sm:inline">|</span>
+              <a 
+                href="/dev-team" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="font-semibold text-lg text-gray-400 hover:text-yellow-500 transition-colors flex items-center gap-2 group"
+              >
+                <FaCode className="text-yellow-500 group-hover:scale-110 transition-transform" />
+                Dev Team
+              </a>
+            </div>
+            
             <div className="flex space-x-4 text-lg">
               <a
                 href="https://www.facebook.com/iitindore/"
@@ -113,9 +127,11 @@ const Footer = () => {
       </div>
 
       {/* Bottom Section */}
-      <p className="pt-6 text-center text-xs md:text-sm pb-6 border-t border-gray-800 mt-6 text-gray-500">
-        <span className="text-yellow-500">© {new Date().getFullYear()} Student's Gymkhana,</span> IIT Indore. All Rights Reserved.
-      </p>
+      <div className="pt-6 pb-6 border-t border-gray-800 mt-6 flex justify-center text-xs md:text-sm text-gray-500">
+        <p>
+          <span className="text-yellow-500">© {new Date().getFullYear()} Student's Gymkhana,</span> IIT Indore. All Rights Reserved.
+        </p>
+      </div>
     </footer>
   );
 };

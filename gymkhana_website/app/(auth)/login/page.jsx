@@ -9,7 +9,7 @@ import {
   FaUserTie,
 } from "react-icons/fa";
 
-const Login = () => {
+const LoginContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -134,6 +134,14 @@ const Login = () => {
         </p>
       </div>
     </div>
+  );
+};
+
+const Login = () => {
+  return (
+    <React.Suspense fallback={<div className="flex h-screen items-center justify-center bg-[#0a0a0a] text-white">Loading...</div>}>
+      <LoginContent />
+    </React.Suspense>
   );
 };
 

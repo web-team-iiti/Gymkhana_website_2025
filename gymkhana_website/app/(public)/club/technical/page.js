@@ -98,23 +98,25 @@ const TechnicalClubsPage = () => {
   ];
 
   const clubHeads = [
-    { name: "Sibasish Barik", role: "Head", club: "Aeromodelling Club", photo: "👤", instagram: "#", linkedin: "#" },
-    { name: "Parul Pahurkar", role: "Head", club: "Astronomy Club", photo: "👤", instagram: "#", linkedin: "#" },
-    { name: "Adinath Apte", role: "President", club: "CAE Club", photo: "👤", instagram: "#", linkedin: "#" },
-    { name: "Rajnish Bairwa", role: "Head", club: "Concrete Club", photo: "👤", instagram: "#", linkedin: "#" },
-    { name: "Advay Kunte", role: "President", club: "Electronics Club", photo: "👤", instagram: "#", linkedin: "#" },
-    { name: "Harshvardhan Choudhary", role: "President", club: "Cynaptics", photo: "👤", instagram: "#", linkedin: "#" },
-    { name: "Vedant Dinkar", role: "Head", club: "GDSC", photo: "👤", instagram: "#", linkedin: "#" },
-    { name: "Yash Vardhan Solanki", role: "Head", club: "Gymkhana Web Team", photo: "👤", instagram: "#", linkedin: "#" },
-    { name: "Nambiar Anand", role: "President", club: "IVDC", photo: "👤", instagram: "#", linkedin: "#" },
-    { name: "Shubham Prajapati", role: "Head", club: "Metacryst", photo: "👤", instagram: "#", linkedin: "#" },
-    { name: "Krishay Rathaure", role: "President (Cybersecurity)", club: "Programming Club", photo: "👤", instagram: "#", linkedin: "#" },
-    { name: "Vedant Jain", role: "President (CP)", club: "Programming Club", photo: "👤", instagram: "#", linkedin: "#" },
-    { name: "Tanvi Agarwal", role: "President (Software)", club: "Programming Club", photo: "👤", instagram: "#", linkedin: "#" },
-    { name: "Arham Aneeq", role: "President", club: "Quantum Computing Club", photo: "👤", instagram: "#", linkedin: "#" },
-    { name: "Tejas Santosh Bhavekar", role: "President", club: "Robotics Club", photo: "👤", instagram: "#", linkedin: "#" },
-    { name: "Anjali Singh", role: "Club Head", club: "Biocrats Club", photo: "👤", instagram: "#", linkedin: "#" }
-  ];
+  { name: "B. Venkata Chakrapani", role: "Head", club: "Aeromodelling", photo: "👤", instagram: "https://www.instagram.com/chakri_leader?igsh=MXE5anQyZmJzZXBrMQ%3D%3D&utm_source=qr", linkedin: "https://www.linkedin.com/in/chakrapani-burra-086878352?utm_source=share_via&utm_content=profile&utm_medium=member_ios" },
+  { name: "Shrey Aggarwal", role: "Head", club: "Astronomy", photo: "👤", instagram: "https://www.instagram.com/shrey_aggarwal021?igsh=M2QwNTQxcmdmdG44", linkedin: "https://www.linkedin.com/in/shrey-aggarwal-92154732a" },
+  { name: "Vidushi Rajhans", role: "Head", club: "CFA", photo: "👤", instagram: "https://instagram.com/vidushirajhans", linkedin: "https://www.linkedin.com/in/vidushi-rajhans-334843322?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" },
+  { name: "Yug Prabhat", role: "Head", club: "Concreate Club", photo: "👤", instagram: "https://www.instagram.com/yug_0919?igsh=cm5pamxiMzEyNmFi", linkedin: "http://www.linkedin.com/in/yug-prabhat-a3a78831a" },
+  { name: "Dhananjay Dhumal", role: "President", club: "Electronics Club", photo: "👤", instagram: "https://www.instagram.com/itsdhananjaydhumal/", linkedin: "https://www.linkedin.com/in/dhananjay-dhumal-71921731a/" },
+  { name: "Yash Bhamare", role: "President", club: "Cynaptics", photo: "👤", instagram: "https://www.instagram.com/cynapticsclubiiti/", linkedin: "https://www.linkedin.com/in/yash-bhamare-887a2a330?originalSubdomain=in" },
+  { name: "S Varshith Reddy", role: "Head", club: "GDSC", photo: "👤", instagram: "https://www.instagram.com/varshith_8121?igsh=MWp1OWhraTZpZTdiZA==", linkedin: "https://www.linkedin.com/in/s-varshith-reddy" },
+  { name: "Ayinala Sri Nikesh", role: "President", club: "Infinitrix - The Math Club", photo: "👤", instagram: "https://www.instagram.com/srinikesh_31/?hl=en", linkedin: "https://www.linkedin.com/in/ayinala-sri-nikesh-752635311//" },
+  { name: "Tirth Vinodrai Gohil", role: "President", club: "IVDC", photo: "👤", instagram: "https://www.instagram.com/_tirthgohil", linkedin: "https://www.linkedin.com/in/tirth-gohil-9b4980339/" },
+  { name: "Antro Victor Santhyas P", role: "Head", club: "Metacryst", photo: "👤", instagram: "https://www.instagram.com/antrovictor?igsh=MWJmZWRhenI1M2Rvdg==", linkedin: "https://www.linkedin.com/in/antro-victor-santhyas-p-22b44335b?utm_source=share_via&utm_content=profile&utm_medium=member_android" },
+  { name: "Akarsh Raj", role: "President, Cybersecurity Division", club: "Pclub", photo: "👤", instagram: "https://www.instagram.com/akarsh_200428?igsh=OTVoM3gwNHU2ZjRt", linkedin: "https://www.linkedin.com/in/akarsh-raj-a74a4931a?utm_source=share_via&utm_content=profile&utm_medium=member_android" },
+  { name: "Hrishabh Mittal", role: "President, CP Division", club: "Pclub", photo: "👤", instagram: "https://www.instagram.com/hrishabh_mittal", linkedin: "https://www.linkedin.com/in/hrishabh-mittal" },
+  { name: "Kartikey Raghav", role: "President, Software Division", club: "Pclub", photo: "👤", instagram: "https://www.instagram.com/k_raghav_", linkedin: "https://www.linkedin.com/in/k-raghav-" },
+  { name: "V Hemal", role: "President", club: "Quantum Computing", photo: "👤", instagram: "https://www.instagram.com/hemal_2510/", linkedin: "https://www.linkedin.com/in/hemal-vinod/" },
+  { name: "Ananya Shubhangi Sinha", role: "President", club: "Robotics", photo: "👤", instagram: "https://www.instagram.com/ananyassinha?igsh=c2FyNnZwYWF6cnl1", linkedin: "https://www.linkedin.com/in/ananya-sinha-1721ba327?utm_source=share_via&utm_content=profile&utm_medium=member_android" },
+  { name: "Ayushi Rawat", role: "Club Head", club: "Biocrats Club", photo: "👤", instagram: "https://www.instagram.com/ayushirawat._", linkedin: "http://www.linkedin.com/in/ayushi-rawat-aa8002263" },
+  { name: "Abhishek Kumar Verma", role: "Head", club: "Gymkhana Web Team", photo: "👤", instagram: "https://www.instagram.com/iabhi_shekkk/", linkedin: "https://in.linkedin.com/in/abhishek-verma-900178329" },
+  { name: "Gaurav Singh", role: "Head", club: "Team Vyoman", photo: "👤", instagram: "https://www.instagram.com/gaurav_singh2299?igsh=dDIwZHVmaXUxaGFw", linkedin: "https://www.linkedin.com/in/gaurav-singh-7a476031b?utm_source=share_via&utm_content=profile&utm_medium=member_android" }
+];
 
   const galleryImages = [
     "", "", "", "",
