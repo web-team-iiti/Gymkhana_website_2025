@@ -59,12 +59,14 @@ export const authConfig = {
 
       // Rule 9: Edge Protection for API Routes
       const isOnApi = nextUrl.pathname.startsWith("/api");
-      if (isOnApi) {
+      const isAuthApi = nextUrl.pathname.startsWith("/api/auth");
+      
+      if (isOnApi && !isAuthApi) {
         // Allow public GET requests to specific API routes (like events)
         // If it's a mutation (POST, PUT, DELETE, PATCH) and not logged in, block at edge
         const isMutation = ["POST", "PUT", "PATCH", "DELETE"].includes(request.method);
         if (isMutation && !isLoggedIn) {
-          return false;
+          return Response.json({ message: "Unauthorized" }, { status: 401 });
         }
       }
 
