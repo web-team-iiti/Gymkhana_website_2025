@@ -165,6 +165,15 @@ const QuickGuide = () => (
             <span className="text-xs leading-relaxed">See where your file is stuck in the pipeline.</span>
         </div>
       </li>
+      <li className="flex gap-3">
+        <div className="bg-gray-800 p-2 rounded text-red-500 shrink-0 h-fit"><FaCheckCircle /></div>
+        <div>
+            <Link href="/dashboard/general_secretary/ibcc" className="hover:text-white">
+              <strong className="text-gray-200 block mb-0.5">IBCC Admin Panel</strong>
+            </Link>
+            <span className="text-xs leading-relaxed">Manage IBCC events, contingents, and contentions.</span>
+        </div>
+      </li>
     </ul>
   </div>
 );

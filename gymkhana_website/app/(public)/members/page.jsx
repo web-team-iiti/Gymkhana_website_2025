@@ -1,94 +1,94 @@
 "use client";
-import Particles from "@/components/Particles";
+
 import React, { useRef, useEffect, useState } from "react";
 import { IoMailOutline, IoLogoLinkedin, IoLogoInstagram } from "react-icons/io5";
 
 const TeamCarousel = () => {
   const scrollRef = useRef(null);
-  
+
   // 1️⃣ Add State for pausing
   const [isPaused, setIsPaused] = useState(false);
 
   const members = [
     {
-      name: "Naveen Sharma",
+      name: "Moksha Tyagi",
       title: "PRESIDENT",
-      org: "STUDENT'S GYMKHANA",
-      img: "./acad.jpg",
-      email: "naveen@example.com",
-      linkedin: "#",
+      org: "STUDENT`S GYMKHANA",
+      img: "/secretaries/President.jpeg",
+      email: "president.sg@iiti.ac.in",
+      linkedin: "https://www.linkedin.com/in/moksha-tyagi-220406330/",
       instagram: "#"
     },
     {
-      name: "Apoorv Singh",
-      title: "GENERAL SECRETARY",
-      org: "CULTURAL AFFAIRS",
-      img: "./acad.jpg",
-      email: "apoorv@example.com",
-      linkedin: "#",
-      instagram: "#"
-    },
-    {
-      name: "Khush Singla",
-      title: "GENERAL SECRETARY",
-      org: "ACADEMIC AFFAIRS UG",
-      img: "./acad.jpg",
-      email: "khush@example.com",
-      linkedin: "#",
-      instagram: "#"
-    },
-    {
-      name: "Atharvakant",
-      title: "GENERAL SECRETARY",
-      org: "HOSTEL AFFAIRS",
-      img: "./acad.jpg",
-      email: "atharvakant@example.com",
-      linkedin: "#",
-      instagram: "#"
-    },
-    {
-      name: "Shubham Kumar",
-      title: "GENERAL SECRETARY",
-      org: "MESS, CAFETERIA & ALLIED SERVICES",
-      img: "./acad.jpg",
-      email: "shubham@example.com",
-      linkedin: "#",
-      instagram: "#"
-    },
-    {
-      name: "SatyaJeet Pani",
+      name: "Dhruv Bhardwaj",
       title: "GENERAL SECRETARY",
       org: "SCIENCE AND TECHNOLOGY",
-      img: "./acad.jpg",
-      email: "satya@example.com",
-      linkedin: "#",
+      img: "/secretaries/GS SnT.jpeg",
+      email: "gs.scitech@iiti.ac.in",
+      linkedin: "https://www.linkedin.com/in/dhruv-bhardwaj-b82b0631b/",
       instagram: "#"
     },
     {
-      name: "Saurabh Yadav",
+      name: "Sohil Dangi",
       title: "GENERAL SECRETARY",
-      org: "ACADEMIC AFFAIRS PG",
-      img: "./acad.jpg",
-      email: "saurabh@example.com",
-      linkedin: "#",
+      org: "CULTURALS",
+      img: "/secretaries/GS Cult.jpg",
+      email: "gs.culturals@iiti.ac.in",
+      linkedin: "https://www.linkedin.com/in/sohil-dangi/",
       instagram: "#"
     },
     {
-      name: "Nawed Ashraf",
+      name: "Badal singh",
       title: "GENERAL SECRETARY",
-      org: "CONSULTING, OUTREACH & ALUMNI",
-      img: "./acad.jpg",
-      email: "nawed@example.com",
-      linkedin: "#",
+      org: "HOSTEL AFFAIRS",
+      img: "/secretaries/GS Hostel.jpeg",
+      email: "gs.hostel@iiti.ac.in",
+      linkedin: "https://www.linkedin.com/in/badal-singh-b659a0319/",
       instagram: "#"
     },
     {
-      name: "Prayag Lakhani",
+      name: "Kavyansh Raj Singh",
+      title: "GENERAL SECRETARY",
+      org: "ACADEMIC AFFAIRS UG",
+      img: "/secretaries/GS Acads Ug.png",
+      email: "gs.acad.ug@iiti.ac.in",
+      linkedin: "https://www.linkedin.com/in/kavyanshsingh/",
+      instagram: "#"
+    },
+    {
+      name: "Lakshya Shukla",
       title: "GENERAL SECRETARY",
       org: "SPORTS AFFAIRS",
-      img: "./acad.jpg",
-      email: "prayag@example.com",
-      linkedin: "#",
+      img: "/secretaries/GS Sports.jpg",
+      email: "gs.sports@iiti.ac.in",
+      linkedin: "https://www.linkedin.com/in/lakshya-shukla-853542345/",
+      instagram: "#"
+    },
+    {
+      name: "Vishal Shakya",
+      title: "GENERAL SECRETARY",
+      org: "COUNSELLING, OUTREACH AND ALUMNI",
+      img: "/secretaries/GS COA.jpg",
+      email: "gs.coa@iiti.ac.in",
+      linkedin: "https://www.linkedin.com/in/vishal-shakya-a3872628b/",
+      instagram: "#"
+    },
+    {
+      name: "Yogendra Bihare",
+      title: "GENERAL SECRETARY",
+      org: "MESS, CAFETARIA AND ALLIED SERVICES",
+      img: "/secretaries/GS MAC.jpg",
+      email: "gs.dining@iiti.ac.in",
+      linkedin: "https://www.linkedin.com/in/yogendra-bihare-b91b25251/",
+      instagram: "#"
+    },
+    {
+      name: "Isha Sharma",
+      title: "GENERAL SECRETARY",
+      org: "ACADEMIC AFFAIRS PG",
+      img: "/secretaries/GS Acad Pg.jpeg",
+      email: "gs.acad.pg@iiti.ac.in",
+      linkedin: "https://www.linkedin.com/in/isha-sharma-a92b7a1a2/",
       instagram: "#"
     }
   ];
@@ -109,7 +109,7 @@ const TeamCarousel = () => {
         // Reset logic: seamless loop
         // If we scrolled past half the width (first set of items), snap back to 0
         if (container.scrollLeft >= container.scrollWidth / 2) {
-           container.scrollLeft = 0;
+          container.scrollLeft = 0;
         }
       }
       animationFrameId = requestAnimationFrame(scrollStep);
@@ -155,19 +155,12 @@ const TeamCarousel = () => {
 
   return (
     <div className="relative w-full py-10  flex flex-col items-center justify-center overflow-hidden bg-black">
-      
-      {/* 1. Particles Background Layer */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <Particles
-          particleColors={['#ffffff', '#ffffff']}
-          particleCount={700}
-          particleSpread={10}
-          speed={0.1}
-          particleBaseSize={100}
-          moveParticlesOnHover={true}
-          alphaParticles={false}
-          disableRotation={false}
-        />
+
+      {/* Static CSS Particles Background */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:20px_20px] opacity-20"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:40px_40px] [background-position:20px_20px] opacity-30"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(#ffffff_2px,transparent_2px)] [background-size:90px_90px] [background-position:40px_40px] opacity-20"></div>
       </div>
 
       {/* 2. Content Layer */}
@@ -176,8 +169,8 @@ const TeamCarousel = () => {
           <span className="text-yellow-500">OUR</span> Secretaries
         </h1>
 
-        <div 
-          ref={scrollRef} 
+        <div
+          ref={scrollRef}
           className="flex overflow-x-scroll scrollbar-hide w-full px-16 py-10 gap-6"
           // 3️⃣ Event Listeners for Hover Pause
           onMouseEnter={() => setIsPaused(true)}

@@ -224,7 +224,7 @@ async function getMembersByStatus(status) {
 export default async function GsClubMemberVerification({ searchParams }) {
     noStore();
   const session = await auth();
-  if (!session || session.user.role !== "gs") {
+  if (!session || session.user.role !== "gs_snt") {
     return <div className="text-red-400">Unauthorized</div>;
   }
 

@@ -24,6 +24,7 @@ A full-stack, role-based web application powering the Student's Gymkhana at **II
 - [Key Features](#-key-features)
 - [Tech Stack](#-tech-stack)
 - [Architecture](#-architecture)
+- [Database Schema](#-database-schema)
 - [Project Structure](#-project-structure)
 - [Getting Started](#-getting-started)
 - [Environment Variables](#-environment-variables)
@@ -217,17 +218,325 @@ A dynamic system for showcasing and managing the 5 major councils and their affi
 └─────────┼─────────────────────────────────┼──────────────┘
           │                                 │
           ▼                                 ▼
-┌─────────────────────┐      ┌──────────────────────────┐
-│   PostgreSQL (DB)   │      │   Supabase (File Storage) │
-│   - Users           │      │   - Documents             │
-│   - Clubs           │      │   - Images                │
-│   - Events          │      │   - Bills/Receipts        │
-│   - Proposals       │      │                           │
-│   - Bills           │      │                           │
-│   - Inventory       │      │                           │
-│   - Achievements    │      │                           │
-└─────────────────────┘      └──────────────────────────┘
+┌──────────────────────────┐  ┌──────────────────────────┐
+│   PostgreSQL (11 Tables) │  │   Supabase (File Storage) │
+│   - users                │  │   - Proposal PDFs         │
+│   - councils             │  │   - Bill documents        │
+│   - clubs                │  │   - Event images          │
+│   - club_members         │  │   - Inventory bill files   │
+│   - club_projects        │  │                           │
+│   - events               │  │                           │
+│   - proposals            │  │                           │
+│   - proposal_logs        │  │                           │
+│   - bills                │  │                           │
+│   - inventory            │  │                           │
+│   - council_achievements │  │                           │
+└──────────────────────────┘  └──────────────────────────┘
 ```
+
+---
+
+## 🗄️ Database Schema
+
+The application uses **PostgreSQL** with **11 tables**, **custom enums**, **foreign key constraints**, **triggers**, and **indexes**.
+
+### ER Diagram
+
+```mermaid
+erDiagram
+    users ||--o{ clubs : "heads"
+    users ||--o{ events : "creates"
+    users ||--o{ proposals : "creates"
+    users ||--o{ bills : "creates"
+    users ||--o{ inventory : "creates"
+    users ||--o{ club_members : "added_by"
+    users ||--o{ proposal_logs : "action_by"
+
+    councils ||--o{ council_achievements : "has"
+
+    clubs ||--o{ club_members : "has"
+    clubs ||--o{ club_projects : "has"
+
+    proposals ||--o{ proposal_logs : "tracks"
+
+    users {
+        uuid id PK
+        text email UK
+        text password
+        text name
+        app_role role
+        timestamptz created_at
+    }
+
+    councils {
+        uuid id PK
+        varchar name UK
+        text description
+        varchar color
+    }
+
+    clubs {
+        uuid club_id PK
+        varchar club_name UK
+        uuid club_head_id FK
+    }
+
+    events {
+        uuid id PK
+        varchar title
+        varchar subtitle
+        timestamptz event_date
+        text description
+        text_arr image_urls
+        uuid created_by FK
+    }
+
+    proposals {
+        uuid id PK
+        varchar title
+        text description
+        text pdf_url
+        varchar priority
+        varchar current_stage
+        int version
+        uuid created_by FK
+        uuid club_id
+    }
+
+    proposal_logs {
+        uuid id PK
+        uuid proposal_id FK
+        uuid action_by FK
+        varchar previous_stage
+        varchar new_stage
+        varchar action
+        text remark
+        timestamptz timestamp
+    }
+
+    inventory {
+        uuid id PK
+        uuid created_by FK
+        text name
+        text description
+        text bill_url
+        council_enum council
+        text club_name
+        text tenure
+        inventory_type type
+        inventory_status status
+    }
+
+    bills {
+        uuid id PK
+        text name
+        text description
+        text pdf_url
+        text category
+        uuid entity_id
+        text entity_name
+        uuid created_by FK
+    }
+
+    council_achievements {
+        uuid id PK
+        uuid council_id FK
+        varchar title
+        text description
+        date achievement_date
+        varchar image_url
+    }
+
+    club_members {
+        uuid member_id PK
+        uuid student_id FK
+        uuid club_id FK
+        varchar position
+        varchar status
+        uuid added_by FK
+        uuid approved_by FK
+        date tenure_start
+        date tenure_end
+    }
+
+    club_projects {
+        uuid project_id PK
+        uuid club_id FK
+        varchar title
+        text description
+        varchar status
+        uuid created_by FK
+    }
+```
+
+### Table Details
+
+#### 👤 `users` — Authentication & Identity
+| Column | Type | Constraints |
+|---|---|---|
+| `id` | `uuid` | PK, auto-generated |
+| `email` | `text` | UNIQUE, NOT NULL |
+| `password` | `text` | NOT NULL |
+| `name` | `text` | — |
+| `role` | `app_role` (enum) | NOT NULL, default: `club_head` |
+| `created_at` | `timestamptz` | default: UTC now |
+
+---
+
+#### 🏛️ `councils` — Gymkhana Councils
+| Column | Type | Constraints |
+|---|---|---|
+| `id` | `uuid` | PK |
+| `name` | `varchar(255)` | UNIQUE, NOT NULL |
+| `description` | `text` | — |
+| `color` | `varchar(50)` | — |
+
+---
+
+#### 🏅 `clubs` — Student Clubs
+| Column | Type | Constraints |
+|---|---|---|
+| `club_id` | `uuid` | PK |
+| `club_name` | `varchar(100)` | UNIQUE, NOT NULL |
+| `club_head_id` | `uuid` | FK → `users(id)`, ON DELETE CASCADE |
+
+---
+
+#### 👥 `club_members` — Club Membership with Approval Workflow
+| Column | Type | Constraints |
+|---|---|---|
+| `member_id` | `uuid` | PK |
+| `student_id` | `uuid` | FK → `users(id)`, UNIQUE with `club_id` |
+| `club_id` | `uuid` | FK → `clubs(club_id)` |
+| `position` | `varchar(100)` | — |
+| `status` | `varchar(20)` | CHECK: `PENDING`, `TENURE_ADDED`, `APPROVED`, `REJECTED` |
+| `added_by` | `uuid` | FK → `users(id)` |
+| `approved_by` | `uuid` | FK → `users(id)` |
+| `tenure_start` | `date` | — |
+| `tenure_end` | `date` | — |
+
+> **Trigger**: `trg_validate_club_member_roles` validates role constraints before insert/update.
+
+---
+
+#### 📂 `club_projects` — Club Project Tracking
+| Column | Type | Constraints |
+|---|---|---|
+| `project_id` | `uuid` | PK |
+| `club_id` | `uuid` | FK → `clubs(club_id)` |
+| `title` | `varchar(150)` | NOT NULL |
+| `description` | `text` | — |
+| `status` | `varchar(20)` | CHECK: `IN_PROGRESS`, `COMPLETED` |
+| `created_by` | `uuid` | FK → `users(id)` |
+
+---
+
+#### 🎪 `events` — Event Management
+| Column | Type | Constraints |
+|---|---|---|
+| `id` | `uuid` | PK |
+| `title` | `varchar(255)` | NOT NULL |
+| `subtitle` | `varchar(255)` | — |
+| `event_date` | `timestamptz` | NOT NULL |
+| `description` | `text` | NOT NULL |
+| `image_urls` | `text[]` | Array of image URLs |
+| `created_by` | `uuid` | FK → `users(id)` |
+
+---
+
+#### 📝 `proposals` — Proposal Lifecycle
+| Column | Type | Constraints |
+|---|---|---|
+| `id` | `uuid` | PK |
+| `title` | `varchar(255)` | NOT NULL |
+| `description` | `text` | — |
+| `pdf_url` | `text` | NOT NULL |
+| `priority` | `varchar(20)` | default: `NORMAL` |
+| `current_stage` | `varchar(50)` | default: `OFFICE_REVIEW` |
+| `version` | `int` | default: `1` |
+| `created_by` | `uuid` | FK → `users(id)` |
+| `club_id` | `uuid` | — |
+
+> **Trigger**: `update_proposals_updated_at` auto-updates `updated_at` on every row modification.
+
+---
+
+#### 📋 `proposal_logs` — Proposal Audit Trail
+| Column | Type | Constraints |
+|---|---|---|
+| `id` | `uuid` | PK |
+| `proposal_id` | `uuid` | FK → `proposals(id)`, ON DELETE CASCADE |
+| `action_by` | `uuid` | FK → `users(id)` |
+| `previous_stage` | `varchar(50)` | — |
+| `new_stage` | `varchar(50)` | — |
+| `action` | `varchar(50)` | NOT NULL |
+| `remark` | `text` | — |
+
+---
+
+#### 📦 `inventory` — Inventory Tracking
+| Column | Type | Constraints |
+|---|---|---|
+| `id` | `uuid` | PK |
+| `created_by` | `uuid` | FK → `users(id)` |
+| `name` | `text` | NOT NULL |
+| `description` | `text` | — |
+| `bill_url` | `text` | — |
+| `council` | `council_enum` | NOT NULL |
+| `club_name` | `text` | — |
+| `tenure` | `text` | NOT NULL |
+| `type` | `inventory_type` | NOT NULL |
+| `status` | `inventory_status` | default: `AVAILABLE` |
+
+---
+
+#### 💰 `bills` — Financial Bill Repository
+| Column | Type | Constraints |
+|---|---|---|
+| `id` | `uuid` | PK |
+| `name` | `text` | NOT NULL |
+| `description` | `text` | — |
+| `pdf_url` | `text` | NOT NULL |
+| `category` | `text` | CHECK: `INVENTORY`, `EVENT` |
+| `entity_id` | `uuid` | NOT NULL, indexed |
+| `entity_name` | `text` | NOT NULL |
+| `created_by` | `uuid` | FK → `users(id)` |
+
+---
+
+#### 🏆 `council_achievements` — Council Achievements
+| Column | Type | Constraints |
+|---|---|---|
+| `id` | `uuid` | PK |
+| `council_id` | `uuid` | FK → `councils(id)`, ON DELETE CASCADE |
+| `title` | `varchar(255)` | NOT NULL |
+| `description` | `text` | NOT NULL |
+| `achievement_date` | `date` | NOT NULL |
+| `image_url` | `varchar(500)` | — |
+
+---
+
+### Custom Enums
+
+| Enum | Used In | Values |
+|---|---|---|
+| `app_role` | `users.role` | `club_head`, `gs`, `adosa`, `dosa`, `office`, `student` |
+| `council_enum` | `inventory.council` | Council identifiers |
+| `inventory_type` | `inventory.type` | Inventory item categories |
+| `inventory_status` | `inventory.status` | `AVAILABLE`, etc. |
+
+### Database Triggers
+
+| Trigger | Table | Event | Description |
+|---|---|---|---|
+| `update_proposals_updated_at` | `proposals` | BEFORE UPDATE | Auto-updates `updated_at` timestamp |
+| `trg_validate_club_member_roles` | `club_members` | BEFORE INSERT/UPDATE | Validates user roles for membership operations |
+
+### Indexes
+
+| Index | Table | Column | Purpose |
+|---|---|---|---|
+| `idx_bills_entity_id` | `bills` | `entity_id` | Fast lookup of bills by linked entity |
 
 ---
 

@@ -12,7 +12,7 @@ export default async function DashboardTrafficController() {
   switch (session.user.role) {
     case "club_head":
       redirect("/dashboard/club_head");
-    case "gs":
+    case "gs_snt":
       redirect("/dashboard/general_secretary");
     case "office":
       redirect("/dashboard/office");
@@ -20,6 +20,10 @@ export default async function DashboardTrafficController() {
       redirect("/dashboard/adosa");
     case "dosa":
       redirect("/dashboard/dosa");
+    case "gs_cult":
+      redirect("/dashboard/gs_cult");
+    case "contingent_leader":
+      redirect("/dashboard/contingent_leader");
     default:
       // Fallback for users without a specific dashboard or unknown roles
       return (

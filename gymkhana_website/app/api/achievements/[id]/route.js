@@ -9,7 +9,7 @@ export async function DELETE(req, { params }) {
     const { id } = await params;
     
     // Auth Check
-    if (!session || session.user.role !== "gs") {
+    if (!session || session.user.role !== "gs_snt") {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 

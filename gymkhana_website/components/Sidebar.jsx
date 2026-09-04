@@ -13,29 +13,33 @@ import {
   FaBuilding,
   FaFileSignature,
   FaSignOutAlt,
-  FaChevronRight, FaFileInvoiceDollar, FaTrophy
+  FaChevronRight, FaFileInvoiceDollar, FaTrophy, FaTasks, FaChartLine
 } from "react-icons/fa";
 
 const MENU_ITEMS = {
   club_head: [
     { name: "Overview", href: "/dashboard/club_head", icon: <FaHome /> },
-    { name: "Create Proposal", href: "/dashboard/club_head/create-proposal", icon: <FaFileAlt /> },
+    { name: "IBCC Events", href: "/dashboard/club_head/ibcc/events", icon: <FaCalendarAlt /> },
+    { name: "Submit Score", href: "/dashboard/club_head/ibcc", icon: <FaTrophy /> },
+    { name: "Manage Scores", href: "/dashboard/club_head/ibcc/manage", icon: <FaTasks /> },
     { name: "Projects", href: "/dashboard/club_head/projects", icon: <FaTasks /> },
-    {name: "Add Project", href: "/dashboard/club_head/projects/create", icon: <FaChevronRight />},
+    { name: "Add Project", href: "/dashboard/club_head/projects/create", icon: <FaChevronRight />},
     { name: "My Members", href: "/dashboard/club_head/members", icon: <FaUsers /> },
     { name: "Add Member", href: "/dashboard/club_head/members/add", icon: <FaChevronRight />},
     { name: "Club Inventory", href: "/dashboard/club_head/inventory", icon: <FaBoxOpen /> },
   ],
-  gs: [
+  gs_snt: [
     { name: "Overview", href: "/dashboard/general_secretary", icon: <FaHome /> },
     { name: "Create Proposal", href: "/dashboard/general_secretary/create", icon: <FaFileAlt /> },
-    { name: "Pending Approvals", href: "/dashboard/approvals", icon: <FaCheckDouble /> },
+    // { name: "Pending Approvals", href: "/dashboard/approvals", icon: <FaCheckDouble /> },
     { name: "My Proposals", href: "/dashboard/general_secretary/my-proposals", icon: <FaFileSignature /> },
     { name: "Verify PORs", href: "/dashboard/general_secretary/verify-members", icon: <FaUsers /> },
     { name: "Manage Events", href: "/dashboard/general_secretary/events", icon: <FaCalendarAlt /> },
     { name: "Manage Achievements", href: "/dashboard/general_secretary/achievements", icon: <FaTrophy /> },
     { name: "Master Inventory", href: "/dashboard/general_secretary/inventory", icon: <FaBoxOpen /> },
     { name: "Bill Repository", href: "/dashboard/general_secretary/bills", icon: <FaFileInvoiceDollar /> },
+    { name: "IBCC Events", href: "/dashboard/general_secretary/ibcc-events", icon: <FaCalendarAlt /> },
+    { name: "IBCC Contingents", href: "/dashboard/general_secretary/ibcc-contingents", icon: <FaUsers /> },
   ],
   office: [
     { name: "Overview", href: "/dashboard/office", icon: <FaHome /> },
@@ -58,6 +62,14 @@ const MENU_ITEMS = {
     { name: "Master Inventory", href: "/dashboard/dosa/inventory", icon: <FaBoxOpen /> },
     { name: "Bill Repository", href: "/dashboard/dosa/bills", icon: <FaFileInvoiceDollar /> },
   ],
+  gs_cult: [
+    { name: "Overview", href: "/dashboard/gs_cult", icon: <FaChartLine /> },
+    { name: "IBCC Events", href: "/dashboard/gs_cult/ibcc-events", icon: <FaCalendarAlt /> },
+    { name: "IBCC Contingents", href: "/dashboard/gs_cult/ibcc-contingents", icon: <FaUsers /> },
+  ],
+  contingent_leader: [
+    { name: "IBCC Dashboard", href: "/dashboard/contingent_leader", icon: <FaTrophy /> },
+  ],
 };
 
 const Sidebar = ({ userRole }) => {
@@ -68,7 +80,16 @@ const Sidebar = ({ userRole }) => {
   // Logic to determine links
   let roleKey = userRole;
   if (!MENU_ITEMS[roleKey] && (userRole === 'admin')) roleKey = 'dosa';
-  const links = MENU_ITEMS[roleKey] || [];
+  
+  let links = [...(MENU_ITEMS[roleKey] || [])];
+
+  // Dynamic Filtering for Club Head
+  if (roleKey === 'club_head') {
+    const isTechnical = session?.user?.club_category === 'Technical Clubs' || session?.user?.club_category === 'Technical Teams';
+    if (!isTechnical) {
+      links = links.filter(link => link.name !== "Projects" && link.name !== "Add Project");
+    }
+  }
 
   // 👈 Extract Club Name safely
   const clubName = session?.user?.club_name;
@@ -115,6 +136,12 @@ const Sidebar = ({ userRole }) => {
             {userRole === 'club_head' && clubName && (
               <span className="text-xs font-bold text-yellow-500 uppercase tracking-wider truncate mt-0.5">
                 {clubName}
+              </span>
+            )}
+            {/* 👇 LOGIC: If Contingent Leader & Contingent Name exists, show it */}
+            {userRole === 'contingent_leader' && session?.user?.contingent_name && (
+              <span className="text-xs font-bold text-yellow-500 uppercase tracking-wider truncate mt-0.5">
+                {session.user.contingent_name}
               </span>
             )}
           </div>

@@ -5,7 +5,7 @@ import { auth } from "@/auth";
 export async function PUT(req) {
     try {
         const session = await auth(); 
-        if (!session || session.user.role !== "gs") {
+        if (!session || session.user.role !== "gs_snt") {
             return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
         }
 

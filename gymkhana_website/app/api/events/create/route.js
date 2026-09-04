@@ -8,7 +8,7 @@ export async function POST(req) {
     const session = await auth();
     
     // 1. Auth Check
-    if (!session || session.user.role !== "gs") {
+    if (!session || session.user.role !== "gs_snt") {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 

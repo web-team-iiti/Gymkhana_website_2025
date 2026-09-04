@@ -55,69 +55,81 @@ export default async function CouncilPage({ params }) {
     }
 
     return (
-        <div className="min-h-screen bg-black text-white selection:bg-yellow-500/30">
-            {/* Header section with specific council color glow */}
-            <div 
-                className="relative pt-32 pb-16 px-6 overflow-hidden"
-                style={{ 
-                    background: `linear-gradient(to bottom, ${council.color}20 0%, black 100%)` 
-                }}
-            >
+        <>
+            {/* Back Button for Desktop: Pinned to top-left of the screen */}
+            <div className="hidden md:block absolute top-28 left-8 z-40">
+                <Link href="/" className="inline-flex items-center justify-center gap-2 text-gray-400 hover:text-white bg-gray-900/80 hover:bg-gray-800 px-4 py-2.5 rounded-lg transition-colors shadow-md border border-gray-800 hover:border-gray-600 backdrop-blur-sm">
+                    <FaArrowLeft size={14} /> Back to Home
+                </Link>
+            </div>
+
+            <div className="min-h-screen bg-black text-white selection:bg-yellow-500/30 pb-12">
+                {/* Header section with specific council color glow */}
                 <div 
-                    className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-64 blur-[120px] rounded-full pointer-events-none"
-                    style={{ backgroundColor: council.color + '40' }}
-                />
-                
-                <div className="max-w-5xl mx-auto relative z-10 text-center">
-                    <Link href="/" className="inline-flex items-center gap-2 text-gray-400 hover:text-white mb-6 transition-colors">
-                        <FaArrowLeft /> Back to Home
-                    </Link>
-                    <h1 
-                        className="text-4xl md:text-6xl font-bold mb-6 tracking-tight drop-shadow-xl"
+                    className="relative pt-16 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 overflow-hidden"
+                    style={{ 
+                        background: `linear-gradient(to bottom, ${council.color}20 0%, black 100%)` 
+                    }}
+                >
+                    <div 
+                        className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-64 blur-[120px] rounded-full pointer-events-none"
+                        style={{ backgroundColor: council.color + '40' }}
+                    />
+                    
+                    <div className="max-w-5xl mx-auto relative z-10 text-center">
+                        {/* Back Button for Mobile: Centered above title */}
+                        <div className="flex md:hidden justify-center mb-6">
+                            <Link href="/" className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors bg-gray-900/80 px-4 py-2.5 rounded-full border border-gray-800 text-sm shadow-md backdrop-blur-sm">
+                                <FaArrowLeft size={14} /> Back to Home
+                            </Link>
+                        </div>
+                        
+                        <h1 
+                        className="text-3xl sm:text-4xl md:text-6xl font-bold mb-4 sm:mb-6 tracking-tight drop-shadow-xl px-2"
                         style={{ color: council.color }}
                     >
                         {council.name}
                     </h1>
-                    <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+                    <p className="text-base sm:text-lg md:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed px-4">
                         {council.description}
                     </p>
                 </div>
             </div>
 
             {/* Achievements Section */}
-            <div className="max-w-5xl mx-auto px-6 py-12 md:py-20">
-                <div className="flex items-center gap-3 mb-10 border-b border-gray-800 pb-4">
-                    <FaTrophy className="text-2xl" style={{ color: council.color }} />
-                    <h2 className="text-3xl font-bold">Key Achievements</h2>
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 md:py-20">
+                <div className="flex items-center gap-3 mb-8 md:mb-10 border-b border-gray-800 pb-4">
+                    <FaTrophy className="text-xl sm:text-2xl" style={{ color: council.color }} />
+                    <h2 className="text-2xl sm:text-3xl font-bold">Key Achievements</h2>
                 </div>
 
                 {council.achievements.length === 0 ? (
-                    <div className="text-center py-20 border-2 border-dashed border-gray-800 rounded-3xl bg-gray-900/30">
-                        <FaTrophy className="text-6xl text-gray-700 mx-auto mb-4" />
-                        <h3 className="text-xl text-gray-400 font-bold mb-2">No Achievements Yet</h3>
-                        <p className="text-gray-500">This council's achievements will be updated soon.</p>
+                    <div className="text-center py-16 md:py-20 border-2 border-dashed border-gray-800 rounded-2xl md:rounded-3xl bg-gray-900/30 mx-2">
+                        <FaTrophy className="text-5xl md:text-6xl text-gray-700 mx-auto mb-4" />
+                        <h3 className="text-lg md:text-xl text-gray-400 font-bold mb-2">No Achievements Yet</h3>
+                        <p className="text-sm md:text-base text-gray-500">This council's achievements will be updated soon.</p>
                     </div>
                 ) : (
-                    <div className="space-y-12 md:space-y-24 relative before:absolute before:inset-0 before:ml-5 md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-gray-800 before:via-gray-800 before:to-transparent">
+                    <div className="space-y-8 sm:space-y-12 md:space-y-24 relative before:absolute before:inset-0 before:ml-4 sm:before:ml-5 md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-gray-800 before:via-gray-800 before:to-transparent">
                         {council.achievements.map((ach, idx) => (
                             <div key={ach.id} className={`relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active`}>
                                 {/* Timeline Dot */}
                                 <div 
-                                    className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-black bg-gray-900 absolute left-0 md:left-1/2 md:-translate-x-1/2 shadow-xl shrink-0 transition-transform group-hover:scale-125 z-10"
+                                    className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full border-[3px] sm:border-4 border-black bg-gray-900 absolute left-0 md:left-1/2 md:-translate-x-1/2 shadow-xl shrink-0 transition-transform group-hover:scale-125 z-10"
                                     style={{ boxShadow: `0 0 10px ${council.color}50` }}
                                 >
-                                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: council.color }} />
+                                    <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full" style={{ backgroundColor: council.color }} />
                                 </div>
 
                                 {/* Content Card */}
-                                <div className="w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] bg-gray-900 border border-gray-800 rounded-3xl p-6 shadow-2xl hover:border-gray-600 transition-colors ml-16 md:ml-0 overflow-hidden relative">
+                                <div className="w-[calc(100%-3rem)] sm:w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] bg-gray-900 border border-gray-800 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl hover:border-gray-600 transition-colors ml-12 sm:ml-16 md:ml-0 overflow-hidden relative">
                                     <div 
-                                        className="absolute top-0 left-0 w-full h-1 opacity-0 group-hover:opacity-100 transition-opacity" 
+                                        className="absolute top-0 left-0 w-full h-1 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity" 
                                         style={{ backgroundColor: council.color }}
                                     />
                                     
                                     {ach.image_url && (
-                                        <div className="aspect-video w-full rounded-xl overflow-hidden mb-6 bg-black">
+                                        <div className="aspect-video w-full rounded-lg sm:rounded-xl overflow-hidden mb-4 sm:mb-6 bg-black">
                                             <img 
                                                 src={ach.image_url} 
                                                 alt={ach.title} 
@@ -126,13 +138,13 @@ export default async function CouncilPage({ params }) {
                                         </div>
                                     )}
                                     
-                                    <div className="flex items-center gap-2 text-xs font-mono text-gray-400 mb-3 uppercase tracking-wider">
+                                    <div className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs font-mono text-gray-400 mb-2 sm:mb-3 uppercase tracking-wider">
                                         <FaCalendarAlt />
                                         {new Date(ach.date).toLocaleDateString(undefined, { year: 'numeric', month: 'long' })}
                                     </div>
                                     
-                                    <h3 className="text-2xl font-bold mb-3 text-white">{ach.title}</h3>
-                                    <p className="text-gray-400 leading-relaxed">
+                                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-2 sm:mb-3 text-white leading-tight">{ach.title}</h3>
+                                    <p className="text-sm sm:text-base text-gray-400 leading-relaxed">
                                         {ach.description}
                                     </p>
                                 </div>
@@ -141,6 +153,7 @@ export default async function CouncilPage({ params }) {
                     </div>
                 )}
             </div>
-        </div>
+            </div>
+        </>
     );
 }

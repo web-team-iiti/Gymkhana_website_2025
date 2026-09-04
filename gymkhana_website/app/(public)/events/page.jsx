@@ -3,7 +3,7 @@ import { query } from "@/config/db";
 import SearchInput from "@/components/SearchInput";
 import EventFilter from "@/components/EventFilter";
 import PublicEventsList from "@/components/PublicEventsList";
-import FloatingLines from "@/components/Floatingline";
+
 
 async function getPublicEvents(queryText, filter) {
   let sql = `SELECT * FROM events WHERE 1=1`;
@@ -54,14 +54,20 @@ export default async function EventsPage({ searchParams }) {
   return (
     <div className="relative min-h-screen bg-[#050505] text-white overflow-hidden">
 
-      {/* Background Animation */}
-      <div className="absolute inset-0 w-full h-full z-0 opacity-60 pointer-events-none">
-        <FloatingLines
-          linesGradient={["#00e5ff", "#3b82f6", "#9333ea"]}
-          animationSpeed={1}
-          parallax
-          interactive
-        />
+      {/* Static CSS Background (Replacing Heavy FloatingLines) */}
+      <div className="absolute inset-0 w-full h-full z-0 overflow-hidden pointer-events-none">
+        {/* Glow 1: Cyan (Top Left) */}
+        <div className="absolute -top-[20%] -left-[10%] w-[60%] h-[60%] bg-[#00e5ff] opacity-10 blur-[120px] rounded-full"></div>
+        
+        {/* Glow 2: Blue (Center Right) */}
+        <div className="absolute top-[30%] -right-[20%] w-[50%] h-[50%] bg-[#3b82f6] opacity-10 blur-[100px] rounded-full"></div>
+        
+        {/* Glow 3: Purple (Bottom Center) */}
+        <div className="absolute -bottom-[20%] left-[20%] w-[60%] h-[60%] bg-[#9333ea] opacity-10 blur-[120px] rounded-full"></div>
+
+        {/* Subtle texture for depth */}
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.08] mix-blend-screen"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:40px_40px]"></div>
       </div>
 
       <div className="relative z-10 container mx-auto px-4 py-12 md:py-24">

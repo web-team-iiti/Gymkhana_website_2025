@@ -34,7 +34,7 @@ uniform float uAutoCenterRepulsion;
 uniform bool uTransparent;
 varying vec2 vUv;
 
-#define NUM_LAYER 4.0
+#define NUM_LAYER 2.0
 #define MAT45 mat2(0.7071, -0.7071, 0.7071, 0.7071)
 #define PERIOD 3.0
 
@@ -254,7 +254,8 @@ export default function Galaxy({
     // Resize Handling
     function resize() {
       if (!ctn || !gl) return;
-      const scale = 1;
+      // Drop resolution to 60% on mobile, 80% on desktop to save GPU
+      const scale = window.innerWidth < 768 ? 0.6 : 0.8; 
       renderer.setSize(ctn.offsetWidth * scale, ctn.offsetHeight * scale);
       program.uniforms.uResolution.value = new Color(
         gl.canvas.width,

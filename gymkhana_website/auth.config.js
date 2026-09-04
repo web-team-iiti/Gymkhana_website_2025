@@ -1,14 +1,14 @@
 export const authConfig = {
   pages: {
     signIn: "/login",
+    error: "/login", // Redirect auth errors (AccessDenied) to login page
   },
 
   callbacks: {
-    // 1. MIDDLEWARE PROTECTION LOGIC
+    // MIDDLEWARE PROTECTION LOGIC (runs on Edge)
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
       const role = auth?.user?.role;
-      const pathname = nextUrl.pathname;
 
       const isOnDashboard = nextUrl.pathname.startsWith("/dashboard");
 
@@ -16,16 +16,17 @@ export const authConfig = {
       const isOnGS = nextUrl.pathname.startsWith("/dashboard/general_secretary");
       const isOnOffice = nextUrl.pathname.startsWith("/dashboard/office");
       const isOnADOSA = nextUrl.pathname.startsWith("/dashboard/adosa");
-      const isOnClubHead = nextUrl.pathname.startsWith("/dashboard/club_head"); // 👈 New Rule
+      const isOnClubHead = nextUrl.pathname.startsWith("/dashboard/club_head");
+      const isOnContingentLeader = nextUrl.pathname.startsWith("/dashboard/contingent_leader");
+      const isOnGsCult = nextUrl.pathname.startsWith("/dashboard/gs_cult");
 
       // Rule 1: Always force login for any dashboard page
       if (isOnDashboard) {
         if (!isLoggedIn) return false;
       }
 
-      // Rule 2: Protect GS Routes
-      // Note: 'general_secretary' matches your DB role, update if your DB uses 'gs'
-      if (isOnGS && role !== "gs") {
+      // Rule 2: Protect GS Routes (DB uses 'gs_snt')
+      if (isOnGS && role !== "gs_snt") {
         return Response.redirect(new URL("/dashboard", nextUrl));
       }
 
@@ -43,23 +44,39 @@ export const authConfig = {
         return Response.redirect(new URL("/dashboard", nextUrl));
       }
 
+      // Rule 6: Protect Contingent Leader Routes
+      if (isOnContingentLeader && role !== "contingent_leader") {
+        return Response.redirect(new URL("/dashboard", nextUrl));
+      }
+
+      // Rule 7 has been removed (handled by Rule 2)
+
+      // Rule 8: Protect GS Cult Routes
+      if (isOnGsCult && role !== "gs_cult") {
+        return Response.redirect(new URL("/dashboard", nextUrl));
+      }
+
       return true;
     },
 
-    // 2. PASS DATA TO FRONTEND (Session Persistence)
+    // 2. JWT — Persist DB data into the token
     async jwt({ token, user }) {
-      // Runs on login and token rotation
       if (user) {
-        token.role = user.role;
         token.id = user.id;
-
+        token.role = user.role;
         // Save the club info we fetched in auth.js
         token.club_id = user.club_id;
         token.club_name = user.club_name;
+        token.club_category = user.club_category;
+
+        // Save contingent info if available
+        token.contingent_id = user.contingent_id;
+        token.contingent_name = user.contingent_name;
       }
       return token;
     },
 
+    // 3. SESSION — Expose data to the client
     async session({ session, token }) {
       // Runs whenever useSession() or auth() is called
       if (token && session.user) {
@@ -69,6 +86,11 @@ export const authConfig = {
         // Expose club info to the client/pages
         session.user.club_id = token.club_id;
         session.user.club_name = token.club_name;
+        session.user.club_category = token.club_category;
+        
+        // Expose contingent info
+        session.user.contingent_id = token.contingent_id;
+        session.user.contingent_name = token.contingent_name;
       }
       return session;
     },

@@ -4,7 +4,6 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { FaCalendarAlt, FaArrowLeft, FaMapMarkerAlt } from "react-icons/fa";
 import SpotlightCard from "@/components/Spotlight";
-import FloatingLines from "@/components/Floatingline";
 
 export default function PublicEventDetails({ event }) {
     const [current, setCurrent] = useState(0);
@@ -31,16 +30,17 @@ export default function PublicEventDetails({ event }) {
     });
 
     return (
-        <div className="relative overflow-hidden text-white bg-[#050505]">
+        <div className="relative overflow-hidden min-h-screen text-white bg-[#050505]">
 
-            {/* 🌌 FLOATING LINES BACKGROUND */}
-            <div className="absolute inset-0 z-0 opacity-60 pointer-events-none">
-                <FloatingLines
-                    linesGradient={["#00e5ff", "#3b82f6", "#9333ea"]}
-                    animationSpeed={1}
-                    parallax
-                    interactive
-                />
+            {/* 🌌 STATIC GLOW BACKGROUND */}
+            <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+                {/* Grid Pattern matching the lines vibe */}
+                <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+CjxwYXRoIGQ9Ik0wIDBoNDB2NDBIMHoiIGZpbGw9Im5vbmUiLz4KPHBhdGggZD0iTTAgMGg0MHYuNUgweiIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA3KSIvPgo8cGF0aCBkPSJNMCAwdjQwaC41VjB6IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDcpIi8+Cjwvc3ZnPg==')] opacity-40" />
+                
+                {/* Glowing Background Orbs matching previous colors */}
+                <div className="absolute top-[-10%] left-[-10%] w-[40rem] h-[40rem] bg-[#00e5ff] rounded-full mix-blend-screen filter blur-[150px] opacity-20" />
+                <div className="absolute top-[20%] right-[-10%] w-[35rem] h-[35rem] bg-[#9333ea] rounded-full mix-blend-screen filter blur-[150px] opacity-20" />
+                <div className="absolute bottom-[-10%] left-[20%] w-[45rem] h-[45rem] bg-[#3b82f6] rounded-full mix-blend-screen filter blur-[150px] opacity-20" />
             </div>
 
             {/* ✨ CONTENT */}

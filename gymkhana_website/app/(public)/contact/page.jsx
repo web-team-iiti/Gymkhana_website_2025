@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { IoMail, IoLocationSharp, IoCall, IoGlobeOutline } from "react-icons/io5";
-import Particles from "@/components/Particles";
+
 
 // --- SVG Logo (Arrow Function) ---
 const Logo = () => (
@@ -104,18 +104,11 @@ const App = () => (
   // 🟢 Added bg-black to make white particles visible
   <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-black py-12 px-4">
 
-    {/* 🌌 Background Layer: Particles */}
-    <div className="absolute inset-0 z-0 pointer-events-none">
-      <Particles
-        particleColors={['#ffffff', '#ffffff']}
-        particleCount={700}
-        particleSpread={10}
-        speed={0.1}
-        particleBaseSize={100}
-        moveParticlesOnHover={true}
-        alphaParticles={false}
-        disableRotation={false}
-      />
+    {/* Static CSS Particles Background */}
+    <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:20px_20px] opacity-20"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:40px_40px] [background-position:20px_20px] opacity-30"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(#ffffff_2px,transparent_2px)] [background-size:90px_90px] [background-position:40px_40px] opacity-20"></div>
     </div>
 
     {/* Content Layer (z-10 ensures it's above particles) */}
