@@ -1,4 +1,4 @@
-import { authConfig } from "@/auth.config";
+import { authConfig } from "./auth.config";
 
 export default async function middleware(req) {
   const { default: NextAuth } = await import("next-auth");
