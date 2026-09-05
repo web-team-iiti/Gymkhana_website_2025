@@ -1,10 +1,8 @@
-import NextAuth from "next-auth";
 import { authConfig } from "./auth.config";
 
-const { auth } = NextAuth(authConfig);
-
-export default function middleware(req) {
-  return auth(req);
+export default async function middleware(req) {
+  const { default: NextAuth } = await import("next-auth");
+  return NextAuth(authConfig).auth(req);
 }
 
 export const config = {
