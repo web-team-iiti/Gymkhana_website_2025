@@ -18,7 +18,7 @@ export default function ScoreForm({ events, contingents }) {
     score: ""
   });
 
-  const isFormValid = formDataState.event_id && formDataState.contingent_id && formDataState.score && fileName;
+  const isFormValid = formDataState.event_id && formDataState.contingent_id && formDataState.score;
 
   const handleInputChange = (e) => {
     setFormDataState({
@@ -53,7 +53,7 @@ export default function ScoreForm({ events, contingents }) {
         setFileName("");
         setFormDataState({ event_id: "", contingent_id: "", score: "" });
         // Redirect to Manage Scores page
-        router.push("/dashboard/club_head/ibcc/manage");
+        router.push("/dashboard/gs_cult/ibcc-scores/manage");
       }
     } catch (err) {
       setMessage({ type: "error", text: "Server error: File might be too large or network failed." });
@@ -124,7 +124,7 @@ export default function ScoreForm({ events, contingents }) {
       </div>
 
       <div>
-        <label htmlFor="judging_sheet" className={labelClasses}>Signed Judging Sheet (PDF/Image)</label>
+        <label htmlFor="judging_sheet" className={labelClasses}>Signed Judging Sheet (PDF/Image) <span className="text-gray-500 font-normal">(Optional)</span></label>
         <div className="mt-2 flex items-center justify-center w-full">
             <label className={`flex flex-col items-center justify-center w-full h-32 sm:h-40 border-2 border-dashed rounded-xl cursor-pointer transition-all ${fileName ? 'border-green-500/50 bg-green-500/5 hover:bg-green-500/10' : 'border-gray-700 bg-gray-950/50 hover:bg-gray-800/50 hover:border-gray-500'}`}>
                 <div className="flex flex-col items-center justify-center pt-5 pb-6 text-center px-4">
@@ -142,7 +142,7 @@ export default function ScoreForm({ events, contingents }) {
                       </>
                     )}
                 </div>
-                <input id="judging_sheet" type="file" name="judging_sheet" accept=".pdf,image/*" onChange={handleFileChange} required className="hidden" />
+                <input id="judging_sheet" type="file" name="judging_sheet" accept=".pdf,image/*" onChange={handleFileChange} className="hidden" />
             </label>
         </div>
       </div>

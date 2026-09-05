@@ -8,7 +8,7 @@ import path from "path";
 export async function submitScore(formData) {
   const session = await auth();
   
-  if (!session || session.user.role !== "club_head") {
+  if (!session || session.user.role !== "gs_cult") {
     return { error: "Unauthorized" };
   }
 
@@ -17,59 +17,56 @@ export async function submitScore(formData) {
   const score = formData.get("score");
   const file = formData.get("judging_sheet");
 
-  if (!eventId || !contingentId || !score || !file || file.size === 0) {
-    return { error: "All fields are required, including the judging sheet." };
+  if (!eventId || !contingentId || !score) {
+    return { error: "Event, contingent, and score fields are required." };
   }
 
   try {
-    // Check if event exists and belongs to this club
-    const eventRes = await query("SELECT start_time, club_id FROM ibcc_events WHERE id = $1", [eventId]);
+    // Check if event exists
+    const eventRes = await query("SELECT start_time FROM ibcc_events WHERE id = $1", [eventId]);
     if (eventRes.rowCount === 0) return { error: "Event not found." };
-    
-    // Strict Security Check: Ensure the event actually belongs to their club
-    if (eventRes.rows[0].club_id !== session.user.club_id) {
-      return { error: "Security Error: You are not authorized to submit scores for another club's event." };
-    }
 
     const startTime = new Date(eventRes.rows[0].start_time);
     if (startTime > new Date()) {
       return { error: "You cannot submit scores for an event that hasn't started yet!" };
     }
 
-    let fileUrl = "";
-
     // Check if score already exists to delete old file
     const oldScoreRes = await query("SELECT judging_sheet_url FROM ibcc_scores WHERE event_id = $1 AND contingent_id = $2", [eventId, contingentId]);
     const oldFileUrl = oldScoreRes.rows.length > 0 ? oldScoreRes.rows[0].judging_sheet_url : null;
 
-    // Upload file locally to public/uploads/ibcc
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${Date.now()}_${eventId}_${contingentId}.${fileExt}`;
-    
-    const uploadDir = path.join(process.cwd(), "public", "uploads", "ibcc");
-    
-    // Ensure directory exists
-    try {
-      await fs.access(uploadDir);
-    } catch {
-      await fs.mkdir(uploadDir, { recursive: true });
-    }
+    let fileUrl = oldFileUrl; // Default to existing file (if any)
 
-    const filePath = path.join(uploadDir, fileName);
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-    
-    await fs.writeFile(filePath, buffer);
-    
-    fileUrl = `/uploads/ibcc/${fileName}`;
-
-    // Delete old file if it exists
-    if (oldFileUrl) {
+    if (file && file.size > 0) {
+      // Upload file locally to public/uploads/ibcc
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}_${eventId}_${contingentId}.${fileExt}`;
+      
+      const uploadDir = path.join(process.cwd(), "public", "uploads", "ibcc");
+      
+      // Ensure directory exists
       try {
-        const oldFilePath = path.join(process.cwd(), "public", oldFileUrl);
-        await fs.unlink(oldFilePath);
-      } catch (err) {
-        console.error("Failed to delete old judging sheet:", err);
+        await fs.access(uploadDir);
+      } catch {
+        await fs.mkdir(uploadDir, { recursive: true });
+      }
+
+      const filePath = path.join(uploadDir, fileName);
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      
+      await fs.writeFile(filePath, buffer);
+      
+      fileUrl = `/uploads/ibcc/${fileName}`;
+
+      // Delete old file if it exists and a new one is being uploaded
+      if (oldFileUrl) {
+        try {
+          const oldFilePath = path.join(process.cwd(), "public", oldFileUrl);
+          await fs.unlink(oldFilePath);
+        } catch (err) {
+          console.error("Failed to delete old judging sheet:", err);
+        }
       }
     }
 
@@ -91,17 +88,11 @@ export async function submitScore(formData) {
 export async function deleteScore(eventId, contingentId) {
   const session = await auth();
   
-  if (!session || session.user.role !== "club_head") {
+  if (!session || session.user.role !== "gs_cult") {
     return { error: "Unauthorized" };
   }
 
   try {
-    // Strict Security Check: Ensure the event actually belongs to their club
-    const eventRes = await query("SELECT club_id FROM ibcc_events WHERE id = $1", [eventId]);
-    if (eventRes.rowCount === 0 || eventRes.rows[0].club_id !== session.user.club_id) {
-      return { error: "Security Error: You are not authorized to delete scores for another club's event." };
-    }
-
     // 1. Get the file url
     const oldScoreRes = await query("SELECT judging_sheet_url FROM ibcc_scores WHERE event_id = $1 AND contingent_id = $2", [eventId, contingentId]);
     if (oldScoreRes.rows.length === 0) return { error: "Score not found." };

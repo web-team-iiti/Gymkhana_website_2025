@@ -20,8 +20,6 @@ const MENU_ITEMS = {
   club_head: [
     { name: "Overview", href: "/dashboard/club_head", icon: <FaHome /> },
     { name: "IBCC Events", href: "/dashboard/club_head/ibcc/events", icon: <FaCalendarAlt /> },
-    { name: "Submit Score", href: "/dashboard/club_head/ibcc", icon: <FaTrophy /> },
-    { name: "Manage Scores", href: "/dashboard/club_head/ibcc/manage", icon: <FaTasks /> },
     { name: "Projects", href: "/dashboard/club_head/projects", icon: <FaTasks /> },
     { name: "Add Project", href: "/dashboard/club_head/projects/create", icon: <FaChevronRight />},
     { name: "My Members", href: "/dashboard/club_head/members", icon: <FaUsers /> },
@@ -65,6 +63,8 @@ const MENU_ITEMS = {
   gs_cult: [
     { name: "Overview", href: "/dashboard/gs_cult", icon: <FaChartLine /> },
     { name: "IBCC Events", href: "/dashboard/gs_cult/ibcc-events", icon: <FaCalendarAlt /> },
+    { name: "Submit Score", href: "/dashboard/gs_cult/ibcc-scores", icon: <FaTrophy /> },
+    { name: "Manage Scores", href: "/dashboard/gs_cult/ibcc-scores/manage", icon: <FaTasks /> },
     { name: "IBCC Contingents", href: "/dashboard/gs_cult/ibcc-contingents", icon: <FaUsers /> },
   ],
   contingent_leader: [

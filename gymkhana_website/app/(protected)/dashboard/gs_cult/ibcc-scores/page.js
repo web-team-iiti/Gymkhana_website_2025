@@ -2,16 +2,15 @@ import { auth } from "@/auth";
 import { query } from "@/config/db";
 import ScoreForm from "./ScoreForm";
 
-export default async function ClubHeadIBCCPage() {
+export default async function GSCultIBCCScoresPage() {
   const session = await auth();
   
-  if (!session || session.user.role !== "club_head") {
-    return <div className="text-red-400 p-8">Access Denied. Only Club Heads can access this page.</div>;
+  if (!session || session.user.role !== "gs_cult") {
+    return <div className="text-red-400 p-8">Access Denied. Only GS Cultural can access this page.</div>;
   }
 
-  // Fetch events for this club head's club
-  const clubId = session.user.club_id;
-  const eventsRes = await query("SELECT id, name FROM ibcc_events WHERE club_id = $1", [clubId]);
+  // Fetch all IBCC events
+  const eventsRes = await query("SELECT id, name FROM ibcc_events ORDER BY name ASC");
   const events = eventsRes.rows;
 
   // Fetch all contingents
@@ -27,7 +26,7 @@ export default async function ClubHeadIBCCPage() {
       
       {events.length === 0 ? (
         <div className="bg-yellow-900/20 border-l-4 border-yellow-500 p-4 rounded">
-          <p className="text-yellow-400">No IBCC events are currently assigned to your club.</p>
+          <p className="text-yellow-400">No IBCC events found.</p>
         </div>
       ) : (
         <div className="bg-gray-900 border border-gray-800 rounded-2xl p-4 sm:p-6 md:p-8 shadow-lg">
