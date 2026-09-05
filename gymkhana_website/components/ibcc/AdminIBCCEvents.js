@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { FaPlus, FaCheckCircle, FaExclamationCircle } from "react-icons/fa";
+import { FaPlus, FaCheckCircle, FaExclamationCircle, FaSearch, FaFilter, FaCheck } from "react-icons/fa";
 import { addEvent, deleteEvent, updateEvent, resolveContention } from "./actions";
 
 export default function AdminIBCCEvents({ events, clubs, contentions = [] }) {
@@ -9,6 +9,12 @@ export default function AdminIBCCEvents({ events, clubs, contentions = [] }) {
   const [editingEvent, setEditingEvent] = useState(null);
   const [creatingEvent, setCreatingEvent] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
+
+  // Search and Filter State
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const filterDropdownRef = useRef(null);
 
   // Custom Dropdown State
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -21,11 +27,14 @@ export default function AdminIBCCEvents({ events, clubs, contentions = [] }) {
     else setSelectedClub("");
   }, [editingEvent, creatingEvent]);
 
-  // Handle click outside to close custom dropdown
+  // Handle click outside to close dropdowns
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsDropdownOpen(false);
+      }
+      if (filterDropdownRef.current && !filterDropdownRef.current.contains(event.target)) {
+        setIsFilterOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -45,6 +54,14 @@ export default function AdminIBCCEvents({ events, clubs, contentions = [] }) {
     if (currentTime >= startDate && currentTime <= endDate) return { label: "Live", color: "text-red-400 bg-red-500/10 border border-red-500/20" };
     return { label: "Completed", color: "text-gray-500 bg-gray-800/50 border border-gray-700/50" };
   };
+
+  const filteredEvents = events.filter((event) => {
+    const status = getEventStatus(event.start_time, event.end_time);
+    const matchesSearch = event.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          (event.venue && event.venue.toLowerCase().includes(searchQuery.toLowerCase()));
+    const matchesStatus = statusFilter === "All" || status.label === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
 
   const handleAddOrUpdateEvent = async (e) => {
     e.preventDefault();
@@ -164,8 +181,75 @@ export default function AdminIBCCEvents({ events, clubs, contentions = [] }) {
 
       {/* Events Management Section */}
       <section className="bg-gray-900 p-6 rounded-2xl shadow-lg border border-gray-800">
-        <div className="mb-6">
-          <h2 className="text-xl font-bold text-white">IBCC Events List</h2>
+        <div className="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <h2 className="text-xl font-bold text-white shrink-0">IBCC Events List</h2>
+          
+          {/* Search and Filters */}
+          <div className="flex gap-3 w-full md:w-auto" ref={filterDropdownRef}>
+            <div className="relative flex-1 md:w-64">
+              <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input 
+                type="text" 
+                placeholder="Search events..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full h-full bg-gray-950 border border-gray-800 text-white rounded-xl pl-9 pr-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors"
+              />
+            </div>
+            
+            {/* Desktop View */}
+            <div className="hidden md:flex gap-2">
+              {["All", "Live", "Upcoming", "Completed"].map(status => (
+                <button
+                  key={status}
+                  onClick={() => setStatusFilter(status)}
+                  className={`whitespace-nowrap px-4 py-2.5 rounded-xl text-xs font-bold transition-all border ${
+                    statusFilter === status 
+                      ? 'bg-blue-600 text-white border-blue-500 shadow-lg shadow-blue-500/20' 
+                      : 'bg-gray-950 text-gray-400 border-gray-800 hover:border-gray-600 hover:text-white'
+                  }`}
+                >
+                  {status}
+                </button>
+              ))}
+            </div>
+
+            {/* Mobile View */}
+            <div className="md:hidden relative">
+              <button
+                onClick={() => setIsFilterOpen(!isFilterOpen)}
+                className={`flex items-center justify-center w-11 h-11 rounded-xl border transition-all ${
+                  statusFilter !== 'All' || isFilterOpen
+                    ? "bg-blue-600 text-white border-blue-500"
+                    : "bg-gray-950 text-gray-400 border-gray-800"
+                }`}
+              >
+                <FaFilter size={14} />
+              </button>
+
+              {isFilterOpen && (
+                <div className="absolute right-0 top-full mt-2 w-48 bg-gray-900 border border-gray-800 rounded-xl shadow-2xl z-50 overflow-hidden">
+                  <div className="flex flex-col p-1.5">
+                    {["All", "Live", "Upcoming", "Completed"].map((status) => {
+                      const isActive = statusFilter === status;
+                      return (
+                        <button
+                          key={status}
+                          onClick={() => { setStatusFilter(status); setIsFilterOpen(false); }}
+                          className={`flex items-center justify-between w-full px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
+                            isActive ? "bg-blue-500/10 text-blue-500" : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                          }`}
+                        >
+                          {status}
+                          {isActive && <FaCheck size={12} />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
         
         {(editingEvent || creatingEvent) && (
@@ -255,7 +339,7 @@ export default function AdminIBCCEvents({ events, clubs, contentions = [] }) {
 
         {/* Mobile View: Card Layout */}
         <div className="grid grid-cols-1 gap-4 md:hidden">
-          {events.map((e) => {
+          {filteredEvents.map((e) => {
             const status = getEventStatus(e.start_time, e.end_time);
             return (
               <div key={e.id} className="bg-gray-950 p-4 rounded-xl border border-gray-800 flex flex-col gap-3 relative overflow-hidden group">
@@ -289,8 +373,8 @@ export default function AdminIBCCEvents({ events, clubs, contentions = [] }) {
               </div>
             );
           })}
-          {events.length === 0 && (
-            <div className="p-8 text-center text-gray-500 bg-gray-950 rounded-xl border border-gray-800">No events found.</div>
+          {filteredEvents.length === 0 && (
+            <div className="p-8 text-center text-gray-500 bg-gray-950 rounded-xl border border-gray-800">No events found matching your search.</div>
           )}
         </div>
 
@@ -307,7 +391,7 @@ export default function AdminIBCCEvents({ events, clubs, contentions = [] }) {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-800">
-              {events.map((e, index) => {
+              {filteredEvents.map((e, index) => {
                 const status = getEventStatus(e.start_time, e.end_time);
                 return (
                   <tr key={e.id} className={`${index % 2 === 0 ? "bg-gray-900" : "bg-gray-900/50"} hover:bg-gray-800/50 transition-colors`}>
@@ -333,8 +417,8 @@ export default function AdminIBCCEvents({ events, clubs, contentions = [] }) {
                   </tr>
                 );
               })}
-              {events.length === 0 && (
-                <tr><td colSpan="5" className="p-8 text-center text-gray-500">No events found.</td></tr>
+              {filteredEvents.length === 0 && (
+                <tr><td colSpan="5" className="p-8 text-center text-gray-500">No events found matching your search.</td></tr>
               )}
             </tbody>
           </table>
