@@ -89,7 +89,8 @@ export default function AdminIBCCContingents({ contingents, users }) {
       <section className="bg-gray-900 p-4 sm:p-6 rounded-2xl shadow-lg border border-gray-800">
         <h2 className="text-xl font-bold text-white mb-6">Manage Contingents</h2>
         
-        <form onSubmit={handleAddOrUpdateContingent} className="bg-gray-950/50 p-4 sm:p-6 md:p-8 rounded-2xl border border-gray-800 mb-8 space-y-4 sm:space-y-6 relative overflow-hidden">
+        {/* key forces full re-render when switching between edit targets so checkboxes reset properly */}
+        <form key={editingContingent?.id || "new"} onSubmit={handleAddOrUpdateContingent} className="bg-gray-950/50 p-4 sm:p-6 md:p-8 rounded-2xl border border-gray-800 mb-8 space-y-4 sm:space-y-6 relative overflow-hidden">
           {/* Subtle background glow */}
           <div className={`absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl pointer-events-none ${editingContingent ? 'bg-blue-500/10' : 'bg-green-500/5'}`}></div>
 
@@ -175,7 +176,7 @@ export default function AdminIBCCContingents({ contingents, users }) {
             <thead className="bg-gray-950 text-gray-400 uppercase tracking-wider text-xs font-semibold border-b border-gray-800">
               <tr>
                 <th className="p-4 w-1/3">Contingent Name</th>
-                <th className="p-4 w-1/2">Assigned Leader</th>
+                <th className="p-4 w-1/2">Assigned Leaders</th>
                 <th className="p-4 text-right">Actions</th>
               </tr>
             </thead>
@@ -183,7 +184,7 @@ export default function AdminIBCCContingents({ contingents, users }) {
               {contingents.map((c, index) => (
                 <tr key={c.id} className={`${index % 2 === 0 ? "bg-gray-900" : "bg-gray-900/50"} hover:bg-gray-800/50 transition-colors`}>
                   <td className="p-4 font-bold text-white">{c.name}</td>
-                  <td className="p-4 text-gray-400">{c.leader_name || <span className="text-gray-600 italic">No leader assigned</span>}</td>
+                  <td className="p-4 text-blue-400 font-medium">{c.leader_name || <span className="text-gray-600 italic font-normal">No leader assigned</span>}</td>
                   <td className="p-4 text-right flex justify-end gap-2">
                     <button onClick={() => startEdit(c)} disabled={loading} title="Edit Contingent" className="p-2.5 text-blue-400 hover:text-white bg-blue-500/10 hover:bg-blue-600 rounded-xl transition-all shadow-sm border border-blue-500/20 hover:border-blue-500 disabled:opacity-50">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
