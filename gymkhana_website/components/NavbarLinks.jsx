@@ -12,8 +12,8 @@ const NavbarLinks = ({ setIsMenuOpen }) => {
 
   const getItemStyles = (active) =>
     active
-      ? "bg-amber-50/80 text-amber-950 border border-amber-200/80 shadow-[0_0_15px_rgba(217,119,6,0.18),inset_0_1px_1px_rgba(255,255,255,0.9)] backdrop-blur-sm font-medium"
-      : "text-stone-600 hover:text-stone-900 hover:bg-stone-200/30 font-normal";
+      ? "bg-amber-200 text-amber-950 border border-amber-200/60 shadow-[0_4px_14px_rgba(217,119,6,0.15)] rounded-full uppercase tracking-wide font-[Outfit,sans-serif] font-bold"
+      : "text-stone-700 hover:bg-amber-50/90 hover:text-amber-950 hover:border hover:border-amber-200/60 hover:shadow-[0_3px_10px_rgba(217,119,6,0.12)] hover:-translate-y-0.5 font-[Outfit,sans-serif] transition-all duration-200 font-bold rounded-full uppercase tracking-wide";
 
   const closeMenus = () => {
     setOpenDropdown(null);

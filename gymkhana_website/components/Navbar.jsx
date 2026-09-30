@@ -28,14 +28,13 @@ const Navbar = () => {
       className={`fixed left-0 top-0 z-50 w-full border-b font-sans [&_*]:font-sans transition-all duration-300 ${isScrolled ? "border-black/10 bg-[#fff8ed]/95 shadow-sm backdrop-blur-md" : "border-transparent bg-[#fff8ed]"}`}
     >
       <div className="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between gap-x-6 px-4 py-3 sm:px-6">
-        
         {/* Main Logo Here */}
         <Link href="/" className="flex min-w-0 items-center gap-3 text-black">
           <Image
             src="/main_logo.png"
             width={56}
             height={56}
-            className="h-14 w-14 shrink-0 object-contain"
+            className="h-14 w-14 shrink-0 bg-gray-800/40 rounded-full object-contain"
             alt="IIT Indore Students' Gymkhana"
             priority
           />
@@ -47,7 +46,7 @@ const Navbar = () => {
             <span className="text-xs font-semibold uppercase tracking-[0.14em] text-black/60">
               IIT Indore
             </span>
-            <span className="text-lg font-bold sm:text-xl">
+            <span className="text-lg font-bold font-[Outfit,sans-serif] sm:text-xl">
               Students&apos; Gymkhana
             </span>
           </span>
