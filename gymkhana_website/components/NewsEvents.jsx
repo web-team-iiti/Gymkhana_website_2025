@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   FaArrowRight,
@@ -72,37 +72,6 @@ const UpcomingEvents = ({ events = [] }) => {
   const scrollRef = useRef(null);
   const router = useRouter();
   const [isPaused, setIsPaused] = useState(false);
-
-  // --- EMPTY STATE HANDLING ---
-  if (!events || events.length === 0) {
-    return (
-      <div className="w-full py-16 bg-transparent text-white text-center">
-        <div className="container mx-auto px-4">
-            <h2 className="text-xl sm:text-2xl md:text-4xl mb-6 font-bold text-center text-white uppercase tracking-wider drop-shadow-md">
-                <span className="text-yellow-500">Upcoming</span> Events
-            </h2>
-            
-            <div className="flex flex-col items-center justify-center p-8 bg-gray-900/30 border border-gray-800 rounded-2xl max-w-lg mx-auto backdrop-blur-sm">
-                <div className="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center text-gray-500 mb-4">
-                    <FaRegCalendarTimes size={24} />
-                </div>
-                <h3 className="text-lg font-bold text-gray-300">No Upcoming Events</h3>
-                <p className="text-gray-500 text-sm mt-2">
-                    There are no scheduled events at the moment. Check back later!
-                </p>
-                <button 
-                    onClick={() => router.push('/events')}
-                    className="mt-6 text-blue-400 hover:text-blue-300 text-sm font-medium flex items-center gap-2 transition-colors"
-                >
-                    View Past Events <FaArrowRight size={12} />
-                </button>
-            </div>
-        </div>
-      </div>
-    );
-  }
-
-  // --- CAROUSEL LOGIC (Only runs if we have events) ---
   const displayEvents =
     events.length < 5
       ? [...events, ...events, ...events, ...events]
@@ -110,7 +79,7 @@ const UpcomingEvents = ({ events = [] }) => {
 
   useEffect(() => {
     const scrollContainer = scrollRef.current;
-    if (!scrollContainer) return;
+    if (!scrollContainer || events.length === 0) return;
 
     let animationFrameId;
     const scrollSpeed = 0.5;
@@ -127,8 +96,40 @@ const UpcomingEvents = ({ events = [] }) => {
 
     animationFrameId = requestAnimationFrame(scrollStep);
     return () => cancelAnimationFrame(animationFrameId);
-  }, [isPaused, displayEvents.length]);
+  }, [isPaused, events.length, displayEvents.length]);
 
+  // --- EMPTY STATE HANDLING ---
+  if (!events || events.length === 0) {
+    return (
+      <div className="w-full py-16 bg-transparent text-white text-center">
+        <div className="container mx-auto px-4">
+          <h2 className="text-xl sm:text-2xl md:text-4xl mb-6 font-bold text-center text-white uppercase tracking-wider drop-shadow-md">
+            <span className="text-yellow-500">Upcoming</span> Events
+          </h2>
+
+          <div className="flex flex-col items-center justify-center p-8 bg-gray-900/30 border border-gray-800 rounded-2xl max-w-lg mx-auto backdrop-blur-sm">
+            <div className="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center text-gray-500 mb-4">
+              <FaRegCalendarTimes size={24} />
+            </div>
+            <h3 className="text-lg font-bold text-gray-300">
+              No Upcoming Events
+            </h3>
+            <p className="text-gray-500 text-sm mt-2">
+              There are no scheduled events at the moment. Check back later!
+            </p>
+            <button
+              onClick={() => router.push("/events")}
+              className="mt-6 text-blue-400 hover:text-blue-300 text-sm font-medium flex items-center gap-2 transition-colors"
+            >
+              View Past Events <FaArrowRight size={12} />
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // --- CAROUSEL LOGIC (Only runs if we have events) ---
   return (
     <div className="w-full py-8 bg-transparent text-white">
       <div className="container mx-auto px-4">
