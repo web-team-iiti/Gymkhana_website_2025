@@ -134,7 +134,7 @@ const Footer = () => {
           </section>
         </div>
 
-        <div className="flex flex-col items-center justify-between gap-3 pt-6 text-center text-xs text-slate-500 sm:flex-row sm:text-left">
+        <div className="flex flex-col items-center justify-between gap-3 pt-6 text-center text-xs text-white sm:flex-row sm:text-left">
           <p>
             © {new Date().getFullYear()} Students&apos; Gymkhana, IIT Indore.
             All Rights Reserved.

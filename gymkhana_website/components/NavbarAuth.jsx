@@ -34,7 +34,7 @@ const NavbarAuth = ({ setIsMenuOpen }) => {
             onClick={() => setIsMenuOpen(false)}
             onFocus={() => setIsLoginExpanded(true)}
             onBlur={() => setIsLoginExpanded(false)}
-            className={`flex h-10 items-center justify-center rounded-full border border-black/25 font-bold text-black transition-[width,background-color,color] duration-200 hover:bg-black hover:text-white focus-visible:bg-black focus-visible:text-white md:px-0 ${isLoginExpanded ? "md:w-24" : "md:w-10"} w-auto px-4`}
+            className={`flex h-10 items-center justify-center rounded-full border border-black/25 font-bold text-black transition-[width,background-color,color] focus-visible:bg-black focus-visible:text-white md:px-0 hover:bg-amber-50/90 hover:text-amber-950 hover:border hover:border-amber-200/60 hover:shadow-[0_3px_10px_rgba(217,119,6,0.12)] hover:-translate-y-0.5 duration-200  ${isLoginExpanded ? "md:w-24" : "md:w-10"} w-auto px-4`}
           >
             <motion.span
               className="shrink-0"

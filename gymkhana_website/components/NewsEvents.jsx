@@ -1,47 +1,69 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
-import { FaArrowRight, FaCalendarAlt, FaRegCalendarTimes } from "react-icons/fa";
+import Link from "next/link";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import {
+  FaArrowRight,
+  FaCalendarAlt,
+  FaRegCalendarTimes,
+} from "react-icons/fa";
 
-// --- EventCard ---
 const EventCard = ({ event }) => {
-  const displayImage = event.image_urls && event.image_urls.length > 0 
-    ? event.image_urls[0] 
-    : "https://placehold.co/600x400/1a202c/9ca3af?text=No+Image";
-
+  const displayImage = event.image_urls?.[0];
   const formattedDate = new Date(event.event_date).toLocaleDateString("en-US", {
-    month: "short", day: "numeric", year: "numeric"
+    month: "short",
+    day: "numeric",
+    year: "numeric",
   });
 
   return (
-    <div
-      className="flex-shrink-0 w-80 bg-gray-900/60 backdrop-blur-md border border-gray-700 rounded-2xl 
-      shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-blue-500/30 
-      hover:border-blue-400 relative group"
-      style={{ minWidth: 320 }}
-    >
-      <div className="h-40 w-full overflow-hidden relative">
-        <img
-          className="w-full h-full object-cover transition-all duration-300 group-hover:scale-110 group-hover:opacity-80"
-          src={displayImage}
-          alt={event.title}
-        />
-      </div>
-
-      <div className="p-5">
-        <h3 className="text-lg font-bold text-white line-clamp-1">{event.title}</h3>
-        <p className="text-sm font-medium text-blue-400 uppercase tracking-wider text-xs mt-1">{event.subtitle || "General Event"}</p>
-
-        <div className="flex items-center text-xs text-gray-400 mt-3 bg-gray-800/50 p-1.5 rounded w-fit">
-          <FaCalendarAlt className="mr-2 text-blue-400" />
-          <span>{formattedDate}</span>
+    <article className="group flex h-full flex-col overflow-hidden rounded-lg border border-[#eadfd6] bg-white shadow-[0_2px_8px_rgba(60,39,27,0.06)] transition duration-200 hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(60,39,27,0.12)]">
+      <Link
+        href={`/events/${event.id}`}
+        className="flex h-full flex-col focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#b96f65]"
+      >
+        <div className="relative aspect-[16/9] overflow-hidden bg-[#f1e9e2]">
+          {displayImage ? (
+            <img
+              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+              src={displayImage}
+              alt={event.title}
+              loading="lazy"
+            />
+          ) : (
+            <div
+              className="flex h-full items-center justify-center text-[#b96f65]"
+              aria-hidden="true"
+            >
+              <FaCalendarAlt size={30} />
+            </div>
+          )}
+          <span className="absolute bottom-3 left-3 rounded bg-white/95 px-3 py-1.5 text-xs font-semibold text-[#4a3933] shadow-sm">
+            {formattedDate}
+          </span>
         </div>
 
-        <p className="mt-3 text-sm text-gray-300 line-clamp-2 h-10 group-hover:text-white transition-colors">
-          {event.description}
-        </p>
-      </div>
-    </div>
+        <div className="flex flex-1 flex-col p-5 sm:p-6">
+          <p className="mb-2 text-xs font-bold uppercase text-[#b96f65]">
+            {event.subtitle || "Gymkhana event"}
+          </p>
+          <h3 className="text-lg font-semibold leading-snug text-[#192b35] line-clamp-2">
+            {event.title}
+          </h3>
+          <p className="mt-3 flex-1 text-sm leading-6 text-[#657078] line-clamp-3">
+            {event.description ||
+              "Join the campus community for this upcoming event."}
+          </p>
+          <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#263f4b]">
+            Event details
+            <FaArrowRight
+              className="transition-transform group-hover:translate-x-1"
+              aria-hidden="true"
+            />
+          </span>
+        </div>
+      </Link>
+    </article>
   );
 };
 
@@ -81,9 +103,10 @@ const UpcomingEvents = ({ events = [] }) => {
   }
 
   // --- CAROUSEL LOGIC (Only runs if we have events) ---
-  const displayEvents = events.length < 5 
-    ? [...events, ...events, ...events, ...events] 
-    : [...events, ...events];
+  const displayEvents =
+    events.length < 5
+      ? [...events, ...events, ...events, ...events]
+      : [...events, ...events];
 
   useEffect(() => {
     const scrollContainer = scrollRef.current;
@@ -113,7 +136,7 @@ const UpcomingEvents = ({ events = [] }) => {
           <span className="text-yellow-500">Upcoming</span> Events
         </h2>
 
-        <div 
+        <div
           ref={scrollRef}
           className="flex overflow-x-hidden gap-6 py-4"
           onMouseEnter={() => setIsPaused(true)}
@@ -125,10 +148,13 @@ const UpcomingEvents = ({ events = [] }) => {
         </div>
       </div>
 
-      <div onClick={() => router.push('/events')} className="mt-6 flex justify-center cursor-pointer">
+      <div
+        onClick={() => router.push("/events")}
+        className="mt-6 flex justify-center cursor-pointer"
+      >
         <button className="bg-blue-600 hover:bg-blue-700 flex items-center gap-2 backdrop-blur-sm rounded-full py-2.5 px-6 shadow-lg transition-all font-semibold text-sm">
           View All Events
-          <FaArrowRight/>
+          <FaArrowRight />
         </button>
       </div>
     </div>

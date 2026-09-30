@@ -4,22 +4,42 @@ import Clubs from '@/components/Clubs';
 import RadialMenu from '@/components/Councils';
 import UpcomingEvents from '@/components/NewsEvents';
 import IBCCPodiumHome from '@/components/ibcc/IBCCPodiumHome';
+import LatestAchievements from '@/components/LatestAchievements';
 
 export const revalidate = 60; // Revalidate every 60 seconds
 
 // 1. Fetch Events on the Server
 async function getHomeEvents() {
   try {
-    // Get 5 upcoming events
+    // Get the next events for the homepage
     const sql = `
       SELECT * FROM events 
       WHERE event_date >= CURRENT_DATE 
       ORDER BY event_date ASC 
+      LIMIT 3
     `;
     const res = await query(sql);
     return res.rows;
   } catch (error) {
     console.error("Failed to fetch home events:", error);
+    return [];
+  }
+}
+
+async function getLatestAchievements() {
+  try {
+    const sql = `
+      SELECT a.id, a.council_id, a.title, a.description, a.achievement_date, a.image_url,
+             c.name AS council_name, c.color AS council_color
+      FROM council_achievements a
+      JOIN councils c ON c.id = a.council_id
+      ORDER BY a.achievement_date DESC
+      LIMIT 3
+    `;
+    const res = await query(sql);
+    return res.rows;
+  } catch (error) {
+    console.error("Failed to fetch latest achievements:", error);
     return [];
   }
 }
@@ -78,6 +98,7 @@ async function getLiveIBCCEvent() {
 // 2. Async Server Component
 const Page = async () => {
   const events = await getHomeEvents();
+  const achievements = await getLatestAchievements();
   const dbCouncils = await getCouncils();
   const leaderboard = await getIBCCLeaderboard();
   const liveEvent = await getLiveIBCCEvent();
@@ -116,7 +137,8 @@ const Page = async () => {
 
           <Clubs />
 
-          {/* Pass the real DB events to the component */}
+          <LatestAchievements achievements={achievements} />
+
           <UpcomingEvents events={events} />
         </div>
       </div>
