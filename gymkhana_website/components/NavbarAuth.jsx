@@ -1,10 +1,15 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { FaSignInAlt, FaColumns } from "react-icons/fa";
+import { motion, useReducedMotion } from "motion/react";
 
 const NavbarAuth = ({ setIsMenuOpen }) => {
   const { data: session } = useSession();
+  const [isLoginExpanded, setIsLoginExpanded] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
 
   return (
     <li className="mt-2 flex items-center px-3 md:ml-1 md:mt-0 md:px-0">
@@ -20,14 +25,39 @@ const NavbarAuth = ({ setIsMenuOpen }) => {
         </Link>
       ) : (
         // 2. LOGGED OUT: Show Login Button
-        <Link
-          href="/login"
-          onClick={() => setIsMenuOpen(false)}
-          className="group flex items-center justify-center rounded-full border border-black/25 px-4 py-2 font-bold text-black transition-colors hover:bg-black hover:text-white"
+        <motion.div
+          onHoverStart={() => setIsLoginExpanded(true)}
+          onHoverEnd={() => setIsLoginExpanded(false)}
         >
-          <FaSignInAlt className="shrink-0" />
-          <span className="ml-2 whitespace-nowrap">Login</span>
-        </Link>
+          <Link
+            href="/login"
+            onClick={() => setIsMenuOpen(false)}
+            onFocus={() => setIsLoginExpanded(true)}
+            onBlur={() => setIsLoginExpanded(false)}
+            className={`flex h-10 items-center justify-center rounded-full border border-black/25 font-bold text-black transition-[width,background-color,color] duration-200 hover:bg-black hover:text-white focus-visible:bg-black focus-visible:text-white md:px-0 ${isLoginExpanded ? "md:w-24" : "md:w-10"} w-auto px-4`}
+          >
+            <motion.span
+              className="shrink-0"
+              animate={{ x: isLoginExpanded ? -2 : 0 }}
+              transition={{ duration: prefersReducedMotion ? 0 : 0.2 }}
+            >
+              <FaSignInAlt />
+            </motion.span>
+            <motion.span
+              className="hidden overflow-hidden whitespace-nowrap md:inline-block"
+              initial={false}
+              animate={{
+                width: isLoginExpanded ? "auto" : 0,
+                opacity: isLoginExpanded ? 1 : 0,
+                marginLeft: isLoginExpanded ? 8 : 0,
+              }}
+              transition={{ duration: prefersReducedMotion ? 0 : 0.2 }}
+            >
+              Login
+            </motion.span>
+            <span className="ml-2 md:hidden">Login</span>
+          </Link>
+        </motion.div>
       )}
     </li>
   );
