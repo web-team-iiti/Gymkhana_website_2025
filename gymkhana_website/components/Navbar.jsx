@@ -25,7 +25,7 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`navbar-font fixed left-0 top-0 z-50 w-full border-b transition-all duration-300 ${isScrolled ? "border-black/10 bg-[#fff8ed]/95 shadow-sm backdrop-blur-md" : "border-transparent bg-[#fff8ed]"}`}
+      className={`outfit-font fixed left-0 top-0 z-50 w-full border-b transition-all duration-300 ${isScrolled ? "border-black/10 bg-[#fff8ed]/95 shadow-sm backdrop-blur-md" : "border-transparent bg-[#fff8ed]"}`}
     >
       <div className="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between gap-x-6 px-4 py-3 sm:px-6">
         {/* Main Logo Here */}

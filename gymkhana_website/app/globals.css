@@ -4,8 +4,8 @@
   font-family: serif;
 }
 
-.navbar-font,
-.navbar-font * {
+.outfit-font,
+.outfit-font * {
   font-family: var(--font-outfit), sans-serif;
 }
 
