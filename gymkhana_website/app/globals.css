@@ -1,11 +1,17 @@
 @import "tailwindcss";
 
-*{
-    font-family: serif;
+* {
+  font-family: serif;
 }
+
+.navbar-font,
+.navbar-font * {
+  font-family: var(--font-outfit), sans-serif;
+}
+
 /* To hide scroll bars */
 ::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
 /* Custom animations for hover effects */
@@ -21,7 +27,8 @@
 }
 
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px);
   }
   50% {
