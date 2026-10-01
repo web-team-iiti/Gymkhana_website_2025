@@ -1,8 +1,17 @@
+import * as motion from "motion/react-client";
 import Link from "next/link";
 import { FaArrowRight, FaTrophy } from "react-icons/fa";
 import Achievement from "./Achievement";
 
 const LatestAchievements = ({ achievements = [] }) => {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.15 },
+    },
+  };
+
   return (
     <section className="w-full outfit-font bg-[#fff9f6] px-4 py-14 text-[#192b35] sm:px-6 md:py-20">
       <div className="mx-auto max-w-7xl">
@@ -18,20 +27,41 @@ const LatestAchievements = ({ achievements = [] }) => {
               The people and councils making an impact across the campus.
             </p>
           </div>
-          <Link
-            href="/councils"
-            className="inline-flex w-fit items-center gap-2 rounded-full border border-[#c8bcb4] px-5 py-2.5 text-sm font-semibold text-[#263f4b] transition-colors hover:border-[#b96f65] hover:text-[#a4574e]"
+          <motion.div
+            initial="rest"
+            whileHover="hover"
+            whileTap={{ scale: 0.97 }}
+            variants={{ rest: { y: 0 }, hover: { y: -2 } }}
+            transition={{ type: "spring", stiffness: 380, damping: 22 }}
+            className="w-fit"
           >
-            Explore councils <FaArrowRight aria-hidden="true" />
-          </Link>
+            <Link
+              href="/councils"
+              className="group inline-flex items-center gap-2 rounded-full border border-[#c8bcb4] bg-[#fffefd] px-5 py-2.5 text-sm font-semibold text-[#263f4b] shadow-[0_3px_8px_rgba(74,48,31,0.1)] transition-colors hover:border-[#b96f65] hover:text-[#a4574e] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#a75c4e]"
+            >
+              Explore councils
+              <motion.span
+                variants={{ rest: { x: 0 }, hover: { x: 4 } }}
+                className="inline-flex"
+              >
+                <FaArrowRight aria-hidden="true" />
+              </motion.span>
+            </Link>
+          </motion.div>
         </div>
 
         {achievements.length > 0 ? (
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain px-4 pb-4 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-3"
+          >
             {achievements.map((achievement) => (
               <Achievement key={achievement.id} achievement={achievement} />
             ))}
-          </div>
+          </motion.div>
         ) : (
           <div className="flex flex-col items-center rounded-lg border border-dashed border-[#d9ccc3] bg-[#fffdfb] px-6 py-12 text-center">
             <FaTrophy

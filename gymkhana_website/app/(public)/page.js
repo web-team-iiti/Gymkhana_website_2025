@@ -1,10 +1,10 @@
-import React from 'react';
+import React from "react";
 import { query } from "@/config/db"; // Import DB connection
-import Clubs from '@/components/Clubs';
-import RadialMenu from '@/components/Councils';
-import UpcomingEvents from '@/components/NewsEvents';
-import IBCCPodiumHome from '@/components/ibcc/IBCCPodiumHome';
-import LatestAchievements from '@/components/LatestAchievements';
+import Clubs from "@/components/Clubs";
+import RadialMenu from "@/components/Councils";
+import UpcomingEvents from "@/components/NewsEvents";
+import IBCCPodiumHome from "@/components/ibcc/IBCCPodiumHome";
+import LatestAchievements from "@/components/LatestAchievements";
 
 export const revalidate = 60; // Revalidate every 60 seconds
 
@@ -66,7 +66,10 @@ async function getIBCCLeaderboard() {
       LIMIT 3
     `;
     const res = await query(sql);
-    return res.rows.map(r => ({ ...r, total_score: parseFloat(r.total_score) }));
+    return res.rows.map((r) => ({
+      ...r,
+      total_score: parseFloat(r.total_score),
+    }));
   } catch (error) {
     return [];
   }
@@ -83,7 +86,7 @@ async function getLiveIBCCEvent() {
     `;
     const res = await query(sql);
     let liveEvent = res.rows[0] || null;
-    
+
     // Serialize dates for Client Component passing
     if (liveEvent) {
       liveEvent.start_time = liveEvent.start_time.toISOString();
@@ -110,18 +113,17 @@ const Page = async () => {
 
       {/* 🌌 Unified Galaxy Wrapper */}
       <div className="relative w-full overflow-hidden bg-gray-950">
-
         {/* Static CSS Galaxy Background */}
         <div className="absolute inset-0 z-0 bg-[#030308] overflow-hidden">
           {/* Glowing Core */}
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_30%,#1e3a8a33,#030308_100%)]"></div>
-          
+
           {/* Grain Texture for realistic space feel */}
           <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-15 mix-blend-screen"></div>
-          
+
           {/* Layer 1: Large faint stars */}
           <div className="absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:50px_50px] opacity-10"></div>
-          
+
           {/* Layer 2: Small bright stars (offset) */}
           <div className="absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:30px_30px] [background-position:15px_15px] opacity-20"></div>
 
@@ -130,8 +132,7 @@ const Page = async () => {
         </div>
 
         {/* Content Layer */}
-        <div className="relative z-10 pb-20">
-          
+        <div className="relative z-10">
           {/* IBCC Podium Section */}
           <IBCCPodiumHome leaderboard={leaderboard} liveEvent={liveEvent} />
 

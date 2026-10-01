@@ -1,3 +1,4 @@
+import * as motion from "motion/react-client";
 import Link from "next/link";
 import {
   FaArrowRight,
@@ -12,9 +13,21 @@ const EventCard = ({ event }) => {
     day: "numeric",
     year: "numeric",
   });
+  const cardVariants = {
+    hidden: { opacity: 0, y: 24 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.55, ease: "easeOut" },
+    },
+  };
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-lg border border-[#eadfd6] bg-[#fffdfb] shadow-[0_2px_8px_rgba(60,39,27,0.06)] transition duration-200 hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(60,39,27,0.12)]">
+    <motion.article
+      variants={cardVariants}
+      whileHover={{ y: -5, transition: { duration: 0.2 } }}
+      className="group flex h-full min-h-[25rem] w-[86%] min-w-[275px] max-w-[360px] shrink-0 snap-start flex-col overflow-hidden rounded-lg border border-[#e7d4c8] bg-[#fffefd] shadow-[0_5px_14px_rgba(74,48,31,0.13)] transition-shadow duration-200 hover:shadow-[0_16px_32px_rgba(74,48,31,0.2)] sm:w-auto sm:min-w-0 sm:max-w-none sm:shrink"
+    >
       <Link
         href={`/events/${event.id}`}
         className="flex h-full flex-col focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#b96f65]"
@@ -60,14 +73,27 @@ const EventCard = ({ event }) => {
           </span>
         </div>
       </Link>
-    </article>
+    </motion.article>
   );
 };
 
 // --- Main Component ---
 const UpcomingEvents = ({ events = [] }) => {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.12 },
+    },
+  };
+
+  const linkVariants = {
+    rest: { y: 0 },
+    hover: { y: -2 },
+  };
+
   return (
-    <section className="w-full outfit-font bg-[#ffcfbc] px-4 py-14 text-[#192b35] sm:px-6 md:py-20">
+    <section className="w-full outfit-font bg-[#fff3e8] px-4 py-14 text-[#192b35] sm:px-6 md:py-20">
       <div className="mx-auto max-w-7xl">
         <div className="mb-8 flex flex-col gap-4 sm:mb-10 sm:flex-row sm:items-end sm:justify-between">
           <div>
@@ -81,20 +107,41 @@ const UpcomingEvents = ({ events = [] }) => {
               Find your next opportunity to learn, compete, and connect.
             </p>
           </div>
-          <Link
-            href="/events"
-            className="inline-flex w-fit items-center gap-2 rounded-full border border-[#c8bcb4] px-5 py-2.5 text-sm font-semibold text-[#263f4b] transition-colors hover:border-[#b96f65] hover:text-[#a4574e] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#b96f65]"
+          <motion.div
+            initial="rest"
+            whileHover="hover"
+            whileTap={{ scale: 0.97 }}
+            variants={linkVariants}
+            transition={{ type: "spring", stiffness: 380, damping: 22 }}
+            className="w-fit"
           >
-            All events <FaArrowRight aria-hidden="true" />
-          </Link>
+            <Link
+              href="/events"
+              className="group inline-flex items-center gap-2 rounded-full border border-[#c8bcb4] bg-[#fffefd] px-5 py-2.5 text-sm font-semibold text-[#263f4b] shadow-[0_3px_8px_rgba(74,48,31,0.1)] transition-colors hover:border-[#b96f65] hover:text-[#a4574e] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#a75c4e]"
+            >
+              All events
+              <motion.span
+                variants={{ rest: { x: 0 }, hover: { x: 4 } }}
+                className="inline-flex"
+              >
+                <FaArrowRight aria-hidden="true" />
+              </motion.span>
+            </Link>
+          </motion.div>
         </div>
 
         {events.length > 0 ? (
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain px-4 pb-4 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-5 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-3"
+          >
             {events.map((event) => (
               <EventCard key={event.id} event={event} />
             ))}
-          </div>
+          </motion.div>
         ) : (
           <div className="flex flex-col items-center rounded-lg border border-dashed border-[#d9ccc3] bg-[#fffdfb] px-6 py-12 text-center">
             <FaRegCalendarTimes
