@@ -1,5 +1,6 @@
 import React from "react";
 import { query } from "@/config/db"; // Import DB connection
+import Announcements from "@/components/Announcements";
 import Clubs from "@/components/Clubs";
 import RadialMenu from "@/components/Councils";
 import UpcomingEvents from "@/components/NewsEvents";
@@ -98,6 +99,18 @@ async function getLiveIBCCEvent() {
   }
 }
 
+// fetch the announcements - Incomplete
+async function getAnnouncements() {
+  try {
+    const sql = ` `;
+    const res = await query(sql);
+
+    return res;
+  } catch (error) {
+    return null;
+  }
+}
+
 // 2. Async Server Component
 const Page = async () => {
   const events = await getHomeEvents();
@@ -105,6 +118,7 @@ const Page = async () => {
   const dbCouncils = await getCouncils();
   const leaderboard = await getIBCCLeaderboard();
   const liveEvent = await getLiveIBCCEvent();
+  const announcements = await getAnnouncements();
 
   return (
     <div>
@@ -137,6 +151,8 @@ const Page = async () => {
           <IBCCPodiumHome leaderboard={leaderboard} liveEvent={liveEvent} />
 
           <Clubs />
+
+          <Announcements announcements={announcements} />
 
           <LatestAchievements achievements={achievements} />
 

@@ -16,7 +16,7 @@ const LatestAchievements = ({ achievements = [] }) => {
   const Text = "Explore Councils";
 
   return (
-    <section className="w-full outfit-font bg-[#fff9f6] px-4 py-14 text-[#192b35] sm:px-6 md:py-20">
+    <section className="w-full outfit-font bg-[#fff3d9] px-4 py-14 text-[#192b35] sm:px-6 md:py-20">
       <div className="mx-auto max-w-7xl">
         <div className="mb-8 flex flex-col gap-4 sm:mb-10 sm:flex-row sm:items-end sm:justify-between">
           <div>
