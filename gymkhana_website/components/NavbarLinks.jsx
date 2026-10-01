@@ -13,7 +13,7 @@ const NavbarLinks = ({ setIsMenuOpen }) => {
   const getItemStyles = (active) =>
     active
       ? "bg-amber-200 text-amber-950 border border-amber-200/60 shadow-[0_4px_14px_rgba(217,119,6,0.15)] rounded-full uppercase tracking-wide font-[Outfit,sans-serif] font-bold"
-      : "text-stone-700 hover:bg-amber-50/90 hover:text-amber-950 hover:border hover:border-amber-200/60 hover:shadow-[0_3px_10px_rgba(217,119,6,0.12)] hover:-translate-y-0.5 font-[Outfit,sans-serif] transition-all duration-200 font-bold rounded-full uppercase tracking-wide";
+      : "text-stone-700 hover:bg-amber-50/90 hover:text-amber-950 hover:border hover:border-amber-600/60 hover:shadow-[0_3px_10px_rgba(217,119,6,0.12)] hover:-translate-y-0.5 font-[Outfit,sans-serif] transition-all duration-200 font-bold rounded-full uppercase tracking-wide";
 
   const closeMenus = () => {
     setOpenDropdown(null);
