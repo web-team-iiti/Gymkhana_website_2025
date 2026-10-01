@@ -1,6 +1,7 @@
 import * as motion from "motion/react-client";
 import Link from "next/link";
 import { FaArrowRight, FaTrophy } from "react-icons/fa";
+import ExploreMore from "../components/ExploreMore";
 import Achievement from "./Achievement";
 
 const LatestAchievements = ({ achievements = [] }) => {
@@ -11,6 +12,8 @@ const LatestAchievements = ({ achievements = [] }) => {
       transition: { staggerChildren: 0.15 },
     },
   };
+  const href = "councils";
+  const Text = "Explore Councils";
 
   return (
     <section className="w-full outfit-font bg-[#fff9f6] px-4 py-14 text-[#192b35] sm:px-6 md:py-20">
@@ -27,27 +30,7 @@ const LatestAchievements = ({ achievements = [] }) => {
               The people and councils making an impact across the campus.
             </p>
           </div>
-          <motion.div
-            initial="rest"
-            whileHover="hover"
-            whileTap={{ scale: 0.97 }}
-            variants={{ rest: { y: 0 }, hover: { y: -2 } }}
-            transition={{ type: "spring", stiffness: 380, damping: 22 }}
-            className="w-fit"
-          >
-            <Link
-              href="/councils"
-              className="group inline-flex items-center gap-2 rounded-full border border-[#c8bcb4] bg-[#fffefd] px-5 py-2.5 text-sm font-semibold text-[#263f4b] shadow-[0_3px_8px_rgba(74,48,31,0.1)] transition-colors hover:border-[#b96f65] hover:text-[#a4574e] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#a75c4e]"
-            >
-              Explore councils
-              <motion.span
-                variants={{ rest: { x: 0 }, hover: { x: 4 } }}
-                className="inline-flex"
-              >
-                <FaArrowRight aria-hidden="true" />
-              </motion.span>
-            </Link>
-          </motion.div>
+          <ExploreMore href={href} text={Text} />
         </div>
 
         {achievements.length > 0 ? (

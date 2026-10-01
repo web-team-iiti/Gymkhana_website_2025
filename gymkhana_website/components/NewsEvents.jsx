@@ -1,5 +1,6 @@
 import * as motion from "motion/react-client";
 import Link from "next/link";
+import ExploreMore from "./ExploreMore";
 import {
   FaArrowRight,
   FaCalendarAlt,
@@ -87,11 +88,6 @@ const UpcomingEvents = ({ events = [] }) => {
     },
   };
 
-  const linkVariants = {
-    rest: { y: 0 },
-    hover: { y: -2 },
-  };
-
   return (
     <section className="w-full outfit-font bg-[#fff3e8] px-4 py-14 text-[#192b35] sm:px-6 md:py-20">
       <div className="mx-auto max-w-7xl">
@@ -107,27 +103,7 @@ const UpcomingEvents = ({ events = [] }) => {
               Find your next opportunity to learn, compete, and connect.
             </p>
           </div>
-          <motion.div
-            initial="rest"
-            whileHover="hover"
-            whileTap={{ scale: 0.97 }}
-            variants={linkVariants}
-            transition={{ type: "spring", stiffness: 380, damping: 22 }}
-            className="w-fit"
-          >
-            <Link
-              href="/events"
-              className="group inline-flex items-center gap-2 rounded-full border border-[#c8bcb4] bg-[#fffefd] px-5 py-2.5 text-sm font-semibold text-[#263f4b] shadow-[0_3px_8px_rgba(74,48,31,0.1)] transition-colors hover:border-[#b96f65] hover:text-[#a4574e] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#a75c4e]"
-            >
-              All events
-              <motion.span
-                variants={{ rest: { x: 0 }, hover: { x: 4 } }}
-                className="inline-flex"
-              >
-                <FaArrowRight aria-hidden="true" />
-              </motion.span>
-            </Link>
-          </motion.div>
+          <ExploreMore href="events" text="All events" />
         </div>
 
         {events.length > 0 ? (
