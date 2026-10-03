@@ -24,8 +24,12 @@ const Achievement = ({ achievement }) => {
     >
       <motion.div
         variants={cardVariants}
-        whileHover={{ y: -5, transition: { duration: 0.2 } }}
-        className="group flex h-full min-h-[25rem] flex-col overflow-hidden rounded-lg border border-[#e7d4c8] bg-[#fffefd] shadow-[0_5px_14px_rgba(74,48,31,0.13)] transition-shadow duration-200 hover:shadow-[0_16px_32px_rgba(74,48,31,0.2)]"
+        whileHover={{
+          y: -15,
+          scale: 1.03,
+          transition: { type: "spring", stiffness: 320, damping: 22 },
+        }}
+        className="group flex h-full min-h-[25rem] flex-col overflow-hidden rounded-lg border border-[#e7d4c8] bg-[#fffefd] shadow-[0_5px_14px_rgba(74,48,31,0.13)] transition-[border-color,box-shadow] duration-300 hover:border-[#d9aaa0] hover:shadow-[0_16px_32px_rgba(74,48,31,0.2)]"
       >
         <div className="relative aspect-[16/9] overflow-hidden bg-[#f3e4da]">
           {achievement.image_url ? (

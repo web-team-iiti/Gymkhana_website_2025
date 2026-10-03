@@ -1,7 +1,7 @@
 import * as motion from "motion/react-client";
 import Link from "next/link";
 import { FaArrowRight, FaTrophy } from "react-icons/fa";
-import ExploreMore from "../components/ExploreMore";
+import ExploreMore from "./ExploreMoreButton";
 import Achievement from "./Achievement";
 
 const LatestAchievements = ({ achievements = [] }) => {

@@ -1,6 +1,6 @@
 import * as motion from "motion/react-client";
 import Link from "next/link";
-import ExploreMore from "./ExploreMore";
+import ExploreMore from "./ExploreMoreButton";
 import {
   FaArrowRight,
   FaCalendarAlt,

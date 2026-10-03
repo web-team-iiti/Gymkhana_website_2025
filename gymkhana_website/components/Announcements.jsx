@@ -1,6 +1,6 @@
 import * as motion from "motion/react-client";
 import { FaCalendarAlt, FaTheaterMasks, FaUsers } from "react-icons/fa";
-import ExploreMore from "./ExploreMore";
+import ExploreMore from "./ExploreMoreButton";
 
 // Dummy data
 const ann = [
@@ -51,20 +51,27 @@ const Announcements = ({ announcements = ann }) => {
               key={title}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
+              whileHover={{
+                y: -15,
+                scale: 1.05,
+                transition: { type: "spring", stiffness: 320, damping: 22 },
+              }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{
                 duration: 0.9,
                 delay: index * 0.15,
                 ease: "easeOut",
               }}
-              className="flex min-h-60 flex-col items-start rounded-lg border border-[#f0e1d4] bg-[#fff3e8] p-6 shadow-[0_3px_10px_rgba(74,48,31,0.12)] sm:p-7"
+              className="flex min-h-60 flex-col items-start rounded-lg border border-[#f0e1d4] bg-[#fff3e8] p-6 shadow-[0_3px_10px_rgba(74,48,31,0.12)] transition-[border-color,box-shadow] duration-300 hover:border-[#d9aaa0] hover:shadow-[0_16px_32px_rgba(74,48,31,0.18)] sm:p-7"
             >
-              <div
+              <motion.div
+                whileHover={{ rotate: -6, scale: 1.08 }}
+                transition={{ type: "spring", stiffness: 360, damping: 18 }}
                 className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#f4dfd4] text-[#b96f65]"
                 aria-hidden="true"
               >
                 <Icon />
-              </div>
+              </motion.div>
               <h3 className="text-xl font-semibold leading-snug text-[#bd746b] sm:text-2xl">
                 {title}
               </h3>

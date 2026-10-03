@@ -24,7 +24,8 @@ const ExploreMore = ({ href, text }) => {
     <motion.div
       initial="rest"
       whileHover="hover"
-      whileTap={{ scale: 0.97 }}
+      whileTap={{ scale: 0.8, y: 5 }}
+      transition={{ type: "spring", stiffness: 600, damping: 20 }}
       className="w-fit"
     >
       <Link

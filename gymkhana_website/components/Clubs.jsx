@@ -13,7 +13,8 @@ const mockClubs = [
     name: "Aeromodelling Club",
     category: "Technical",
     tag: "TECHNICAL",
-    description: "Design, build, and fly! We deal with UAVs, drones, and miniaturized aircrafts, participating in technical fests across the country.",
+    description:
+      "Design, build, and fly! We deal with UAVs, drones, and miniaturized aircrafts, participating in technical fests across the country.",
     imageUrl: "/aeroclub.jpg",
   },
   {
@@ -21,7 +22,8 @@ const mockClubs = [
     name: "Astronomy Club",
     category: "Technical",
     tag: "TECHNICAL",
-    description: "A hub for cosmic exploration. We organize stargazing sessions, telescope workshops, and discuss the mysteries of the universe.",
+    description:
+      "A hub for cosmic exploration. We organize stargazing sessions, telescope workshops, and discuss the mysteries of the universe.",
     imageUrl: "/astronomyclub.jpg",
   },
   {
@@ -29,7 +31,8 @@ const mockClubs = [
     name: "CAE Club",
     category: "Technical",
     tag: "TECHNICAL",
-    description: "Computer-Aided Engineering Club. We solve engineering problems using simulation software like ANSYS and Abaqus.",
+    description:
+      "Computer-Aided Engineering Club. We solve engineering problems using simulation software like ANSYS and Abaqus.",
     imageUrl: "/cae.png",
   },
   {
@@ -37,7 +40,8 @@ const mockClubs = [
     name: "CFA Club",
     category: "Technical",
     tag: "TECHNICAL",
-    description: "The Finance and Analytics Club. We prepare students for corporate finance, algorithmic trading, and data analysis roles.",
+    description:
+      "The Finance and Analytics Club. We prepare students for corporate finance, algorithmic trading, and data analysis roles.",
     imageUrl: "/CFA.jpg",
   },
   {
@@ -45,7 +49,8 @@ const mockClubs = [
     name: "Concrete Club",
     category: "Technical",
     tag: "TECHNICAL",
-    description: "Exploring civil engineering and sustainable construction. We conduct workshops on structural design and concrete technology.",
+    description:
+      "Exploring civil engineering and sustainable construction. We conduct workshops on structural design and concrete technology.",
     imageUrl: "/concreate.jpg",
   },
   {
@@ -53,7 +58,8 @@ const mockClubs = [
     name: "Electronics Club",
     category: "Technical",
     tag: "TECHNICAL",
-    description: "For the hardware fanatics. We explore IoT, embedded systems, and circuit design through hands-on workshops and hackathons.",
+    description:
+      "For the hardware fanatics. We explore IoT, embedded systems, and circuit design through hands-on workshops and hackathons.",
     imageUrl: "/electronics.png",
   },
   {
@@ -61,7 +67,8 @@ const mockClubs = [
     name: "Cynaptics",
     category: "Technical",
     tag: "TECHNICAL",
-    description: "The AI & ML Club. We work on neural networks, deep learning projects, and compete in Kaggle competitions.",
+    description:
+      "The AI & ML Club. We work on neural networks, deep learning projects, and compete in Kaggle competitions.",
     imageUrl: "/cynaptics.jpg",
   },
   {
@@ -69,7 +76,8 @@ const mockClubs = [
     name: "GDSC",
     category: "Technical",
     tag: "TECHNICAL",
-    description: "Google Developer Student Club. We focus on Web Dev, App Dev, and Cloud Computing, empowering students with Google technologies.",
+    description:
+      "Google Developer Student Club. We focus on Web Dev, App Dev, and Cloud Computing, empowering students with Google technologies.",
     imageUrl: "/gdsc.png",
   },
   {
@@ -77,7 +85,8 @@ const mockClubs = [
     name: "Gymkhana Web Team",
     category: "Technical",
     tag: "TECHNICAL",
-    description: "The tech backbone of the institute. We develop and maintain the official websites, portals, and apps for the Gymkhana.",
+    description:
+      "The tech backbone of the institute. We develop and maintain the official websites, portals, and apps for the Gymkhana.",
     imageUrl: "/Web_Team_Logo.aeedf74e.png",
   },
   {
@@ -85,7 +94,8 @@ const mockClubs = [
     name: "IVDC",
     category: "Technical",
     tag: "TECHNICAL",
-    description: "Intelligent Vehicle Design Club. We design autonomous and electric concept vehicles for competitions like Formula Student.",
+    description:
+      "Intelligent Vehicle Design Club. We design autonomous and electric concept vehicles for competitions like Formula Student.",
     imageUrl: "/ivdc.jpg",
   },
   {
@@ -93,7 +103,8 @@ const mockClubs = [
     name: "Metacryst",
     category: "Technical",
     tag: "TECHNICAL",
-    description: "Materials Science Club. We explore crystallography, metallurgy, and smart materials through research and experiments.",
+    description:
+      "Materials Science Club. We explore crystallography, metallurgy, and smart materials through research and experiments.",
     imageUrl: "/MetaCryst Logo1.a914f007.png",
   },
   {
@@ -101,7 +112,8 @@ const mockClubs = [
     name: "Programming Club",
     category: "Technical",
     tag: "TECHNICAL",
-    description: "The coding hub. We focus on Competitive Programming (CP), DSA, Cybersecurity, and open-source development.",
+    description:
+      "The coding hub. We focus on Competitive Programming (CP), DSA, Cybersecurity, and open-source development.",
     imageUrl: "/pclub.png",
   },
   {
@@ -109,7 +121,8 @@ const mockClubs = [
     name: "Quantum Computing",
     category: "Technical",
     tag: "TECHNICAL",
-    description: "Exploring the future of computing. We study quantum algorithms, cryptography, and Qiskit implementations.",
+    description:
+      "Exploring the future of computing. We study quantum algorithms, cryptography, and Qiskit implementations.",
     imageUrl: "/quantum computing.abcb2b09.jpg",
   },
   {
@@ -117,7 +130,8 @@ const mockClubs = [
     name: "Robotics Club",
     category: "Technical",
     tag: "TECHNICAL",
-    description: "We build machines that move. From line followers and micromouse to humanoids and industrial arms.",
+    description:
+      "We build machines that move. From line followers and micromouse to humanoids and industrial arms.",
     imageUrl: "/robotics.jpg",
   },
   {
@@ -125,7 +139,8 @@ const mockClubs = [
     name: "Biocrats",
     category: "Technical",
     tag: "TECHNICAL",
-    description: "The Biotech Club. We explore bioinformatics, genetic engineering, and synthetic biology through seminars and projects.",
+    description:
+      "The Biotech Club. We explore bioinformatics, genetic engineering, and synthetic biology through seminars and projects.",
     imageUrl: "/Biocrats.jpg",
   },
 
@@ -137,7 +152,8 @@ const mockClubs = [
     name: "Athletics Club",
     category: "Sports",
     tag: "SPORTS",
-    description: "Run, Jump, Throw. We focus on track and field events, endurance training, and physical conditioning.",
+    description:
+      "Run, Jump, Throw. We focus on track and field events, endurance training, and physical conditioning.",
     imageUrl: "/athletics.png",
   },
   {
@@ -145,7 +161,8 @@ const mockClubs = [
     name: "Aquatics Club",
     category: "Sports",
     tag: "SPORTS",
-    description: "Dive in! We conduct swimming training, water polo matches, and promote aquatic fitness.",
+    description:
+      "Dive in! We conduct swimming training, water polo matches, and promote aquatic fitness.",
     imageUrl: "/aquatics.jpg",
   },
   {
@@ -153,7 +170,8 @@ const mockClubs = [
     name: "Badminton Club",
     category: "Sports",
     tag: "SPORTS",
-    description: "Smash it! A community for badminton lovers offering coaching, practice courts, and tournaments.",
+    description:
+      "Smash it! A community for badminton lovers offering coaching, practice courts, and tournaments.",
     imageUrl: "/Badminton_club.png",
   },
   {
@@ -161,7 +179,8 @@ const mockClubs = [
     name: "Basketball Club",
     category: "Sports",
     tag: "SPORTS",
-    description: "Dribble and Shoot. We focus on team strategy, drills, and high-intensity inter-college matches.",
+    description:
+      "Dribble and Shoot. We focus on team strategy, drills, and high-intensity inter-college matches.",
     imageUrl: "/basketball.png",
   },
   {
@@ -169,7 +188,8 @@ const mockClubs = [
     name: "Chess Club",
     category: "Sports",
     tag: "SPORTS",
-    description: "Checkmate. A club for strategic minds to practice tactics, openings, and compete in rapid/blitz tournaments.",
+    description:
+      "Checkmate. A club for strategic minds to practice tactics, openings, and compete in rapid/blitz tournaments.",
     imageUrl: "/chess.jpg",
   },
   {
@@ -177,7 +197,8 @@ const mockClubs = [
     name: "Cricket Club",
     category: "Sports",
     tag: "SPORTS",
-    description: "The gentlemen's game. We host net practice, inter-batch leagues, and represent the institute in tournaments.",
+    description:
+      "The gentlemen's game. We host net practice, inter-batch leagues, and represent the institute in tournaments.",
     imageUrl: "/cricket.jpg",
   },
   {
@@ -185,7 +206,8 @@ const mockClubs = [
     name: "Football Club",
     category: "Sports",
     tag: "SPORTS",
-    description: "The beautiful game. We focus on stamina, tactical discipline, and teamwork on the field.",
+    description:
+      "The beautiful game. We focus on stamina, tactical discipline, and teamwork on the field.",
     imageUrl: "/football.jpg",
   },
   {
@@ -193,7 +215,8 @@ const mockClubs = [
     name: "Squash Club",
     category: "Sports",
     tag: "SPORTS",
-    description: "High-intensity court action. We offer training for agility, reflex improvement, and friendly matches.",
+    description:
+      "High-intensity court action. We offer training for agility, reflex improvement, and friendly matches.",
     imageUrl: "/squash.png",
   },
   {
@@ -201,7 +224,8 @@ const mockClubs = [
     name: "Tennis Club",
     category: "Sports",
     tag: "SPORTS",
-    description: "Ace your game. Lawn tennis coaching and matches for beginners and advanced players alike.",
+    description:
+      "Ace your game. Lawn tennis coaching and matches for beginners and advanced players alike.",
     imageUrl: "/tennis.jpg",
   },
   {
@@ -209,7 +233,8 @@ const mockClubs = [
     name: "Table Tennis Club",
     category: "Sports",
     tag: "SPORTS",
-    description: "Spin and Smash. Fast-paced ping pong action with regular practice sessions and competitions.",
+    description:
+      "Spin and Smash. Fast-paced ping pong action with regular practice sessions and competitions.",
     imageUrl: "/tabletennis.png",
   },
   {
@@ -217,7 +242,8 @@ const mockClubs = [
     name: "Volleyball Club",
     category: "Sports",
     tag: "SPORTS",
-    description: "Bump, Set, Spike. We foster teamwork and agility through regular volleyball training.",
+    description:
+      "Bump, Set, Spike. We foster teamwork and agility through regular volleyball training.",
     imageUrl: "/vollyball.png",
   },
   {
@@ -225,7 +251,8 @@ const mockClubs = [
     name: "Yoga Club",
     category: "Sports",
     tag: "SPORTS",
-    description: "Mind and Body. We promote wellness through asanas, meditation, and flexibility workshops.",
+    description:
+      "Mind and Body. We promote wellness through asanas, meditation, and flexibility workshops.",
     imageUrl: "/gym.jpg",
   },
 
@@ -237,7 +264,8 @@ const mockClubs = [
     name: "Aaina (Dramatics)",
     category: "Cultural",
     tag: "CULTURAL",
-    description: "The Dramatics Society. We perform street plays (Nukkad), stage plays, and mimes to showcase emotions and social causes.",
+    description:
+      "The Dramatics Society. We perform street plays (Nukkad), stage plays, and mimes to showcase emotions and social causes.",
     imageUrl: "/aaina_logo.png",
   },
   {
@@ -245,7 +273,8 @@ const mockClubs = [
     name: "Cinephiles",
     category: "Cultural",
     tag: "CULTURAL",
-    description: "The Movie Club. A haven for cinema lovers. We organize screenings, filmmaking workshops, and movie discussions.",
+    description:
+      "The Movie Club. A haven for cinema lovers. We organize screenings, filmmaking workshops, and movie discussions.",
     imageUrl: "/cinephiles.jpg",
   },
   {
@@ -253,7 +282,8 @@ const mockClubs = [
     name: "Kaizen Dance Crew",
     category: "Cultural",
     tag: "CULTURAL",
-    description: "The official dance club. We express ourselves through Hip-hop, Contemporary, Bollywood, and Classical dance forms.",
+    description:
+      "The official dance club. We express ourselves through Hip-hop, Contemporary, Bollywood, and Classical dance forms.",
     imageUrl: "/alphad.jpg",
   },
   {
@@ -261,7 +291,8 @@ const mockClubs = [
     name: "Music Club",
     category: "Cultural",
     tag: "CULTURAL",
-    description: "For the melody makers. We are a group of vocalists and instrumentalists who jam, perform, and live for music.",
+    description:
+      "For the melody makers. We are a group of vocalists and instrumentalists who jam, perform, and live for music.",
     imageUrl: "/Music.jpg",
   },
   {
@@ -269,7 +300,8 @@ const mockClubs = [
     name: "Kalakriti (Fine Arts)",
     category: "Cultural",
     tag: "CULTURAL",
-    description: "The Fine Arts Club. From sketching and painting to digital art and crafting, we color the campus with creativity.",
+    description:
+      "The Fine Arts Club. From sketching and painting to digital art and crafting, we color the campus with creativity.",
     imageUrl: "/kalakriti.png",
   },
   {
@@ -277,7 +309,8 @@ const mockClubs = [
     name: "Literary Club",
     category: "Cultural",
     tag: "CULTURAL",
-    description: "For the wordsmiths. We organize poetry slams, creative writing workshops, debates, and open mic nights.",
+    description:
+      "For the wordsmiths. We organize poetry slams, creative writing workshops, debates, and open mic nights.",
     imageUrl: "/literary.jpg",
   },
   {
@@ -285,7 +318,8 @@ const mockClubs = [
     name: "Debating Society",
     category: "Cultural",
     tag: "CULTURAL",
-    description: "The voice of reason. We hone public speaking and argumentation skills through parliamentary debates and MUNs.",
+    description:
+      "The voice of reason. We hone public speaking and argumentation skills through parliamentary debates and MUNs.",
     imageUrl: "/Debsoc.jpg",
   },
   {
@@ -293,7 +327,8 @@ const mockClubs = [
     name: "Mystic Hues",
     category: "Cultural",
     tag: "CULTURAL",
-    description: "The Photography & Design Club. We capture moments through lenses and create visual stories through graphic design.",
+    description:
+      "The Photography & Design Club. We capture moments through lenses and create visual stories through graphic design.",
     imageUrl: "/Mystichues.png",
   },
   {
@@ -301,7 +336,8 @@ const mockClubs = [
     name: "Quiz Club",
     category: "Cultural",
     tag: "CULTURAL",
-    description: "For the trivia buffs. We conduct quizzes on general knowledge, pop culture, sports, technology, and more.",
+    description:
+      "For the trivia buffs. We conduct quizzes on general knowledge, pop culture, sports, technology, and more.",
     imageUrl: "/quiz.jpg",
   },
   {
@@ -309,7 +345,8 @@ const mockClubs = [
     name: "EBSB Club",
     category: "Cultural",
     tag: "CULTURAL",
-    description: "Ek Bharat Shreshtha Bharat. We celebrate the cultural diversity of India through exchange programs and ethnic events.",
+    description:
+      "Ek Bharat Shreshtha Bharat. We celebrate the cultural diversity of India through exchange programs and ethnic events.",
     imageUrl: "/ebsb.png",
   },
   {
@@ -317,7 +354,8 @@ const mockClubs = [
     name: "Gaming Club",
     category: "Cultural",
     tag: "CULTURAL", // Often considered Cultural/Recreational
-    description: "The Esports hub. We organize competitive gaming tournaments for PC and mobile games like Valorant, CS:GO, and BGMI.",
+    description:
+      "The Esports hub. We organize competitive gaming tournaments for PC and mobile games like Valorant, CS:GO, and BGMI.",
     imageUrl: "/gaming.png",
   },
 ];
@@ -327,36 +365,32 @@ const mockClubs = [
 // ------------------------------------------------------
 const ClubCard = ({ club }) => {
   const tagColors = {
-    TECHNICAL: "bg-blue-500/20 text-blue-300",
-    CULTURAL: "bg-yellow-500/20 text-yellow-300",
-    SPORTS: "bg-green-500/20 text-green-300",
+    TECHNICAL: "bg-blue-100 text-blue-800",
+    CULTURAL: "bg-amber-100 text-amber-800",
+    SPORTS: "bg-emerald-100 text-emerald-800",
   };
 
   return (
     <div
-      className="relative w-52 h-64 sm:w-72 sm:h-80 flex-shrink-0 overflow-hidden rounded-2xl border border-gray-700 
-      bg-gray-900/60 backdrop-blur-md shadow-lg transition-transform duration-500 hover:scale-105 group"
+      className="group relative h-64 w-52 flex-shrink-0 overflow-hidden rounded-2xl border border-[#e7d4c8] bg-[#fffefd] shadow-[0_5px_14px_rgba(74,48,31,0.13)] transition-[transform,box-shadow] duration-500 hover:scale-105 hover:shadow-[0_14px_28px_rgba(74,48,31,0.2)] sm:h-80 sm:w-72"
       // Mobile: Ensure min-width so it doesn't shrink
       style={{ minWidth: "250px" }}
     >
       <img
         src={club.imageUrl}
         alt={club.name}
-        className="w-full h-full object-cover opacity-70 group-hover:opacity-30 transition-opacity duration-500"
+        className="h-full w-full object-cover transition-[filter,transform] duration-500 group-hover:scale-105 group-hover:brightness-75"
       />
 
       {/* Overlay on hover (Visible by default on Touch if logic required, but mostly hover) */}
-      <div
-        className="absolute inset-0 flex flex-col justify-center items-center text-center p-4
-        opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-black/40"
-      >
+      <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#192b35]/65 p-4 text-center opacity-0 transition-opacity duration-500 group-hover:opacity-100">
         <span
-          className={`px-3 py-1 text-xs font-semibold rounded-full mb-3 ${tagColors[club.tag] || "bg-gray-500/20 text-gray-300"}`}
+          className={`mb-3 rounded-full px-3 py-1 text-xs font-semibold ${tagColors[club.tag] || "bg-gray-100 text-gray-700"}`}
         >
           {club.tag}
         </span>
-        <h3 className="text-2xl font-bold text-white mb-2">{club.name}</h3>
-        <p className="text-sm text-gray-300 line-clamp-3">{club.description}</p>
+        <h3 className="mb-2 text-2xl font-bold text-white">{club.name}</h3>
+        <p className="line-clamp-3 text-sm text-white/85">{club.description}</p>
       </div>
     </div>
   );
@@ -395,7 +429,7 @@ const DiscoverClubsPage = () => {
         scrollContainer.scrollLeft += scrollSpeed;
 
         // 🔄 SEAMLESS RESET LOGIC
-        // Instead of checking for "end of scroll", we check if we've scrolled past 
+        // Instead of checking for "end of scroll", we check if we've scrolled past
         // one-third of the total width (the length of one set of items).
         // Then we snap back to 0. This prevents the "stopping" bug.
         if (scrollContainer.scrollLeft >= scrollContainer.scrollWidth / 3) {
@@ -412,11 +446,12 @@ const DiscoverClubsPage = () => {
   const handleClick = () => router.push("/club/technical");
 
   return (
-    <div className="w-full flex flex-col items-center justify-center text-white bg-transparent overflow-hidden">
-
+    <div className="flex w-full flex-col items-center justify-center overflow-hidden bg-[#f8cab4] py-8 text-[#192b35]">
       <div className="text-center mb-8 mt-12 px-4">
-        <h1 className="text-xl sm:text-2xl md:text-4xl font-bold mb-3 drop-shadow-lg"><span className="text-yellow-500">OUR</span> CLUBS</h1>
-        <p className="text-gray-300 text-sm md:text-base max-w-2xl mx-auto drop-shadow-md">
+        <h1 className="mb-3 text-xl font-bold sm:text-2xl md:text-4xl">
+          OUR CLUBS
+        </h1>
+        <p className="mx-auto max-w-2xl text-sm text-[#657078] md:text-base">
           Explore the diverse range of clubs at IIT Indore
         </p>
       </div>
@@ -431,10 +466,11 @@ const DiscoverClubsPage = () => {
               // Reset scroll position when filter changes
               if (scrollRef.current) scrollRef.current.scrollLeft = 0;
             }}
-            className={`sm:px-4 px-2 py-1 md:px-5 md:py-2 rounded-full text-xs md:text-sm font-semibold transition-colors duration-300 border backdrop-blur-sm
-              ${filter === cat
-                ? "bg-blue-600/80 border-blue-500 text-white"
-                : "bg-gray-900/40 border-gray-600 text-gray-300 hover:bg-gray-800/60"
+            className={`rounded-full border px-2 py-1 text-xs font-semibold transition-colors duration-300 sm:px-4 md:px-5 md:py-2 md:text-sm
+              ${
+                filter === cat
+                  ? "border-[#b96f65] bg-[#b96f65] text-white"
+                  : "border-[#d9ccc3] bg-[#fffefd] text-[#263f4b] hover:border-[#b96f65] hover:bg-[#fff3e8]"
               }`}
           >
             {cat}
@@ -447,11 +483,9 @@ const DiscoverClubsPage = () => {
         ref={scrollRef}
         // Mobile Layout: Reduced padding (px-4), added hide-scrollbar logic
         className="flex overflow-x-hidden gap-6 w-full px-4 md:px-16 py-8 relative no-scrollbar"
-
         // 🖱️ Mouse Interaction (Desktop)
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
-
         // 📱 Touch Interaction (Mobile) - CRITICAL for smooth swiping
         onTouchStart={() => setIsPaused(true)}
         onTouchEnd={() => {
@@ -460,16 +494,18 @@ const DiscoverClubsPage = () => {
         }}
       >
         {displayClubs.length > 0 ? (
-          displayClubs.map((club, index) => <ClubCard key={`${club.id}-${index}`} club={club} />)
+          displayClubs.map((club, index) => (
+            <ClubCard key={`${club.id}-${index}`} club={club} />
+          ))
         ) : (
-          <p className="text-gray-400 text-center w-full">
+          <p className="w-full text-center text-[#657078]">
             No clubs found in this category.
           </p>
         )}
       </div>
 
       <div onClick={handleClick} className="my-4">
-        <button className="bg-blue-700/90 hover:bg-blue-800 flex items-center gap-2 backdrop-blur-sm rounded-full py-2 px-6 shadow-lg transition-all text-sm md:text-base font-medium">
+        <button className="flex items-center gap-2 rounded-full bg-[#b96f65] px-6 py-2 text-sm font-semibold text-white shadow-[0_4px_12px_rgba(74,48,31,0.15)] transition-colors hover:bg-[#a4574e] md:text-base">
           View All Clubs
           <FaArrowRight />
         </button>
