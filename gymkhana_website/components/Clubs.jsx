@@ -1,7 +1,9 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
+import * as motion from "motion/react-client";
 import { useRouter } from "next/navigation";
-import { FaArrowRight } from "react-icons/fa";
+import { FaArrowRight, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import ExploreMore from "./ExploreMoreButton";
 
 // 🧩 Mock Data
 const mockClubs = [
@@ -432,8 +434,9 @@ const DiscoverClubsPage = () => {
         // Instead of checking for "end of scroll", we check if we've scrolled past
         // one-third of the total width (the length of one set of items).
         // Then we snap back to 0. This prevents the "stopping" bug.
-        if (scrollContainer.scrollLeft >= scrollContainer.scrollWidth / 3) {
-          scrollContainer.scrollLeft = 0;
+        const setWidth = scrollContainer.scrollWidth / 3;
+        if (scrollContainer.scrollLeft >= setWidth) {
+          scrollContainer.scrollLeft -= setWidth;
         }
       }
       animationFrameId = requestAnimationFrame(scrollStep);
@@ -443,10 +446,29 @@ const DiscoverClubsPage = () => {
     return () => cancelAnimationFrame(animationFrameId);
   }, [filter, isPaused]);
 
-  const handleClick = () => router.push("/club/technical");
+  const scrollCarousel = (direction) => {
+    const scrollContainer = scrollRef.current;
+    if (!scrollContainer) return;
+
+    const distance = scrollContainer.clientWidth * 0.75;
+    const setWidth = scrollContainer.scrollWidth / 3;
+
+    if (
+      direction < 0 &&
+      scrollContainer.scrollLeft < distance &&
+      setWidth > 0
+    ) {
+      scrollContainer.scrollLeft += setWidth;
+    }
+
+    scrollContainer.scrollBy({
+      left: direction * distance,
+      behavior: "smooth",
+    });
+  };
 
   return (
-    <div className="flex w-full flex-col items-center justify-center overflow-hidden bg-[#f8cab4] py-8 text-[#192b35]">
+    <div className="flex w-full flex-col items-center justify-center overflow-hidden bg-[#e5c8c6] py-8 text-[#192b35]">
       <div className="text-center mb-8 mt-12 px-4">
         <h1 className="mb-3 text-xl font-bold sm:text-2xl md:text-4xl">
           OUR CLUBS
@@ -459,14 +481,18 @@ const DiscoverClubsPage = () => {
       {/* 🟢 Filter Buttons - Mobile Optimized (flex-wrap) */}
       <div className="flex flex-wrap justify-center gap-2 md:gap-4 mb-8 px-4">
         {["ALL", "TECHNICAL", "SPORTS", "CULTURAL"].map((cat) => (
-          <button
+          <motion.button
             key={cat}
+            type="button"
+            whileHover={{ scale: 1.05, y: -5 }}
+            whileTap={{ scale: 0.9, y: 5 }}
+            transition={{ type: "spring", stiffness: 600, damping: 20 }}
             onClick={() => {
               setFilter(cat);
               // Reset scroll position when filter changes
               if (scrollRef.current) scrollRef.current.scrollLeft = 0;
             }}
-            className={`rounded-full border px-2 py-1 text-xs font-semibold transition-colors duration-300 sm:px-4 md:px-5 md:py-2 md:text-sm
+            className={`cursor-pointer rounded-full border px-2 py-1 text-xs font-semibold shadow-sm transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a75c4e] sm:px-4 md:px-5 md:py-2 md:text-sm
               ${
                 filter === cat
                   ? "border-[#b96f65] bg-[#b96f65] text-white"
@@ -474,42 +500,70 @@ const DiscoverClubsPage = () => {
               }`}
           >
             {cat}
-          </button>
+          </motion.button>
         ))}
       </div>
 
-      {/* 🌀 Horizontal Scrolling Section */}
+      {/* 🌀 Horizontal Scrolling Section with Navigation now */}
       <div
-        ref={scrollRef}
-        // Mobile Layout: Reduced padding (px-4), added hide-scrollbar logic
-        className="flex overflow-x-hidden gap-6 w-full px-4 md:px-16 py-8 relative no-scrollbar"
-        // 🖱️ Mouse Interaction (Desktop)
+        className="relative isolate w-full"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
-        // 📱 Touch Interaction (Mobile) - CRITICAL for smooth swiping
         onTouchStart={() => setIsPaused(true)}
         onTouchEnd={() => {
-          // Optional: Add a small delay before resuming so the user doesn't lose their spot immediately
           setTimeout(() => setIsPaused(false), 1000);
         }}
       >
-        {displayClubs.length > 0 ? (
-          displayClubs.map((club, index) => (
-            <ClubCard key={`${club.id}-${index}`} club={club} />
-          ))
-        ) : (
-          <p className="w-full text-center text-[#657078]">
-            No clubs found in this category.
-          </p>
-        )}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_18%_50%,rgba(255,255,255,0.48),transparent_44%),radial-gradient(ellipse_at_82%_48%,rgba(185,111,101,0.2),transparent_46%)] blur-2xl"
+        />
+
+        <motion.button
+          type="button"
+          aria-label="Scroll clubs left"
+          onClick={() => scrollCarousel(-1)}
+          whileHover={{ scale: 1.08, y: -2 }}
+          whileTap={{ scale: 0.9, y: 2 }}
+          transition={{ type: "spring", stiffness: 600, damping: 20 }}
+          className="absolute left-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/70 bg-white/45 text-[#263f4b] shadow-[0_5px_18px_rgba(38,63,75,0.16)] backdrop-blur-md transition-colors hover:bg-white/75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a75c4e] md:left-6"
+        >
+          <FaChevronLeft aria-hidden="true" />
+        </motion.button>
+
+        <motion.button
+          type="button"
+          aria-label="Scroll clubs right"
+          onClick={() => scrollCarousel(1)}
+          whileHover={{ scale: 1.09, y: -4 }}
+          whileTap={{ scale: 0.9, y: 4 }}
+          transition={{ type: "spring", stiffness: 600, damping: 20 }}
+          className="absolute right-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/70 bg-white/45 text-[#263f4b] shadow-[0_5px_18px_rgba(38,63,75,0.16)] backdrop-blur-md transition-colors hover:bg-white/75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a75c4e] md:right-6"
+        >
+          <FaChevronRight aria-hidden="true" />
+        </motion.button>
+
+        <div
+          ref={scrollRef}
+          className="relative z-10 flex w-full gap-6 overflow-x-hidden px-4 py-8 no-scrollbar md:px-16"
+        >
+          {displayClubs.length > 0 ? (
+            displayClubs.map((club, index) => (
+              <ClubCard key={`${club.id}-${index}`} club={club} />
+            ))
+          ) : (
+            <p className="w-full text-center text-[#657078]">
+              No clubs found in this category.
+            </p>
+          )}
+        </div>
       </div>
 
-      <div onClick={handleClick} className="my-4">
-        <button className="flex items-center gap-2 rounded-full bg-[#b96f65] px-6 py-2 text-sm font-semibold text-white shadow-[0_4px_12px_rgba(74,48,31,0.15)] transition-colors hover:bg-[#a4574e] md:text-base">
-          View All Clubs
-          <FaArrowRight />
-        </button>
-      </div>
+      <ExploreMore
+        className="text-2xl"
+        href={"/club/technical"}
+        text={"View All Clubs"}
+      />
     </div>
   );
 };
