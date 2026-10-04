@@ -361,6 +361,7 @@ const mockClubs = [
     imageUrl: "/gaming.png",
   },
 ];
+/* Only worked on animations and custom navigation arrows visual may look bad for now needs changes */
 
 // ------------------------------------------------------
 // ClubCard Component

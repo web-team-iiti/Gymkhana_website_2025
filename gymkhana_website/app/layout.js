@@ -7,7 +7,9 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+
 const outfit = Outfit({ variable: "--font-outfit", subsets: ["latin"] });
+/* Font that matched the institue site */
 
 export const metadata = {
   title: "Student's Gymkhana - IIT Indore",

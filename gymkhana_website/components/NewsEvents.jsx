@@ -6,6 +6,43 @@ import {
   FaCalendarAlt,
   FaRegCalendarTimes,
 } from "react-icons/fa";
+import DetailsArrow from "./DetailsArrow";
+
+const dummyEvents = [
+  {
+    id: "sample-cultural-night",
+    title: "Cultural Night",
+    subtitle: "Arts and culture",
+    description:
+      "An evening of music, dance, and performances celebrating cultures from across campus.",
+    event_date: "2026-10-17T18:00:00",
+    image_urls: [
+      "https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=1200&q=80",
+    ],
+  },
+  {
+    id: "sample-campus-run",
+    title: "Campus Fun Run",
+    subtitle: "Sports and wellness",
+    description:
+      "Join students and staff for a relaxed morning run, with routes for every pace.",
+    event_date: "2026-10-24T07:00:00",
+    image_urls: [
+      "https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=1200&q=80",
+    ],
+  },
+  {
+    id: "sample-project-expo",
+    title: "Student Project Expo",
+    subtitle: "Innovation and technology",
+    description:
+      "Explore student-built projects, meet the teams, and see ideas brought to life.",
+    event_date: "2026-11-06T16:00:00",
+    image_urls: [
+      "https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1200&q=80",
+    ],
+  },
+];
 
 const EventCard = ({ event }) => {
   const displayImage = event.image_urls?.[0];
@@ -26,7 +63,14 @@ const EventCard = ({ event }) => {
   return (
     <motion.article
       variants={cardVariants}
-      whileHover={{ y: -5, transition: { duration: 0.2 } }}
+      whileHover={{
+        y: -15,
+        transition: {
+          type: "spring",
+          damping: 22,
+          stiffness: 320,
+        },
+      }}
       className="group flex h-full min-h-[25rem] w-[86%] min-w-[275px] max-w-[360px] shrink-0 snap-start flex-col overflow-hidden rounded-lg border border-[#e7d4c8] bg-[#fffefd] shadow-[0_5px_14px_rgba(74,48,31,0.13)] transition-shadow duration-200 hover:shadow-[0_16px_32px_rgba(74,48,31,0.2)] sm:w-auto sm:min-w-0 sm:max-w-none sm:shrink"
     >
       <Link
@@ -65,13 +109,7 @@ const EventCard = ({ event }) => {
             {event.description ||
               "Join the campus community for this upcoming event."}
           </p>
-          <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#263f4b]">
-            Event details
-            <FaArrowRight
-              className="transition-transform group-hover:translate-x-1"
-              aria-hidden="true"
-            />
-          </span>
+          <DetailsArrow Text={"Event Details"} />
         </div>
       </Link>
     </motion.article>
@@ -84,7 +122,7 @@ const UpcomingEvents = ({ events = [] }) => {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.12 },
+      transition: { staggerChildren: 0.15 },
     },
   };
 

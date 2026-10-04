@@ -1,6 +1,7 @@
 import Link from "next/link";
 import * as motion from "motion/react-client";
 import { FaTrophy } from "react-icons/fa";
+import DetailsArrow from "./DetailsArrow";
 
 const Achievement = ({ achievement }) => {
   const date = achievement.achievement_date
@@ -25,7 +26,7 @@ const Achievement = ({ achievement }) => {
       <motion.div
         variants={cardVariants}
         whileHover={{
-          y: -15,
+          y: -10,
           scale: 1.03,
           transition: { type: "spring", stiffness: 320, damping: 22 },
         }}
@@ -77,33 +78,7 @@ const Achievement = ({ achievement }) => {
           <p className="mt-3 flex-1 text-sm leading-6 text-[#59646b] line-clamp-3">
             {achievement.description}
           </p>
-          <span className="mt-5 hover:text-blue-700 inline-flex items-center gap-5 text-xl font-semibold text-[#263f4b]">
-            More from this council
-            <span className="inline-flex h-4 w-5 items-center scale-250">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="h-4 w-5 overflow-visible"
-                aria-hidden="true"
-              >
-                <line
-                  x1="4"
-                  y1="12"
-                  x2="14"
-                  y2="12"
-                  className="origin-left transition-transform duration-200 group-hover:scale-x-125"
-                />
-                <path
-                  d="m10 6 6 6-6 6"
-                  className="transition-transform duration-200 group-hover:translate-x-1"
-                />
-              </svg>
-            </span>
-          </span>
+          <DetailsArrow Text={"More from this Council"} />
         </div>
       </motion.div>
     </Link>

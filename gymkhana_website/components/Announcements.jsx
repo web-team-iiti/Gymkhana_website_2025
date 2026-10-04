@@ -1,34 +1,30 @@
 import * as motion from "motion/react-client";
-import { FaCalendarAlt, FaTheaterMasks, FaUsers } from "react-icons/fa";
 import ExploreMore from "./ExploreMoreButton";
 
 // Dummy data
 const ann = [
   {
     title: "Campus events",
-    description:
-      "Explore upcoming activities, event details, and opportunities to take part.",
+    description: "Explore upcoming activities.",
     href: "events",
-    icon: FaCalendarAlt,
   },
   {
     title: "IBCC schedule",
     description:
-      "See the schedule and key dates for the Inter-Branch Cultural Competition.",
+      "See the schedule and key dates for the Inter-Branch Cultural Clash.",
     href: "ibcc/schedule",
-    icon: FaTheaterMasks,
   },
   {
     title: "Student councils",
     description:
       "Meet the councils shaping campus life and discover their initiatives.",
     href: "councils",
-    icon: FaUsers,
   },
 ];
+// Note: I dont know the Database Query yet so the row names might not match and be incomplete with database rows and no rows are returned so ann is hardcoded on line no. 50 - I will update it fully once i know the rows and query
 
-const Announcements = ({ announcements = ann }) => {
-  if (!announcements) announcements = ann;
+const Announcements = ({ announcements = [] }) => {
+  if (!announcements) announcements = [];
 
   return (
     <section className="w-full outfit-font bg-[#fff9f6] px-4 py-14 text-[#192b35] sm:px-6 md:py-20">
@@ -46,7 +42,7 @@ const Announcements = ({ announcements = ann }) => {
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
-          {ann.map(({ title, description, href, icon: Icon }, index) => (
+          {ann.map(({ title, description, href }, index) => (
             <motion.article
               key={title}
               initial={{ opacity: 0, y: 40 }}
@@ -64,14 +60,6 @@ const Announcements = ({ announcements = ann }) => {
               }}
               className="flex min-h-60 flex-col items-start rounded-lg border border-[#f0e1d4] bg-[#fff3e8] p-6 shadow-[0_3px_10px_rgba(74,48,31,0.12)] transition-[border-color,box-shadow] duration-300 hover:border-[#d9aaa0] hover:shadow-[0_16px_32px_rgba(74,48,31,0.18)] sm:p-7"
             >
-              <motion.div
-                whileHover={{ rotate: -6, scale: 1.08 }}
-                transition={{ type: "spring", stiffness: 360, damping: 18 }}
-                className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#f4dfd4] text-[#b96f65]"
-                aria-hidden="true"
-              >
-                <Icon />
-              </motion.div>
               <h3 className="text-xl font-semibold leading-snug text-[#bd746b] sm:text-2xl">
                 {title}
               </h3>

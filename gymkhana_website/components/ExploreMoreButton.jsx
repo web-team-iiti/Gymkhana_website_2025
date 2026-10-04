@@ -2,6 +2,8 @@ import * as motion from "motion/react-client";
 import Link from "next/link";
 import { FaArrowRight, FaTrophy } from "react-icons/fa";
 
+/* Custom "Know More" button component can be reusable */
+
 const ExploreMore = ({ href, text }) => {
   const contvariants = {
     rest: {
