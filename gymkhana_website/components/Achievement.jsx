@@ -1,6 +1,6 @@
 import Link from "next/link";
 import * as motion from "motion/react-client";
-import { FaArrowRight, FaTrophy } from "react-icons/fa";
+import { FaTrophy } from "react-icons/fa";
 
 const Achievement = ({ achievement }) => {
   const date = achievement.achievement_date
@@ -77,15 +77,32 @@ const Achievement = ({ achievement }) => {
           <p className="mt-3 flex-1 text-sm leading-6 text-[#59646b] line-clamp-3">
             {achievement.description}
           </p>
-          <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#263f4b]">
+          <span className="mt-5 hover:text-blue-700 inline-flex items-center gap-5 text-xl font-semibold text-[#263f4b]">
             More from this council
-            <motion.span
-              initial={{ x: 0 }}
-              whileHover={{ x: 5, transition: { duration: 0.2 } }}
-              className="inline-flex"
-            >
-              <FaArrowRight aria-hidden="true" />
-            </motion.span>
+            <span className="inline-flex h-4 w-5 items-center scale-250">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-4 w-5 overflow-visible"
+                aria-hidden="true"
+              >
+                <line
+                  x1="4"
+                  y1="12"
+                  x2="14"
+                  y2="12"
+                  className="origin-left transition-transform duration-200 group-hover:scale-x-125"
+                />
+                <path
+                  d="m10 6 6 6-6 6"
+                  className="transition-transform duration-200 group-hover:translate-x-1"
+                />
+              </svg>
+            </span>
           </span>
         </div>
       </motion.div>
