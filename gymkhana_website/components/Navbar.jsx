@@ -24,35 +24,64 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 backdrop-blur-md border-b 
-        ${isScrolled
-        ? "bg-gray-900/60 border-gray-700 shadow-md"
-        : "bg-gray-900 border-transparent"
-      }`}
+    <nav
+      className={`outfit-font fixed left-0 top-0 z-50 w-full border-b transition-all duration-300 bg-[#fff5e8] ${isScrolled ? "border-black/10 shadow-sm backdrop-blur-md" : "border-transparent"}`}
     >
-      <div className="max-w-screen-xl flex flex-wrap items-center justify-between py-5 mx-auto px-4">
-        {/* Logo */}
-        <Link href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
-          <Image src="/main_logo.png" width={40} height={40} className="h-10 w-auto" alt="Logo" priority />
-          <span className="self-center text-xl sm:text-2xl font-bold whitespace-nowrap dark:text-white">
-            <span className="text-yellow-500">Students'</span> Gymkhana
+      <div className="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between gap-x-6 px-4 py-3 sm:px-6">
+        {/* Main Logo Here */}
+        <Link href="/" className="flex min-w-0 items-center gap-3 text-black">
+          <Image
+            src="/main_logo.png"
+            width={56}
+            height={56}
+            className="h-14 w-14 shrink-0 bg-gray-800/40 rounded-full object-contain"
+            alt="IIT Indore Students' Gymkhana"
+            priority
+          />
+          <span
+            className="h-11 w-px shrink-0 bg-red-700/70"
+            aria-hidden="true"
+          />
+          <span className="flex flex-col leading-tight">
+            <span className="text-xs font-semibold uppercase tracking-[0.14em] text-black/60">
+              IIT Indore
+            </span>
+            <span className="text-lg font-bold font-[Outfit,sans-serif] sm:text-xl">
+              Students&apos; Gymkhana
+            </span>
           </span>
         </Link>
 
-        {/* Mobile Menu Button */}
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           type="button"
-          className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none dark:text-gray-400 dark:hover:bg-gray-700"
+          aria-label={
+            isMenuOpen ? "Close navigation menu" : "Open navigation menu"
+          }
+          aria-expanded={isMenuOpen}
+          className="inline-flex h-10 w-10 items-center justify-center rounded-full text-black transition-colors hover:bg-black/10 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black md:hidden"
         >
-          <svg className="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
-            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 1h15M1 7h15M1 13h15" />
+          <svg
+            className="h-5 w-5"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 17 14"
+          >
+            <path
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M1 1h15M1 7h15M1 13h15"
+            />
           </svg>
         </button>
 
-        {/* Menu Links */}
-        <div className={`${isMenuOpen ? "block" : "hidden"} w-full md:block md:w-auto`}>
-          <ul className="flex flex-col font-bold text-xl p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-950 text-white md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-transparent dark:bg-gray-800 md:dark:bg-transparent dark:border-gray-700">
+        <div
+          className={`${isMenuOpen ? "block" : "hidden"} w-full md:block md:w-auto`}
+        >
+          <ul className="mt-3 flex flex-col gap-1 rounded-2xl bg-gray-200 p-3 text-sm font-bold text-black md:mt-0 md:flex-row md:items-center md:gap-7 md:rounded-full md:px-7 md:py-3">
             <NavbarLinks setIsMenuOpen={setIsMenuOpen} />
             <NavbarAuth setIsMenuOpen={setIsMenuOpen} />
           </ul>
