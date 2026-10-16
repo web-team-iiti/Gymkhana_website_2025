@@ -31,6 +31,9 @@ const NavbarLinks = ({ setIsMenuOpen }) => {
       <li>
         <Link href="/members" onClick={() => setIsMenuOpen(false)} className={`block py-2 px-3 rounded md:p-0 ${isActive("/members")}`}>Members</Link>
       </li>
+      <li>
+        <Link href="/constitution" onClick={() => setIsMenuOpen(false)} className={`block py-2 px-3 rounded md:p-0 ${isActive("/constitution")}`}>Constitution</Link>
+      </li>
 
       {/* Club Dropdown */}
       <li className="relative group w-full md:w-auto">
