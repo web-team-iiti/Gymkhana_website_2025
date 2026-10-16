@@ -10,6 +10,7 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.89.0",
     "finisher-header": "^1.0.1",
+    "motion": "^13.4.6",
     "next": "^15.5.9",
     "next-auth": "^5.0.0-beta.30",
     "ogl": "^1.0.11",

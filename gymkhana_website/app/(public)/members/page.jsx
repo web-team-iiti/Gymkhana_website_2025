@@ -1,7 +1,11 @@
 "use client";
 
 import React, { useRef, useEffect, useState } from "react";
-import { IoMailOutline, IoLogoLinkedin, IoLogoInstagram } from "react-icons/io5";
+import {
+  IoMailOutline,
+  IoLogoLinkedin,
+  IoLogoInstagram,
+} from "react-icons/io5";
 
 const TeamCarousel = () => {
   const scrollRef = useRef(null);
@@ -17,7 +21,7 @@ const TeamCarousel = () => {
       img: "/secretaries/President.jpeg",
       email: "president.sg@iiti.ac.in",
       linkedin: "https://www.linkedin.com/in/moksha-tyagi-220406330/",
-      instagram: "#"
+      instagram: "#",
     },
     {
       name: "Dhruv Bhardwaj",
@@ -26,7 +30,7 @@ const TeamCarousel = () => {
       img: "/secretaries/GS SnT.jpeg",
       email: "gs.scitech@iiti.ac.in",
       linkedin: "https://www.linkedin.com/in/dhruv-bhardwaj-b82b0631b/",
-      instagram: "#"
+      instagram: "#",
     },
     {
       name: "Sohil Dangi",
@@ -35,7 +39,7 @@ const TeamCarousel = () => {
       img: "/secretaries/GS Cult.jpg",
       email: "gs.culturals@iiti.ac.in",
       linkedin: "https://www.linkedin.com/in/sohil-dangi/",
-      instagram: "#"
+      instagram: "#",
     },
     {
       name: "Badal singh",
@@ -44,16 +48,16 @@ const TeamCarousel = () => {
       img: "/secretaries/GS Hostel.jpeg",
       email: "gs.hostel@iiti.ac.in",
       linkedin: "https://www.linkedin.com/in/badal-singh-b659a0319/",
-      instagram: "#"
+      instagram: "#",
     },
     {
       name: "Kavyansh Raj Singh",
       title: "GENERAL SECRETARY",
       org: "ACADEMIC AFFAIRS UG",
-      img: "/secretaries/GS Acads Ug.png",
+      img: "/secretaries/GS Acads UG.png",
       email: "gs.acad.ug@iiti.ac.in",
       linkedin: "https://www.linkedin.com/in/kavyanshsingh/",
-      instagram: "#"
+      instagram: "#",
     },
     {
       name: "Lakshya Shukla",
@@ -62,7 +66,7 @@ const TeamCarousel = () => {
       img: "/secretaries/GS Sports.jpg",
       email: "gs.sports@iiti.ac.in",
       linkedin: "https://www.linkedin.com/in/lakshya-shukla-853542345/",
-      instagram: "#"
+      instagram: "#",
     },
     {
       name: "Vishal Shakya",
@@ -71,7 +75,7 @@ const TeamCarousel = () => {
       img: "/secretaries/GS COA.jpg",
       email: "gs.coa@iiti.ac.in",
       linkedin: "https://www.linkedin.com/in/vishal-shakya-a3872628b/",
-      instagram: "#"
+      instagram: "#",
     },
     {
       name: "Yogendra Bihare",
@@ -80,17 +84,17 @@ const TeamCarousel = () => {
       img: "/secretaries/GS MAC.jpg",
       email: "gs.dining@iiti.ac.in",
       linkedin: "https://www.linkedin.com/in/yogendra-bihare-b91b25251/",
-      instagram: "#"
+      instagram: "#",
     },
     {
       name: "Isha Sharma",
       title: "GENERAL SECRETARY",
       org: "ACADEMIC AFFAIRS PG",
-      img: "/secretaries/GS Acad Pg.jpeg",
+      img: "/secretaries/GS Acad Pg.JPEG",
       email: "gs.acad.pg@iiti.ac.in",
       linkedin: "https://www.linkedin.com/in/isha-sharma-a92b7a1a2/",
-      instagram: "#"
-    }
+      instagram: "#",
+    },
   ];
 
   // 🌀 Smooth Auto-Scroll Logic
@@ -119,30 +123,63 @@ const TeamCarousel = () => {
     return () => cancelAnimationFrame(animationFrameId);
   }, [isPaused]); // Re-run effect when pause state changes
 
-  const ProfileCard = ({ name, title, org, img, email, linkedin, instagram }) => {
+  const ProfileCard = ({
+    name,
+    title,
+    org,
+    img,
+    email,
+    linkedin,
+    instagram,
+  }) => {
     return (
-      <div className="
+      <div
+        className="
         w-[300px] rounded-2xl shadow-lg overflow-hidden 
         transition-all duration-300 hover:-translate-y-2 mx-4 flex-shrink-0 
         border-2 border-white hover:border-yellow-400 bg-white group
-      ">
-        <img src={img} alt={name} className="w-full h-64 object-cover rounded-t-2xl" />
+      "
+      >
+        <img
+          src={img}
+          alt={name}
+          className="w-full h-64 object-cover rounded-t-2xl"
+        />
 
         <div className="text-center py-10 bg-white">
-          <h3 className="text-2xl font-bold text-gray-800 mb-2 uppercase">{name}</h3>
-          <p className="text-sm font-semibold text-blue-500 tracking-wider uppercase">{title}</p>
-          <p className="text-sm text-gray-500 tracking-wide mt-1 uppercase">{org}</p>
+          <h3 className="text-2xl font-bold text-gray-800 mb-2 uppercase">
+            {name}
+          </h3>
+          <p className="text-sm font-semibold text-blue-500 tracking-wider uppercase">
+            {title}
+          </p>
+          <p className="text-sm text-gray-500 tracking-wide mt-1 uppercase">
+            {org}
+          </p>
 
           <div className="flex justify-center gap-4 mt-6">
-            <a href={`mailto:${email}`} className="flex items-center justify-center w-11 h-11 bg-gray-100 rounded-full text-gray-600 text-xl transition-all duration-300 hover:bg-red-100 hover:text-red-600 hover:scale-110">
+            <a
+              href={`mailto:${email}`}
+              className="flex items-center justify-center w-11 h-11 bg-gray-100 rounded-full text-gray-600 text-xl transition-all duration-300 hover:bg-red-100 hover:text-red-600 hover:scale-110"
+            >
               <IoMailOutline />
             </a>
 
-            <a href={linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-11 h-11 bg-gray-100 rounded-full text-gray-600 text-xl transition-all duration-300 hover:bg-blue-100 hover:text-[#0A66C2] hover:scale-110">
+            <a
+              href={linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center w-11 h-11 bg-gray-100 rounded-full text-gray-600 text-xl transition-all duration-300 hover:bg-blue-100 hover:text-[#0A66C2] hover:scale-110"
+            >
               <IoLogoLinkedin />
             </a>
 
-            <a href={instagram} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-11 h-11 bg-gray-100 rounded-full text-gray-600 text-xl transition-all duration-300 hover:bg-pink-100 hover:text-pink-600 hover:scale-110">
+            <a
+              href={instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center w-11 h-11 bg-gray-100 rounded-full text-gray-600 text-xl transition-all duration-300 hover:bg-pink-100 hover:text-pink-600 hover:scale-110"
+            >
               <IoLogoInstagram />
             </a>
           </div>
@@ -155,7 +192,6 @@ const TeamCarousel = () => {
 
   return (
     <div className="relative w-full py-10  flex flex-col items-center justify-center overflow-hidden bg-black">
-
       {/* Static CSS Particles Background */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:20px_20px] opacity-20"></div>
