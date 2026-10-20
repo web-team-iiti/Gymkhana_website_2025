@@ -1,8 +1,17 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
-import * as motion from "motion/react-client";
-import { useRouter } from "next/navigation";
-import { FaArrowRight, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+
+import { useRef, useState } from "react";
+import Link from "next/link";
+import {
+  AnimatePresence,
+  LayoutGroup,
+  motion,
+  useMotionValue,
+  useMotionValueEvent,
+  useSpring,
+  useTransform,
+} from "motion/react";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import ExploreMore from "./ExploreMoreButton";
 
 // 🧩 Mock Data
@@ -361,212 +370,463 @@ const mockClubs = [
     imageUrl: "/gaming.png",
   },
 ];
-/* Only worked on animations and custom navigation arrows visual may look bad for now needs changes */
+// ------------------------------------------------------
+// Config
+// ------------------------------------------------------
+const CATS = {
+  TECHNICAL: { label: "Technical", accent: "#93c5fd", bg: "#071226" },
+  SPORTS: { label: "Sports", accent: "#6ee7b7", bg: "#04201b" },
+  CULTURAL: { label: "Cultural", accent: "#f0abfc", bg: "#1f0a2e" },
+};
+const ORDER = ["TECHNICAL", "SPORTS", "CULTURAL"];
+
+const PER_CAT = 5; // clubs per category in the cover-flow
+const FLOW = ORDER.flatMap((tag) =>
+  mockClubs.filter((c) => c.tag === tag).slice(0, PER_CAT),
+);
+const FLOW_STEP = 68; // % of card width between neighbouring cards
+const BENTO_INITIAL = 16; // cards shown before "Show all"
 
 // ------------------------------------------------------
-// ClubCard Component
+// Shared: blurred backdrop + crisp image (works for logos and photos)
 // ------------------------------------------------------
-const ClubCard = ({ club }) => {
-  const tagColors = {
-    TECHNICAL: "bg-blue-100 text-blue-800",
-    CULTURAL: "bg-amber-100 text-amber-800",
-    SPORTS: "bg-emerald-100 text-emerald-800",
+const ClubArt = ({ src, alt, className = "", pad = "p-3" }) => (
+  <div className={`relative overflow-hidden ${className}`}>
+    <img
+      src={src}
+      alt=""
+      aria-hidden="true"
+      className="absolute inset-0 h-full w-full scale-125 object-cover opacity-60 blur-xl"
+    />
+    <img
+      src={src}
+      alt={alt}
+      loading="lazy"
+      className={`relative h-full w-full object-contain ${pad}`}
+    />
+  </div>
+);
+
+// ------------------------------------------------------
+// PART 1: Drag-driven cover-flow
+// ------------------------------------------------------
+const CoverCard = ({ club, index, pos }) => {
+  const accent = CATS[club.tag]?.accent ?? "#93c5fd";
+
+  // distance from the centre: 0 = centred, negative = left, positive = right
+  const d = useTransform(pos, (v) => index - v);
+  const x = useTransform(d, (v) => `${v * FLOW_STEP}%`);
+  const scale = useTransform(d, (v) => Math.max(1 - Math.abs(v) * 0.16, 0.55));
+  const opacity = useTransform(d, (v) => Math.max(1 - Math.abs(v) * 0.3, 0));
+  const rotateY = useTransform(d, (v) => Math.max(Math.min(v * -28, 50), -50));
+  const filter = useTransform(
+    d,
+    (v) => `blur(${Math.min(Math.abs(v), 2.5) * 2.5}px)`,
+  );
+  const zIndex = useTransform(d, (v) => 100 - Math.round(Math.abs(v) * 10));
+
+  return (
+    <motion.div
+      style={{
+        x,
+        scale,
+        opacity,
+        rotateY,
+        filter,
+        zIndex,
+        transformPerspective: 1100,
+      }}
+      data-cover-card
+      className="absolute left-1/2 top-1/2 -ml-[7.5rem] -mt-[12rem] h-[24rem] w-60 overflow-hidden rounded-3xl border border-gray-400/60 bg-gradient-to-b from-gray-500 to-gray-300 text-gray-900 shadow-2xl backdrop-blur-sm sm:-ml-[9rem] sm:-mt-[14rem] sm:h-[28rem] sm:w-72"
+    >
+      <ClubArt src={club.imageUrl} alt={club.name} className="h-[52%]" />
+      <div className="p-5">
+        <span
+          className="rounded-full px-2.5 py-1 text-[10px] font-semibold tracking-widest"
+          style={{ backgroundColor: `${accent}26`, color: accent }}
+        >
+          {club.tag}
+        </span>
+        <h3 className="mt-3 text-xl font-semibold leading-tight sm:text-2xl">
+          {club.name}
+        </h3>
+        <p className="mt-2 line-clamp-3 text-xs leading-5 text-gray-700 sm:text-sm">
+          {club.description}
+        </p>
+      </div>
+    </motion.div>
+  );
+};
+
+const CoverFlow = () => {
+  const stageRef = useRef(null);
+  const dragRef = useRef(null);
+  const n = FLOW.length;
+
+  const position = useMotionValue(0);
+  const pos = useSpring(position, { stiffness: 180, damping: 30, mass: 0.4 });
+  const progress = useTransform(pos, [0, n - 1], [0, 1]);
+
+  const stops = ORDER.map(
+    (_, k) => (k * PER_CAT + (PER_CAT - 1) / 2) / (n - 1),
+  );
+  const backgroundColor = useTransform(
+    progress,
+    stops,
+    ORDER.map((t) => CATS[t].bg),
+  );
+
+  const [current, setCurrent] = useState(0);
+  useMotionValueEvent(pos, "change", (v) => setCurrent(Math.round(v)));
+
+  const goTo = (index) => {
+    position.set(Math.min(Math.max(index, 0), n - 1));
+  };
+
+  const onPointerDown = (event) => {
+    if (event.pointerType !== "mouse") return;
+    const card = stageRef.current?.querySelector("[data-cover-card]");
+    if (!card) return;
+
+    event.currentTarget.setPointerCapture(event.pointerId);
+    dragRef.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startPosition: position.get(),
+      step: (card.getBoundingClientRect().width * FLOW_STEP) / 100,
+    };
+  };
+
+  const onPointerMove = (event) => {
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+
+    const delta = event.clientX - drag.startX;
+    position.set(
+      Math.min(Math.max(drag.startPosition - delta / drag.step, 0), n - 1),
+    );
+  };
+
+  const onPointerUp = (event) => {
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+
+    dragRef.current = null;
+    goTo(Math.round(position.get()));
+  };
+
+  const active = FLOW[current] ?? FLOW[0];
+  const cat = CATS[active.tag];
+
+  return (
+    <section className="relative h-screen">
+      <motion.div
+        style={{ backgroundColor }}
+        className="sticky top-0 h-screen overflow-hidden text-white"
+      >
+        {/* accent glow behind the centred card */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute left-1/2 top-1/2 h-[28rem] w-[28rem] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-25 blur-3xl transition-colors duration-700"
+          style={{ backgroundColor: cat.accent }}
+        />
+
+        {/* header */}
+        <div className="outfit-font absolute left-6 top-10 z-[200] sm:left-12">
+          <p className="text-xs font-bold uppercase tracking-widest text-white/60">
+            Our clubs
+          </p>
+          <h2 className="mt-2 text-3xl font-light leading-tight sm:text-5xl">
+            Explore the diverse
+            <br />
+            clubs of IIT Indore
+          </h2>
+          <AnimatePresence mode="wait">
+            <motion.p
+              key={active.tag}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.25 }}
+              className="mt-4 text-sm font-semibold uppercase tracking-widest"
+              style={{ color: cat.accent }}
+            >
+              {cat.label}
+            </motion.p>
+          </AnimatePresence>
+        </div>
+
+        {/* stage */}
+        <div
+          ref={stageRef}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+          onPointerCancel={onPointerUp}
+          className="absolute inset-0 cursor-grab select-none active:cursor-grabbing"
+        >
+          {FLOW.map((club, i) => (
+            <CoverCard key={club.id} club={club} index={i} pos={pos} />
+          ))}
+        </div>
+
+        <div className="absolute inset-x-0 bottom-8 z-[200] flex flex-col items-center gap-3">
+          <p className="font-mono text-xs text-white/60">
+            {String(current + 1).padStart(2, "0")} /{" "}
+            {String(n).padStart(2, "0")}
+            <span className="ml-3 uppercase tracking-widest">
+              Drag to explore
+            </span>
+          </p>
+          <div className="flex items-center gap-4">
+            <button
+              type="button"
+              onClick={() => goTo(current - 1)}
+              disabled={current === 0}
+              aria-label="Previous club"
+              className="rounded-full p-2 text-white/70 transition-colors hover:text-white disabled:opacity-30"
+            >
+              <FaArrowLeft aria-hidden="true" size={14} />
+            </button>
+            <div className="h-[2px] w-40 overflow-hidden rounded-full bg-white/15">
+              <motion.div
+                style={{ scaleX: progress, backgroundColor: cat.accent }}
+                className="h-full origin-left"
+              />
+            </div>
+            <button
+              type="button"
+              onClick={() => goTo(current + 1)}
+              disabled={current === n - 1}
+              aria-label="Next club"
+              className="rounded-full p-2 text-white/70 transition-colors hover:text-white disabled:opacity-30"
+            >
+              <FaArrowRight aria-hidden="true" size={14} />
+            </button>
+          </div>
+        </div>
+      </motion.div>
+    </section>
+  );
+};
+
+// ------------------------------------------------------
+// PART 2: Bento grid with 3D tilt cards
+// ------------------------------------------------------
+const TILT_SPRING = { stiffness: 200, damping: 20, mass: 0.4 };
+
+const TiltCard = ({ club }) => {
+  const accent = CATS[club.tag]?.accent ?? "#93c5fd";
+
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+  const sx = useSpring(mx, TILT_SPRING);
+  const sy = useSpring(my, TILT_SPRING);
+  const rotateX = useTransform(sy, [-0.5, 0.5], [9, -9]);
+  const rotateY = useTransform(sx, [-0.5, 0.5], [-9, 9]);
+
+  const onMove = (e) => {
+    if (e.pointerType !== "mouse") return;
+    const r = e.currentTarget.getBoundingClientRect();
+    mx.set((e.clientX - r.left) / r.width - 0.5);
+    my.set((e.clientY - r.top) / r.height - 0.5);
+  };
+  const reset = () => {
+    mx.set(0);
+    my.set(0);
   };
 
   return (
     <div
-      className="group relative h-64 w-52 flex-shrink-0 overflow-hidden rounded-2xl border border-[#e7d4c8] bg-[#fffefd] shadow-[0_5px_14px_rgba(74,48,31,0.13)] transition-[transform,box-shadow] duration-500 hover:scale-105 hover:shadow-[0_14px_28px_rgba(74,48,31,0.2)] sm:h-80 sm:w-72"
-      // Mobile: Ensure min-width so it doesn't shrink
-      style={{ minWidth: "250px" }}
+      className="group h-full [perspective:900px]"
+      onPointerMove={onMove}
+      onPointerLeave={reset}
     >
-      <img
-        src={club.imageUrl}
-        alt={club.name}
-        className="h-full w-full object-cover transition-[filter,transform] duration-500 group-hover:scale-105 group-hover:brightness-75"
-      />
+      <motion.div
+        style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+        className="relative h-full"
+      >
+        {/* background layer (overflow-hidden lives here so 3D isn't flattened) */}
+        <div
+          style={{ "--glow": accent }}
+          className="absolute inset-0 overflow-hidden rounded-3xl border border-gray-400/60 bg-gradient-to-b from-gray-500 to-gray-300 transition-shadow duration-500 group-hover:shadow-[0_25px_70px_-20px_var(--glow)]"
+        >
+          <img
+            src={club.imageUrl}
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+            className="absolute inset-0 h-full w-full scale-125 object-cover opacity-30 blur-2xl transition-opacity duration-500 group-hover:opacity-50"
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background: `linear-gradient(160deg, ${accent}40, transparent 55%)`,
+            }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-gray-400/95 via-gray-300/30 to-transparent" />
+        </div>
 
-      {/* Overlay on hover (Visible by default on Touch if logic required, but mostly hover) */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#192b35]/65 p-4 text-center opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+        <div className="absolute left-4 top-4 h-14 w-14 overflow-hidden rounded-2xl bg-white/90 shadow-xl transition-transform duration-300 [transform:translateZ(35px)] group-hover:[transform:translateZ(85px)]">
+          <img
+            src={club.imageUrl}
+            alt={club.name}
+            loading="lazy"
+            className="h-full w-full object-cover"
+          />
+        </div>
+
         <span
-          className={`mb-3 rounded-full px-3 py-1 text-xs font-semibold ${tagColors[club.tag] || "bg-gray-100 text-gray-700"}`}
+          className="absolute right-4 top-4 rounded-full px-2.5 py-1 text-[10px] font-semibold tracking-widest [transform:translateZ(20px)]"
+          style={{ backgroundColor: `${accent}26`, color: accent }}
         >
           {club.tag}
         </span>
-        <h3 className="mb-2 text-2xl font-bold text-white">{club.name}</h3>
-        <p className="line-clamp-3 text-sm text-white/85">{club.description}</p>
-      </div>
+
+        <div className="absolute inset-x-0 bottom-0 p-4 text-gray-900 [transform:translateZ(30px)] sm:p-5">
+          <h3 className="font-semibold leading-tight text-base sm:text-xl">
+            {club.name}
+          </h3>
+          <div className="grid grid-rows-[0fr] opacity-0 transition-[grid-template-rows,opacity] duration-500 group-hover:grid-rows-[1fr] group-hover:opacity-100 [@media(hover:none)]:grid-rows-[1fr] [@media(hover:none)]:opacity-100">
+            <div className="min-h-0 overflow-hidden">
+              <p className="mt-2 line-clamp-2 text-xs leading-5 text-gray-700 sm:text-sm">
+                {club.description}
+              </p>
+            </div>
+          </div>
+        </div>
+      </motion.div>
     </div>
   );
 };
 
-// ------------------------------------------------------
-// Main Page Component
-// ------------------------------------------------------
-const DiscoverClubsPage = () => {
-  const scrollRef = useRef(null);
-  const router = useRouter();
-
-  // Filter state
+const ClubBento = () => {
   const [filter, setFilter] = useState("ALL");
-  const [isPaused, setIsPaused] = useState(false);
+  const [expanded, setExpanded] = useState(false);
 
-  // Filter clubs based on selected category
-  const filteredClubs =
-    filter === "ALL"
-      ? mockClubs
-      : mockClubs.filter((club) => club.category.toUpperCase() === filter);
-
-  // 🔄 DUPLICATE LIST: This is the key to seamless infinite scrolling without "stopping"
-  const displayClubs = [...filteredClubs, ...filteredClubs, ...filteredClubs];
-
-  // Auto-scroll logic
-  useEffect(() => {
-    const scrollContainer = scrollRef.current;
-    if (!scrollContainer) return;
-
-    let animationFrameId;
-    const scrollSpeed = 0.5;
-
-    const scrollStep = () => {
-      if (!isPaused) {
-        scrollContainer.scrollLeft += scrollSpeed;
-
-        // 🔄 SEAMLESS RESET LOGIC
-        // Instead of checking for "end of scroll", we check if we've scrolled past
-        // one-third of the total width (the length of one set of items).
-        // Then we snap back to 0. This prevents the "stopping" bug.
-        const setWidth = scrollContainer.scrollWidth / 3;
-        if (scrollContainer.scrollLeft >= setWidth) {
-          scrollContainer.scrollLeft -= setWidth;
-        }
-      }
-      animationFrameId = requestAnimationFrame(scrollStep);
-    };
-
-    animationFrameId = requestAnimationFrame(scrollStep);
-    return () => cancelAnimationFrame(animationFrameId);
-  }, [filter, isPaused]);
-
-  const scrollCarousel = (direction) => {
-    const scrollContainer = scrollRef.current;
-    if (!scrollContainer) return;
-
-    const distance = scrollContainer.clientWidth * 0.75;
-    const setWidth = scrollContainer.scrollWidth / 3;
-
-    if (
-      direction < 0 &&
-      scrollContainer.scrollLeft < distance &&
-      setWidth > 0
-    ) {
-      scrollContainer.scrollLeft += setWidth;
-    }
-
-    scrollContainer.scrollBy({
-      left: direction * distance,
-      behavior: "smooth",
-    });
-  };
+  const list =
+    filter === "ALL" ? mockClubs : mockClubs.filter((c) => c.tag === filter);
+  const shown = expanded ? list : list.slice(0, BENTO_INITIAL);
 
   return (
-    <div className="flex w-full flex-col items-center justify-center overflow-hidden bg-[#e5c8c6] py-8 text-[#192b35]">
-      <div className="text-center mb-8 mt-12 px-4">
-        <h1 className="mb-3 text-xl font-bold sm:text-2xl md:text-4xl">
-          OUR CLUBS
-        </h1>
-        <p className="mx-auto max-w-2xl text-sm text-[#657078] md:text-base">
-          Explore the diverse range of clubs at IIT Indore
-        </p>
-      </div>
-
-      {/* 🟢 Filter Buttons - Mobile Optimized (flex-wrap) */}
-      <div className="flex flex-wrap justify-center gap-2 md:gap-4 mb-8 px-4">
-        {["ALL", "TECHNICAL", "SPORTS", "CULTURAL"].map((cat) => (
-          <motion.button
-            key={cat}
-            type="button"
-            whileHover={{ scale: 1.05, y: -5 }}
-            whileTap={{ scale: 0.9, y: 5 }}
-            transition={{ type: "spring", stiffness: 600, damping: 20 }}
-            onClick={() => {
-              setFilter(cat);
-              // Reset scroll position when filter changes
-              if (scrollRef.current) scrollRef.current.scrollLeft = 0;
-            }}
-            className={`cursor-pointer rounded-full border px-2 py-1 text-xs font-semibold shadow-sm transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a75c4e] sm:px-4 md:px-5 md:py-2 md:text-sm
-              ${
-                filter === cat
-                  ? "border-[#b96f65] bg-[#b96f65] text-white"
-                  : "border-[#d9ccc3] bg-[#fffefd] text-[#263f4b] hover:border-[#b96f65] hover:bg-[#fff3e8]"
-              }`}
-          >
-            {cat}
-          </motion.button>
-        ))}
-      </div>
-
-      {/* 🌀 Horizontal Scrolling Section with Navigation now */}
-      <div
-        className="relative isolate w-full"
-        onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
-        onTouchStart={() => setIsPaused(true)}
-        onTouchEnd={() => {
-          setTimeout(() => setIsPaused(false), 1000);
-        }}
-      >
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_18%_50%,rgba(255,255,255,0.48),transparent_44%),radial-gradient(ellipse_at_82%_48%,rgba(185,111,101,0.2),transparent_46%)] blur-2xl"
-        />
-
-        <motion.button
-          type="button"
-          aria-label="Scroll clubs left"
-          onClick={() => scrollCarousel(-1)}
-          whileHover={{ scale: 1.08, y: -2 }}
-          whileTap={{ scale: 0.9, y: 2 }}
-          transition={{ type: "spring", stiffness: 600, damping: 20 }}
-          className="absolute left-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/70 bg-white/45 text-[#263f4b] shadow-[0_5px_18px_rgba(38,63,75,0.16)] backdrop-blur-md transition-colors hover:bg-white/75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a75c4e] md:left-6"
-        >
-          <FaChevronLeft aria-hidden="true" />
-        </motion.button>
-
-        <motion.button
-          type="button"
-          aria-label="Scroll clubs right"
-          onClick={() => scrollCarousel(1)}
-          whileHover={{ scale: 1.09, y: -4 }}
-          whileTap={{ scale: 0.9, y: 4 }}
-          transition={{ type: "spring", stiffness: 600, damping: 20 }}
-          className="absolute right-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/70 bg-white/45 text-[#263f4b] shadow-[0_5px_18px_rgba(38,63,75,0.16)] backdrop-blur-md transition-colors hover:bg-white/75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a75c4e] md:right-6"
-        >
-          <FaChevronRight aria-hidden="true" />
-        </motion.button>
-
-        <div
-          ref={scrollRef}
-          className="relative z-10 flex w-full gap-6 overflow-x-hidden px-4 py-8 no-scrollbar md:px-16"
-        >
-          {displayClubs.length > 0 ? (
-            displayClubs.map((club, index) => (
-              <ClubCard key={`${club.id}-${index}`} club={club} />
-            ))
-          ) : (
-            <p className="w-full text-center text-[#657078]">
-              No clubs found in this category.
+    <motion.section
+      initial={false}
+      animate={{
+        backgroundColor: filter === "ALL" ? "#0a0a0a" : CATS[filter].bg,
+      }}
+      transition={{ duration: 0.8 }}
+      className="px-4 py-20 text-white sm:px-6"
+    >
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-10 outfit-font flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-widest text-white/60">
+              Browse everything
             </p>
+            <h2 className="mt-2 text-3xl font-semibold sm:text-5xl">
+              Find your club
+            </h2>
+            <p className="mt-2 max-w-md text-sm text-white/60 sm:text-base">
+              {list.length} clubs. Pick a category and the grid reshuffles
+              around it.
+            </p>
+          </div>
+
+          <LayoutGroup id="club-filters">
+            <div className="flex flex-wrap gap-2">
+              {["ALL", ...ORDER].map((cat) => {
+                const isActive = filter === cat;
+                return (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => {
+                      setFilter(cat);
+                      setExpanded(false);
+                    }}
+                    className={`relative cursor-pointer rounded-full border border-white/20 px-4 py-2 text-xs font-semibold tracking-wide transition-colors sm:text-sm ${
+                      isActive ? "text-black" : "text-white/70 hover:text-white"
+                    }`}
+                  >
+                    {isActive && (
+                      <motion.span
+                        layoutId="filter-pill"
+                        transition={{
+                          type: "spring",
+                          stiffness: 400,
+                          damping: 32,
+                        }}
+                        className="absolute inset-0 rounded-full"
+                        style={{
+                          backgroundColor:
+                            cat === "ALL" ? "#ffffff" : CATS[cat].accent,
+                        }}
+                      />
+                    )}
+                    <span className="relative">{cat}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </LayoutGroup>
+        </div>
+
+        {/* bento grid */}
+        <motion.div
+          layout
+          className="grid auto-rows-[12rem] grid-cols-2 gap-3 md:auto-rows-[14rem] md:grid-cols-4 md:gap-4"
+        >
+          <AnimatePresence mode="popLayout">
+            {shown.map((club, i) => {
+              return (
+                <motion.div
+                  key={club.id}
+                  layout
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{
+                    layout: { type: "spring", stiffness: 260, damping: 30 },
+                    opacity: { duration: 0.3 },
+                  }}
+                  className={
+                    i % 2 === 0
+                      ? "translate-y-2 md:translate-y-4"
+                      : "-translate-y-2 md:-translate-y-4"
+                  }
+                >
+                  <TiltCard club={club} />
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
+        </motion.div>
+
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+          {list.length > BENTO_INITIAL && (
+            <button
+              type="button"
+              onClick={() => setExpanded((e) => !e)}
+              className="group outfit-font inline-flex items-center rounded-full border border-gray-400 bg-gray-300 font-bold text-gray-900 shadow-[0_3px_8px_rgba(0,0,0,0.2)] transition-colors hover:border-blue-300 hover:text-white hover:bg-blue-900 text-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-300 px-6 py-3 text-md cursor-pointer"
+            >
+              {expanded ? "Show fewer" : `Show all ${list.length} clubs`}
+            </button>
           )}
+          <ExploreMore href={"/club/techincal"} text={"View All Clubs"} />
         </div>
       </div>
-
-      <ExploreMore
-        className="text-2xl"
-        href={"/club/technical"}
-        text={"View All Clubs"}
-      />
-    </div>
+    </motion.section>
   );
 };
+
+// ------------------------------------------------------
+// Page
+// ------------------------------------------------------
+const DiscoverClubsPage = () => (
+  <>
+    <CoverFlow />
+    <ClubBento />
+  </>
+);
 
 export default DiscoverClubsPage;

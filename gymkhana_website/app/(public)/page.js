@@ -105,7 +105,12 @@ async function getAnnouncements() {
     const sql = ` `;
     const res = await query(sql);
 
-    return res;
+    const announcements = result.rows.map((r) => ({
+      title: r.title,
+      description: r.description,
+      href: r.href,
+    }));
+    return announcements;
   } catch (error) {
     return null;
   }
@@ -148,7 +153,7 @@ const Page = async () => {
         {/* Content Layer */}
         <div className="relative z-10">
           {/* IBCC Podium Section */}
-          <IBCCPodiumHome leaderboard={leaderboard} liveEvent={liveEvent} />
+          {/* <IBCCPodiumHome leaderboard={leaderboard} liveEvent={liveEvent} /> */}
 
           <Clubs />
 
