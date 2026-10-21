@@ -105,10 +105,8 @@ const toDate = (value) => {
 };
 
 const LatestAchievements = ({ achievements = [] }) => {
-  const source =
-  Array.isArray(achievements) && achievements.length > 0
-  ? achievements
-  : dummyAchievements;
+  const source = Array.isArray(achievements) && achievements.length > 0? achievements: dummyAchievements;
+  // const source = dummyAchievements;
 
   const items = source.slice(0, MAX_CARDS);
   const n = items.length;

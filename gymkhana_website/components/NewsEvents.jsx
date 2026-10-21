@@ -279,15 +279,13 @@ const EventCell = ({ item, side, desktop, reduce }) => {
   );
 };
 
-// ------------------------------------------------------
 // Main
-// ------------------------------------------------------
 const UpcomingEvents = ({ events = [] }) => {
   const desktop = useIsDesktop();
   const reduce = useReducedMotion();
 
+  const list = Array.isArray(events) ? events : [];
   // const list = dummyEvents; // uncomment to preview without the DB
-  const list = dummyEvents;
 
   // odd count: add a CTA tile so the last row is never half empty
   const items =
@@ -326,10 +324,10 @@ const UpcomingEvents = ({ events = [] }) => {
                 />
                 <TypeWriter
                   as="p"
-                  text="The people and councils making an impact across the campus."
+                  text="All new events across the campus."
                   speed={20}
                   delay={1600}
-                  className="mt-5 max-w-xs text-sm font-semibold leading-6 text-slate-600 sm:text-base"
+                  className="mt-5  text-sm font-medium leading-6 text-slate-600 sm:text-base"
                 />
               </h2>
 
@@ -352,7 +350,7 @@ const UpcomingEvents = ({ events = [] }) => {
             ))}
           </div>
         ) : (
-          <div className="flex flex-col items-center rounded-3xl border border-dashed border-black/20 px-6 py-16 text-center">
+          <div className="flex bg-white flex-col items-center rounded-3xl border border-dashed border-black/20 px-6 py-16 text-center">
             <FaRegCalendarTimes
               className="mb-4 text-3xl text-blue-600"
               aria-hidden="true"

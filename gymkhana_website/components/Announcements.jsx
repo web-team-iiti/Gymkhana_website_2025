@@ -5,6 +5,8 @@ import { motion } from "motion/react";
 import ExploreMore from "./ExploreMoreButton";
 import TypeWriter from "../animations/TypeWriter";
 
+// Announcement table need to be created in the database - For now dummy announcements are here
+// Schema must match the below dummy
 // Dummy data
 const ann = [
   {
@@ -36,7 +38,6 @@ const LIFT = 12; // how far the hovered card
 const REVEAL = 120; // how far the cards BELOW slide down to uncover the hovered card's body
 
 const Announcements = ({ announcements = [] }) => {
-
   const [active, setActive] = useState(null);
   const last = ann.length - 1;
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import {
   AnimatePresence,
@@ -13,6 +13,7 @@ import {
 } from "motion/react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import ExploreMore from "./ExploreMoreButton";
+import TypeWriter from "../animations/TypeWriter";
 
 // 🧩 Mock Data
 const mockClubs = [
@@ -374,9 +375,24 @@ const mockClubs = [
 // Config
 // ------------------------------------------------------
 const CATS = {
-  TECHNICAL: { label: "Technical", accent: "#93c5fd", bg: "#071226" },
-  SPORTS: { label: "Sports", accent: "#6ee7b7", bg: "#04201b" },
-  CULTURAL: { label: "Cultural", accent: "#f0abfc", bg: "#1f0a2e" },
+  TECHNICAL: {
+    label: "Technical",
+    accent: "#93c5fd",
+    textAccent: "#1d4ed8",
+    bg: "#eff6ff",
+  },
+  SPORTS: {
+    label: "Sports",
+    accent: "#6ee7b7",
+    textAccent: "#15803d",
+    bg: "#f0fdf4",
+  },
+  CULTURAL: {
+    label: "Cultural",
+    accent: "#f0abfc",
+    textAccent: "#a21caf",
+    bg: "#fdf4ff",
+  },
 };
 const ORDER = ["TECHNICAL", "SPORTS", "CULTURAL"];
 
@@ -408,12 +424,11 @@ const ClubArt = ({ src, alt, className = "", pad = "p-3" }) => (
 );
 
 // ------------------------------------------------------
-// PART 1: Drag-driven cover-flow
+// PART 1: Scroll-driven cover-flow
 // ------------------------------------------------------
 const CoverCard = ({ club, index, pos }) => {
   const accent = CATS[club.tag]?.accent ?? "#93c5fd";
 
-  // distance from the centre: 0 = centred, negative = left, positive = right
   const d = useTransform(pos, (v) => index - v);
   const x = useTransform(d, (v) => `${v * FLOW_STEP}%`);
   const scale = useTransform(d, (v) => Math.max(1 - Math.abs(v) * 0.16, 0.55));
@@ -437,7 +452,7 @@ const CoverCard = ({ club, index, pos }) => {
         transformPerspective: 1100,
       }}
       data-cover-card
-      className="absolute left-1/2 top-1/2 -ml-[7.5rem] -mt-[12rem] h-[24rem] w-60 overflow-hidden rounded-3xl border border-gray-400/60 bg-gradient-to-b from-gray-500 to-gray-300 text-gray-900 shadow-2xl backdrop-blur-sm sm:-ml-[9rem] sm:-mt-[14rem] sm:h-[28rem] sm:w-72"
+      className="absolute left-1/2 top-1/2 -ml-[7.5rem] -mt-[12rem] h-[24rem] w-60 overflow-hidden rounded-3xl border border-white/15 bg-gradient-to-b from-gray-800 to-gray-950 text-white shadow-2xl backdrop-blur-sm sm:-ml-[9rem] sm:-mt-[14rem] sm:h-[28rem] sm:w-72"
     >
       <ClubArt src={club.imageUrl} alt={club.name} className="h-[52%]" />
       <div className="p-5">
@@ -450,7 +465,7 @@ const CoverCard = ({ club, index, pos }) => {
         <h3 className="mt-3 text-xl font-semibold leading-tight sm:text-2xl">
           {club.name}
         </h3>
-        <p className="mt-2 line-clamp-3 text-xs leading-5 text-gray-700 sm:text-sm">
+        <p className="mt-2 line-clamp-3 text-xs leading-5 text-gray-300 sm:text-sm">
           {club.description}
         </p>
       </div>
@@ -459,8 +474,6 @@ const CoverCard = ({ club, index, pos }) => {
 };
 
 const CoverFlow = () => {
-  const stageRef = useRef(null);
-  const dragRef = useRef(null);
   const n = FLOW.length;
 
   const position = useMotionValue(0);
@@ -483,36 +496,26 @@ const CoverFlow = () => {
     position.set(Math.min(Math.max(index, 0), n - 1));
   };
 
-  const onPointerDown = (event) => {
-    if (event.pointerType !== "mouse") return;
-    const card = stageRef.current?.querySelector("[data-cover-card]");
-    if (!card) return;
+  const onWheel = (event) => {
+    const delta =
+      Math.abs(event.deltaX) > Math.abs(event.deltaY)
+        ? event.deltaX
+        : event.deltaY;
+    const deltaScale =
+      event.deltaMode === 1
+        ? 16
+        : event.deltaMode === 2
+          ? window.innerHeight
+          : 1;
+    const nextPosition = position.get() + (delta * deltaScale) / 220;
 
-    event.currentTarget.setPointerCapture(event.pointerId);
-    dragRef.current = {
-      pointerId: event.pointerId,
-      startX: event.clientX,
-      startPosition: position.get(),
-      step: (card.getBoundingClientRect().width * FLOW_STEP) / 100,
-    };
-  };
-
-  const onPointerMove = (event) => {
-    const drag = dragRef.current;
-    if (!drag || drag.pointerId !== event.pointerId) return;
-
-    const delta = event.clientX - drag.startX;
-    position.set(
-      Math.min(Math.max(drag.startPosition - delta / drag.step, 0), n - 1),
-    );
-  };
-
-  const onPointerUp = (event) => {
-    const drag = dragRef.current;
-    if (!drag || drag.pointerId !== event.pointerId) return;
-
-    dragRef.current = null;
-    goTo(Math.round(position.get()));
+    if (
+      (delta > 0 && position.get() < n - 1) ||
+      (delta < 0 && position.get() > 0)
+    ) {
+      event.preventDefault();
+      position.set(Math.min(Math.max(nextPosition, 0), n - 1));
+    }
   };
 
   const active = FLOW[current] ?? FLOW[0];
@@ -522,7 +525,8 @@ const CoverFlow = () => {
     <section className="relative h-screen">
       <motion.div
         style={{ backgroundColor }}
-        className="sticky top-0 h-screen overflow-hidden text-white"
+        onWheel={onWheel}
+        className="sticky top-0 h-screen overflow-hidden text-gray-900"
       >
         {/* accent glow behind the centred card */}
         <div
@@ -533,7 +537,7 @@ const CoverFlow = () => {
 
         {/* header */}
         <div className="outfit-font absolute left-6 top-10 z-[200] sm:left-12">
-          <p className="text-xs font-bold uppercase tracking-widest text-white/60">
+          <p className="text-xs font-bold uppercase tracking-widest text-gray-600">
             Our clubs
           </p>
           <h2 className="mt-2 text-3xl font-light leading-tight sm:text-5xl">
@@ -549,7 +553,7 @@ const CoverFlow = () => {
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.25 }}
               className="mt-4 text-sm font-semibold uppercase tracking-widest"
-              style={{ color: cat.accent }}
+              style={{ color: cat.textAccent }}
             >
               {cat.label}
             </motion.p>
@@ -557,25 +561,18 @@ const CoverFlow = () => {
         </div>
 
         {/* stage */}
-        <div
-          ref={stageRef}
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={onPointerUp}
-          onPointerCancel={onPointerUp}
-          className="absolute inset-0 cursor-grab select-none active:cursor-grabbing"
-        >
+        <div className="absolute inset-0 select-none">
           {FLOW.map((club, i) => (
             <CoverCard key={club.id} club={club} index={i} pos={pos} />
           ))}
         </div>
 
         <div className="absolute inset-x-0 bottom-8 z-[200] flex flex-col items-center gap-3">
-          <p className="font-mono text-xs text-white/60">
+          <p className="font-mono text-xs text-gray-600">
             {String(current + 1).padStart(2, "0")} /{" "}
             {String(n).padStart(2, "0")}
             <span className="ml-3 uppercase tracking-widest">
-              Drag to explore
+              Scroll to explore
             </span>
           </p>
           <div className="flex items-center gap-4">
@@ -584,13 +581,13 @@ const CoverFlow = () => {
               onClick={() => goTo(current - 1)}
               disabled={current === 0}
               aria-label="Previous club"
-              className="rounded-full p-2 text-white/70 transition-colors hover:text-white disabled:opacity-30"
+              className="rounded-full p-2 text-gray-600 transition-colors hover:text-gray-950 disabled:opacity-30"
             >
               <FaArrowLeft aria-hidden="true" size={14} />
             </button>
-            <div className="h-[2px] w-40 overflow-hidden rounded-full bg-white/15">
+            <div className="h-[2px] w-40 overflow-hidden rounded-full bg-gray-900/15">
               <motion.div
-                style={{ scaleX: progress, backgroundColor: cat.accent }}
+                style={{ scaleX: progress, backgroundColor: cat.textAccent }}
                 className="h-full origin-left"
               />
             </div>
@@ -599,7 +596,7 @@ const CoverFlow = () => {
               onClick={() => goTo(current + 1)}
               disabled={current === n - 1}
               aria-label="Next club"
-              className="rounded-full p-2 text-white/70 transition-colors hover:text-white disabled:opacity-30"
+              className="rounded-full p-2 text-gray-600 transition-colors hover:text-gray-950 disabled:opacity-30"
             >
               <FaArrowRight aria-hidden="true" size={14} />
             </button>
@@ -649,7 +646,7 @@ const TiltCard = ({ club }) => {
         {/* background layer (overflow-hidden lives here so 3D isn't flattened) */}
         <div
           style={{ "--glow": accent }}
-          className="absolute inset-0 overflow-hidden rounded-3xl border border-gray-400/60 bg-gradient-to-b from-gray-500 to-gray-300 transition-shadow duration-500 group-hover:shadow-[0_25px_70px_-20px_var(--glow)]"
+          className="absolute inset-0 overflow-hidden rounded-3xl border border-white/15 bg-gradient-to-b from-gray-800 to-gray-950 transition-shadow duration-500 group-hover:shadow-[0_25px_70px_-20px_var(--glow)]"
         >
           <img
             src={club.imageUrl}
@@ -664,10 +661,10 @@ const TiltCard = ({ club }) => {
               background: `linear-gradient(160deg, ${accent}40, transparent 55%)`,
             }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-gray-400/95 via-gray-300/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-gray-950/95 via-gray-900/40 to-transparent" />
         </div>
 
-        <div className="absolute left-4 top-4 h-14 w-14 overflow-hidden rounded-2xl bg-white/90 shadow-xl transition-transform duration-300 [transform:translateZ(35px)] group-hover:[transform:translateZ(85px)]">
+        <div className="absolute left-4 top-4 h-14 w-14 overflow-hidden rounded-2xl bg-gray-100 shadow-xl transition-transform duration-300 [transform:translateZ(35px)] group-hover:[transform:translateZ(85px)]">
           <img
             src={club.imageUrl}
             alt={club.name}
@@ -683,13 +680,13 @@ const TiltCard = ({ club }) => {
           {club.tag}
         </span>
 
-        <div className="absolute inset-x-0 bottom-0 p-4 text-gray-900 [transform:translateZ(30px)] sm:p-5">
+        <div className="absolute inset-x-0 bottom-0 p-4 text-white [transform:translateZ(30px)] sm:p-5">
           <h3 className="font-semibold leading-tight text-base sm:text-xl">
             {club.name}
           </h3>
           <div className="grid grid-rows-[0fr] opacity-0 transition-[grid-template-rows,opacity] duration-500 group-hover:grid-rows-[1fr] group-hover:opacity-100 [@media(hover:none)]:grid-rows-[1fr] [@media(hover:none)]:opacity-100">
             <div className="min-h-0 overflow-hidden">
-              <p className="mt-2 line-clamp-2 text-xs leading-5 text-gray-700 sm:text-sm">
+              <p className="mt-2 line-clamp-2 text-xs leading-5 text-gray-300 sm:text-sm">
                 {club.description}
               </p>
             </div>
@@ -712,24 +709,35 @@ const ClubBento = () => {
     <motion.section
       initial={false}
       animate={{
-        backgroundColor: filter === "ALL" ? "#0a0a0a" : CATS[filter].bg,
+        backgroundColor: filter === "ALL" ? "#f8fafc" : CATS[filter].bg,
       }}
       transition={{ duration: 0.8 }}
-      className="px-4 py-20 text-white sm:px-6"
+      className="px-4 py-20 text-gray-900 sm:px-6"
     >
       <div className="mx-auto max-w-7xl">
         <div className="mb-10 outfit-font flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-white/60">
-              Browse everything
-            </p>
-            <h2 className="mt-2 text-3xl font-semibold sm:text-5xl">
-              Find your club
-            </h2>
-            <p className="mt-2 max-w-md text-sm text-white/60 sm:text-base">
-              {list.length} clubs. Pick a category and the grid reshuffles
-              around it.
-            </p>
+            <TypeWriter
+              as="p"
+              text="Browse everything"
+              speed={30}
+              className="text-xs font-bold uppercase tracking-widest text-gray-600"
+            />
+            <TypeWriter
+              as="h2"
+              text="Find your club"
+              speed={55}
+              delay={400}
+              cursorClassName="bg-gray-900"
+              className="mt-2 text-3xl font-semibold sm:text-5xl"
+            />
+            <TypeWriter
+              as="p"
+              text={`${list.length} clubs. Pick a category and the grid reshuffles around it.`}
+              speed={15}
+              delay={900}
+              className="mt-2 max-w-md text-sm text-gray-600 sm:text-base"
+            />
           </div>
 
           <LayoutGroup id="club-filters">
@@ -744,8 +752,10 @@ const ClubBento = () => {
                       setFilter(cat);
                       setExpanded(false);
                     }}
-                    className={`relative cursor-pointer rounded-full border border-white/20 px-4 py-2 text-xs font-semibold tracking-wide transition-colors sm:text-sm ${
-                      isActive ? "text-black" : "text-white/70 hover:text-white"
+                    className={`relative cursor-pointer rounded-full border border-gray-900/20 px-4 py-2 text-xs font-semibold tracking-wide transition-colors sm:text-sm ${
+                      isActive
+                        ? "text-white"
+                        : "text-gray-600 hover:text-gray-950"
                     }`}
                   >
                     {isActive && (
@@ -759,7 +769,7 @@ const ClubBento = () => {
                         className="absolute inset-0 rounded-full"
                         style={{
                           backgroundColor:
-                            cat === "ALL" ? "#ffffff" : CATS[cat].accent,
+                            cat === "ALL" ? "#1e293b" : CATS[cat].textAccent,
                         }}
                       />
                     )}
@@ -807,7 +817,7 @@ const ClubBento = () => {
             <button
               type="button"
               onClick={() => setExpanded((e) => !e)}
-              className="group outfit-font inline-flex items-center rounded-full border border-gray-400 bg-gray-300 font-bold text-gray-900 shadow-[0_3px_8px_rgba(0,0,0,0.2)] transition-colors hover:border-blue-300 hover:text-white hover:bg-blue-900 text-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-300 px-6 py-3 text-md cursor-pointer"
+              className="group outfit-font inline-flex cursor-pointer items-center rounded-full border border-gray-700 bg-gray-800 px-6 py-3 text-md font-bold text-white shadow-[0_3px_8px_rgba(0,0,0,0.2)] transition-colors hover:border-blue-300 hover:bg-blue-700 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-500"
             >
               {expanded ? "Show fewer" : `Show all ${list.length} clubs`}
             </button>
