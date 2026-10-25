@@ -99,13 +99,13 @@ async function getLiveIBCCEvent() {
   }
 }
 
-// fetch the announcements - Incomplete
+// fetch the announcements
 async function getAnnouncements() {
   try {
-    const sql = ` `;
+    const sql = `SELECT * FROM announcements LIMIT 5`;
     const res = await query(sql);
 
-    const announcements = result.rows.map((r) => ({
+    const announcements = res.rows.map((r) => ({
       title: r.title,
       description: r.description,
       href: r.href,

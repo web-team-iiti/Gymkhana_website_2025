@@ -5,9 +5,6 @@ import { motion } from "motion/react";
 import ExploreMore from "./ExploreMoreButton";
 import TypeWriter from "../animations/TypeWriter";
 
-// Announcement table need to be created in the database - For now dummy announcements are here
-// Schema must match the below dummy
-// Dummy data
 const ann = [
   {
     title: "Campus events",
@@ -39,7 +36,7 @@ const REVEAL = 120; // how far the cards BELOW slide down to uncover the hovered
 
 const Announcements = ({ announcements = [] }) => {
   const [active, setActive] = useState(null);
-  const last = ann.length - 1;
+  const last = announcements.length - 1;
 
   const activate = (i) => setActive(i);
   const deactivate = (i) => setActive((prev) => (prev === i ? null : prev));
@@ -72,7 +69,7 @@ const Announcements = ({ announcements = [] }) => {
         </div>
 
         <div className="flex flex-col pb-12">
-          {ann.map(({ title, description, href }, index) => {
+          {announcements.map(({ title, description, href }, index) => {
             const isActive = active === index;
             // cards after the active one slide down to uncover it
             const pushedDown = active !== null && index > active;

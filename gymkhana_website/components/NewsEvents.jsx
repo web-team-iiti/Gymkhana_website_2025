@@ -46,6 +46,8 @@ import {
 import TypeWriter from "@/animations/TypeWriter";
 import ExploreMore from "./ExploreMoreButton";
 
+/* In order to see an event we need an upcoming event since the query rejects the rows with timestamp less than current */
+
 // ------------------------------------------------------
 // Animation config
 // ------------------------------------------------------
