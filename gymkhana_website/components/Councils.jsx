@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import Link from "next/link";
 
+/* A major attraction of IITI is its eminent faculty members and flexible education system. The faculty at IITI is one of the best among Indian professional institutes. The faculty members are excellent teachers and mentors and have many achievements in their fields. Most of our professors are researchers themselves and are deeply connected to their subjects of interest, says a student. It is this attitude of our professors that really makes them special and attractive to our students. Student Gymkhana is the student organization of IIT Indore. The Senate consists of two branches namely the Executive and the Councillors. The elected representatives of the students strive to promote growth and leadership among the students by helping them maximize their talents by coordinating various programs. To promote co-curricular activities and interests. Gymkhana has a number of clubs and groups dedicated to the interests of the students. */
+
 // --- 1. Custom CSS ---
 const customStyles = `
   @keyframes waveMove {

@@ -99,13 +99,18 @@ async function getLiveIBCCEvent() {
   }
 }
 
-// fetch the announcements - Incomplete
+// fetch the announcements
 async function getAnnouncements() {
   try {
-    const sql = ` `;
+    const sql = `SELECT * FROM announcements LIMIT 5`;
     const res = await query(sql);
 
-    return res;
+    const announcements = res.rows.map((r) => ({
+      title: r.title,
+      description: r.description,
+      href: r.href,
+    }));
+    return announcements;
   } catch (error) {
     return null;
   }
@@ -148,7 +153,7 @@ const Page = async () => {
         {/* Content Layer */}
         <div className="relative z-10">
           {/* IBCC Podium Section */}
-          <IBCCPodiumHome leaderboard={leaderboard} liveEvent={liveEvent} />
+          {/* <IBCCPodiumHome leaderboard={leaderboard} liveEvent={liveEvent} /> */}
 
           <Clubs />
 
