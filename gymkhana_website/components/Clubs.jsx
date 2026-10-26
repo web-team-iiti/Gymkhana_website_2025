@@ -1,10 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import {
   AnimatePresence,
-  LayoutGroup,
   motion,
   useMotionValue,
   useMotionValueEvent,
@@ -12,7 +10,6 @@ import {
   useTransform,
 } from "motion/react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
-import ExploreMore from "./ExploreMoreButton";
 import TypeWriter from "../animations/TypeWriter";
 
 // 🧩 Mock Data
@@ -739,6 +736,7 @@ const ClubBento = () => {
               className="mt-2 max-w-md text-sm text-gray-600 sm:text-base"
             />
           </div>
+        </div>
 
       {/* 🟢 Filter Buttons - Mobile Optimized (flex-wrap) */}
       <div className="flex flex-wrap justify-center gap-2 md:gap-4 mb-8 px-4">
@@ -746,13 +744,13 @@ const ClubBento = () => {
           <motion.button
             key={cat}
             type="button"
+            aria-pressed={filter === cat}
             whileHover={{ scale: 1.05, y: -5 }}
             whileTap={{ scale: 0.9, y: 5 }}
             transition={{ type: "spring", stiffness: 600, damping: 20 }}
             onClick={() => {
               setFilter(cat);
-              // Reset scroll position when filter changes
-              if (scrollRef.current) scrollRef.current.scrollLeft = 0;
+              setExpanded(false);
             }}
             className={`cursor-pointer rounded-full border px-2 py-1 text-xs font-semibold shadow-sm transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a75c4e] sm:px-4 md:px-5 md:py-2 md:text-sm
               ${
@@ -797,32 +795,17 @@ const ClubBento = () => {
           </AnimatePresence>
         </motion.div>
 
-        <motion.button
-          type="button"
-          aria-label="Scroll clubs right"
-          onClick={() => scrollCarousel(1)}
-          whileHover={{ scale: 1.09, y: -4 }}
-          whileTap={{ scale: 0.9, y: 4 }}
-          transition={{ type: "spring", stiffness: 600, damping: 20 }}
-          className="absolute right-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/70 bg-white/45 text-[#263f4b] shadow-[0_5px_18px_rgba(38,63,75,0.16)] backdrop-blur-md transition-colors hover:bg-white/75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a75c4e] md:right-6"
-        >
-          <FaChevronRight aria-hidden="true" />
-        </motion.button>
-
-        <div
-          ref={scrollRef}
-          className="relative z-10 flex w-full gap-6 overflow-x-hidden px-4 py-8 no-scrollbar md:px-16"
-        >
-          {displayClubs.length > 0 ? (
-            displayClubs.map((club, index) => (
-              <ClubCard key={`${club.id}-${index}`} club={club} />
-            ))
-          ) : (
-            <p className="w-full text-center text-[#657078]">
-              No clubs found in this category.
-            </p>
-          )}
-        </div>
+        {list.length > BENTO_INITIAL && (
+          <div className="mt-10 flex justify-center">
+            <button
+              type="button"
+              onClick={() => setExpanded((value) => !value)}
+              className="rounded-full border border-[#b96f65] bg-white px-6 py-2 font-semibold text-[#263f4b] transition-colors hover:bg-[#fff3e8] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a75c4e]"
+            >
+              {expanded ? "Show less" : "Show all clubs"}
+            </button>
+          </div>
+        )}
       </div>
     </motion.section>
   );
