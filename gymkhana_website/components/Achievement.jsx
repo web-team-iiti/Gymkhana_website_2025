@@ -30,9 +30,9 @@ const Achievement = ({ achievement }) => {
           scale: 1.03,
           transition: { type: "spring", stiffness: 320, damping: 22 },
         }}
-        className="group flex h-full min-h-[25rem] flex-col overflow-hidden rounded-lg border border-[#e7d4c8] bg-[#fffefd] shadow-[0_5px_14px_rgba(74,48,31,0.13)] transition-[border-color,box-shadow] duration-300 hover:border-[#d9aaa0] hover:shadow-[0_16px_32px_rgba(74,48,31,0.2)]"
+        className="group flex h-full min-h-[25rem] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-400 hover:shadow-xl"
       >
-        <div className="relative aspect-[16/9] overflow-hidden bg-[#f3e4da]">
+        <div className="relative aspect-[16/9] overflow-hidden bg-slate-100">
           {achievement.image_url ? (
             <img
               src={achievement.image_url}
@@ -42,7 +42,7 @@ const Achievement = ({ achievement }) => {
             />
           ) : (
             <div
-              className="flex h-full items-center justify-center text-[#b96f65]"
+              className="flex h-full items-center justify-center text-blue-600"
               aria-hidden="true"
             >
               <FaTrophy size={30} />
@@ -53,14 +53,13 @@ const Achievement = ({ achievement }) => {
         <div className="flex flex-1 flex-col p-5 sm:p-6">
           <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
             <span
-              className="text-xs font-bold uppercase"
-              style={{ color: achievement.council_color || "#b96f65" }}
+              className="text-xs font-bold uppercase tracking-wider text-blue-700"
             >
               {achievement.council_name?.replace(" Council", "") || "Gymkhana"}
             </span>
             {validDate && (
               <time
-                className="text-xs text-[#6b7073]"
+                className="text-xs font-medium text-slate-500"
                 dateTime={validDate.toISOString()}
               >
                 {validDate.toLocaleDateString("en-US", {
@@ -72,10 +71,10 @@ const Achievement = ({ achievement }) => {
               </time>
             )}
           </div>
-          <h3 className="text-lg font-semibold leading-snug text-[#192b35] line-clamp-2">
+          <h3 className="text-lg font-bold leading-snug text-slate-900 transition-colors group-hover:text-blue-700 line-clamp-2">
             {achievement.title}
           </h3>
-          <p className="mt-3 flex-1 text-sm leading-6 text-[#59646b] line-clamp-3">
+          <p className="mt-3 flex-1 text-sm leading-6 text-slate-600 line-clamp-3">
             {achievement.description}
           </p>
           <DetailsArrow Text={"More from this Council"} />

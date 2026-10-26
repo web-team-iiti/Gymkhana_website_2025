@@ -12,8 +12,8 @@ const NavbarLinks = ({ setIsMenuOpen }) => {
 
   const getItemStyles = (active) =>
     active
-      ? "bg-amber-200 text-amber-950 border border-amber-200/60 shadow-[0_4px_14px_rgba(217,119,6,0.15)] rounded-full uppercase tracking-wide font-[Outfit,sans-serif] font-bold"
-      : "text-stone-700 hover:bg-amber-50/90 hover:text-amber-950 hover:border hover:border-amber-600/60 hover:shadow-[0_3px_10px_rgba(217,119,6,0.12)] hover:-translate-y-0.5 font-[Outfit,sans-serif] transition-all duration-200 font-bold rounded-full uppercase tracking-wide";
+      ? "bg-white/20 text-white border border-white/25 shadow-sm rounded-full uppercase tracking-wider font-[Outfit,sans-serif] font-bold"
+      : "text-slate-200 hover:text-white hover:bg-white/10 font-[Outfit,sans-serif] transition-all duration-200 font-medium rounded-full uppercase tracking-wider";
 
   const closeMenus = () => {
     setOpenDropdown(null);
@@ -25,7 +25,7 @@ const NavbarLinks = ({ setIsMenuOpen }) => {
   };
 
   const navItemBase =
-    "flex items-center justify-between w-full md:w-auto px-4 py-2 rounded-xl text-base transition-all duration-200";
+    "flex items-center justify-between w-full md:w-auto px-3 sm:px-3.5 py-1.5 rounded-full text-xs lg:text-[13px] transition-all duration-200";
 
   return (
     <>
@@ -49,7 +49,13 @@ const NavbarLinks = ({ setIsMenuOpen }) => {
         </Link>
       </li>
       <li>
-        <Link href="/constitution" onClick={() => setIsMenuOpen(false)} className={`block py-2 px-3 rounded md:p-0 ${isActive("/constitution")}`}>Constitution</Link>
+        <Link
+          href="/constitution"
+          onClick={() => setIsMenuOpen(false)}
+          className={`${navItemBase} ${getItemStyles(isActive("/constitution"))}`}
+        >
+          Constitution
+        </Link>
       </li>
 
       {/* Club Dropdown */}
@@ -83,9 +89,9 @@ const NavbarLinks = ({ setIsMenuOpen }) => {
             openDropdown === "clubs"
               ? "mt-2 max-h-96 opacity-100"
               : "max-h-0 opacity-0 md:max-h-0"
-          } md:absolute md:left-0 md:top-full md:z-10 md:mt-2 md:w-52 md:rounded-2xl md:bg-amber-50/90 md:p-1.5 md:shadow-xl md:ring-1 md:ring-amber-900/10 md:backdrop-blur-md`}
+          } md:absolute md:left-0 md:top-full md:z-10 md:mt-2 md:w-52 md:rounded-2xl md:bg-[#0d2234] md:p-1.5 md:shadow-xl md:ring-1 md:ring-amber-300/10 md:backdrop-blur-md md:border md:border-white/10`}
         >
-          <ul className="ml-2 space-y-1 rounded-lg border-l-2 border-amber-200/60 py-2 pl-2 md:ml-0 md:border-0 md:py-0 md:pl-0">
+          <ul className="ml-2 space-y-1 rounded-lg border-l-2 border-amber-300/30 py-2 pl-2 md:ml-0 md:border-0 md:py-0 md:pl-0">
             <li>
               <Link
                 href="/club/technical"
@@ -166,7 +172,7 @@ const NavbarLinks = ({ setIsMenuOpen }) => {
               : "max-h-0 opacity-0"
           }`}
         >
-          <ul className="ml-2 space-y-1 rounded-lg border-l-2 border-amber-200/60 py-2 pl-2">
+          <ul className="ml-2 space-y-1 rounded-lg border-l-2 border-amber-300/30 py-2 pl-2">
             <li>
               <Link
                 href="/ibcc/leaderboard"

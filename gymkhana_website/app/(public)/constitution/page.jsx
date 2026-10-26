@@ -559,10 +559,8 @@ export default function ConstitutionPage() {
   const [selectedYear, setSelectedYear] = useState("All Years");
   const [selectedDocModal, setSelectedDocModal] = useState(null);
 
-  // Constitution Chapter accordion
-  const [activeChapterId, setActiveChapterId] = useState("preamble");
-  const [expandedArticles, setExpandedArticles] = useState({ "Preamble": true, "Article 1.1": true, "Article 1.2": true });
-  const [constitutionSearch, setConstitutionSearch] = useState("");
+  // Chapter Reader Modal state (replaces raw page text clutter)
+  const [selectedChapterModal, setSelectedChapterModal] = useState(null);
 
   // Media / Video toggle for the Hero section
   const [isVideoMode, setIsVideoMode] = useState(false);
@@ -575,7 +573,6 @@ export default function ConstitutionPage() {
   // Copy notice toast
   const [copyFeedback, setCopyFeedback] = useState("");
 
-  // Categories for Document filtering
   const categories = [
     "All Documents",
     "Senate MoMs",
@@ -585,24 +582,13 @@ export default function ConstitutionPage() {
     "Regulations & Codes"
   ];
 
-  const academicYears = ["All Years", "2025-26", "2024-25", "2023-24"];
-
-  // Toggle article expansion
-  const toggleArticle = (artNum) => {
-    setExpandedArticles((prev) => ({
-      ...prev,
-      [artNum]: !prev[artNum]
-    }));
-  };
-
   // Filtered Documents
   const filteredDocuments = useMemo(() => {
     return officialDocumentsArchive.filter((doc) => {
       const matchesSearch =
         doc.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         doc.refNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        doc.summary.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        doc.resolutions.some((res) => res.toLowerCase().includes(searchQuery.toLowerCase()));
+        doc.summary.toLowerCase().includes(searchQuery.toLowerCase());
 
       const matchesCat =
         selectedCategory === "All Documents" || doc.category === selectedCategory;
@@ -613,26 +599,6 @@ export default function ConstitutionPage() {
       return matchesSearch && matchesCat && matchesYear;
     });
   }, [searchQuery, selectedCategory, selectedYear]);
-
-  // Filtered Constitution Articles
-  const activeChapterData = useMemo(() => {
-    const chapter = constitutionChapters.find((c) => c.id === activeChapterId);
-    if (!chapter) return constitutionChapters[0];
-
-    if (!constitutionSearch.trim()) return chapter;
-
-    const filteredArticles = chapter.articles.filter((art) => {
-      const matchHead = art.heading.toLowerCase().includes(constitutionSearch.toLowerCase());
-      const matchNum = art.articleNum.toLowerCase().includes(constitutionSearch.toLowerCase());
-      const matchClauses = art.clauses.some((cl) => cl.toLowerCase().includes(constitutionSearch.toLowerCase()));
-      return matchHead || matchNum || matchClauses;
-    });
-
-    return {
-      ...chapter,
-      articles: filteredArticles
-    };
-  }, [activeChapterId, constitutionSearch]);
 
   // Handle document verification test
   const handleVerifyCheck = (e) => {
@@ -673,138 +639,90 @@ export default function ConstitutionPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF7F2] text-stone-900 font-sans selection:bg-[#8C5353] selection:text-white relative">
-      {/* Background Subtle Dot Matrix Pattern (Matching IIT Indore Institute Website Theme) */}
+    <div className="min-h-screen bg-white text-slate-900 font-[Outfit,sans-serif] selection:bg-blue-100 selection:text-blue-900 relative">
+
+      {/* ── Background Texture ── */}
       <div
-        className="fixed inset-0 pointer-events-none z-0 opacity-40"
+        className="fixed inset-0 pointer-events-none z-0 opacity-15"
         style={{
-          backgroundImage: "radial-gradient(#CBB9A7 1.2px, transparent 1.2px)",
-          backgroundSize: "24px 24px"
+          backgroundImage: "radial-gradient(#94a3b8 1px, transparent 1px)",
+          backgroundSize: "28px 28px"
         }}
       />
 
-      {/* Copy notification popup */}
+      {/* ── Copy Toast ── */}
       {copyFeedback && (
-        <div className="fixed bottom-20 right-8 z-50 bg-stone-900 text-white px-5 py-3 rounded-xl shadow-2xl text-sm flex items-center gap-2 border border-stone-700 animate-fadeIn">
-          <FaCheckCircle className="text-emerald-400" />
+        <div className="fixed bottom-20 right-6 z-50 bg-[#0d2234] text-white px-5 py-3 rounded-2xl shadow-2xl text-sm flex items-center gap-2 border border-blue-900/40 animate-fadeIn">
+          <FaCheckCircle className="text-sky-400" />
           <span>{copyFeedback}</span>
         </div>
       )}
 
       {/* ============================================================== */}
-      {/* 1. TOP INSTITUTIONAL BAR & BILINGUAL CREST (From Institute Theme) */}
+      {/* 1. SLIM SUB-NAV BAR                                            */}
       {/* ============================================================== */}
-      <header className="relative z-20 bg-[#101724] text-white border-b border-[#253246] shadow-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          {/* IIT Indore Official bilingual crest & title */}
-          <div className="flex items-center space-x-3.5">
-            <div className="relative w-12 h-12 rounded-full overflow-hidden flex-shrink-0 bg-white p-1 shadow-sm border border-stone-200">
-              <Image
-                src="/logo.png"
-                alt="IIT Indore Seal"
-                width={48}
-                height={48}
-                className="object-contain w-full h-full"
-                priority
-              />
-            </div>
-            <div>
-              <div className="text-sm font-semibold tracking-wide text-stone-300 font-serif">
-                भारतीय प्रौद्योगिकी संस्थान इंदौर
-              </div>
-              <h1 className="text-lg sm:text-xl font-bold tracking-tight text-white flex items-center gap-2">
-                Indian Institute of Technology Indore
-                <span className="hidden sm:inline-block text-xs uppercase px-2 py-0.5 rounded bg-[#8C5353] text-stone-100 font-semibold">
-                  Official Portal
-                </span>
-              </h1>
-              <p className="text-xs text-stone-400 font-mono tracking-wide">
-                Students' Gymkhana • Legislative & Constitutional Repository
-              </p>
-            </div>
-          </div>
-
-          {/* Quick Category Anchors */}
-          <nav className="flex flex-wrap items-center gap-2 text-xs sm:text-sm font-medium">
+      <div className="sticky top-[72px] z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2 flex items-center gap-2 overflow-x-auto scrollbar-none">
+          <span className="text-[11px] font-bold uppercase tracking-widest text-blue-700 shrink-0 mr-1">Jump to:</span>
+          {[
+            { label: "Overview", id: "hero-overview" },
+            { label: "Constitution Chapters", id: "constitution-chapters" },
+            { label: "Senate MoMs", id: "senate-mom-archive" },
+            { label: "Governance", id: "governance-hierarchy" },
+            { label: "Office Bearers", id: "office-bearers" },
+            { label: "Committees", id: "standing-committees" },
+            { label: "Verify Doc", id: "verification-portal" },
+          ].map((item) => (
             <button
-              onClick={() => scrollToSection("constitution-charter")}
-              className="px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 transition text-stone-200 hover:text-white"
+              key={item.id}
+              onClick={() => scrollToSection(item.id)}
+              className="shrink-0 px-3.5 py-1.5 rounded-full bg-slate-100 hover:bg-blue-50 hover:text-blue-700 border border-slate-200 text-slate-700 text-xs font-semibold transition-all duration-150 hover:border-blue-300"
             >
-              The Constitution
+              {item.label}
             </button>
-            <button
-              onClick={() => scrollToSection("senate-mom-archive")}
-              className="px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 transition text-stone-200 hover:text-white"
-            >
-              Senate MoMs
-            </button>
-            <button
-              onClick={() => scrollToSection("governance-hierarchy")}
-              className="px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 transition text-stone-200 hover:text-white"
-            >
-              Governance
-            </button>
-            <button
-              onClick={() => scrollToSection("office-bearers")}
-              className="px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 transition text-stone-200 hover:text-white"
-            >
-              Office Bearers
-            </button>
-            <button
-              onClick={() => scrollToSection("standing-committees")}
-              className="px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 transition text-stone-200 hover:text-white"
-            >
-              Committees
-            </button>
+          ))}
+          <div className="ml-auto shrink-0">
             <button
               onClick={() => scrollToSection("verification-portal")}
-              className="px-3 py-1.5 rounded-full bg-[#8C5353] text-white hover:bg-[#774242] transition flex items-center gap-1.5 font-semibold"
+              className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition shadow-sm"
             >
-              <MdVerified /> Verify Doc
+              <MdVerified className="text-sm" /> Verify Doc
             </button>
-          </nav>
+          </div>
         </div>
-      </header>
+      </div>
 
-      {/* ============================================================== */}
-      {/* 2. TICKER ANNOUNCEMENT BAR (Matches Institute Website Screenshot 2) */}
-      {/* ============================================================== */}
-      <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 pt-5 pb-2">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-[#EFE8DE] border border-[#DDD3C7] rounded-full px-5 py-2.5 shadow-sm text-stone-800">
+      {/* ── Gazette Notice Bar ── */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pt-5 pb-2">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-blue-50/70 border border-blue-200 rounded-full px-5 py-2.5 shadow-sm text-slate-800">
           <div className="flex items-center gap-3 overflow-hidden text-sm">
-            <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center flex-shrink-0 text-[#8C5353] shadow-sm">
-              <FaBullhorn />
-            </div>
-            <span className="font-bold text-xs uppercase tracking-wider text-[#8C5353] bg-white/80 px-2.5 py-1 rounded-full whitespace-nowrap">
-              Senate Gazette Notice
+            <span className="font-bold text-xs uppercase tracking-wider text-blue-800 bg-blue-100 px-2.5 py-0.5 rounded-full whitespace-nowrap border border-blue-200">
+              Latest Gazette
             </span>
-            <p className="truncate text-stone-700 font-medium">
-              18th Ordinary Senate Meeting Minutes (MoM) & 4th Constitutional Amendment ratified and archived.
+            <p className="truncate text-slate-700 font-medium text-xs sm:text-sm">
+              18th Ordinary Senate MoM &amp; 4th Constitutional Amendment ratified.
             </p>
           </div>
           <button
             onClick={() => scrollToSection("senate-mom-archive")}
-            className="flex-shrink-0 self-end sm:self-auto text-xs sm:text-sm font-bold text-stone-900 hover:text-[#8C5353] flex items-center gap-1.5 transition ml-auto"
+            className="flex-shrink-0 text-xs font-bold text-blue-700 hover:text-blue-900 flex items-center gap-1.5 transition ml-auto"
           >
-            <span>Read Gazette MoM</span>
-            <FaArrowRight className="text-xs" />
+            Browse MoMs <FaArrowRight className="text-[10px]" />
           </button>
         </div>
       </div>
 
       {/* ============================================================== */}
-      {/* 3. HERO SECTION (Matches Architecture & Stat Cards from Screenshot 2) */}
+      {/* 2. HERO SECTION (Punchy, Clean, Non-Wordy)                     */}
       {/* ============================================================== */}
-      <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-10 md:py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-          
-          {/* Left Column: Campus Architecture / Media Card (with Video / Placeholder switch) */}
+      <section id="hero-overview" className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+
+          {/* Left Visual Card */}
           <div className="lg:col-span-5 order-2 lg:order-1">
-            <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-stone-900 group">
-              
+            <div className="relative rounded-3xl overflow-hidden shadow-xl border border-slate-200 bg-slate-900 group">
               {!isVideoMode ? (
-                /* Static High-Res Campus Showcase */
-                <div className="relative h-[480px] w-full">
+                <div className="relative h-[380px] w-full">
                   <Image
                     src="/iiti_campus_building.jpg"
                     alt="IIT Indore Modern Campus Architecture"
@@ -812,556 +730,265 @@ export default function ConstitutionPage() {
                     className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
                     priority
                   />
-                  {/* Subtle Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                  
-                  {/* Floating Constitutional Badge */}
-                  <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-bold text-stone-800 shadow-md flex items-center gap-2 border border-stone-200">
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent" />
+                  <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-bold text-slate-800 shadow flex items-center gap-2 border border-slate-200">
                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                     Supreme Charter • In Force
                   </div>
-
-                  {/* Bottom details card */}
-                  <div className="absolute bottom-4 left-4 right-4 p-5 rounded-2xl bg-black/60 backdrop-blur-md text-white border border-white/20">
-                    <div className="flex items-center gap-2 text-[#E2A687] text-xs font-bold uppercase tracking-wider mb-1">
-                      <FaBalanceScale /> Autonomous Student Governance
-                    </div>
-                    <h3 className="font-serif text-lg font-bold">
-                      Constitution of Students' Gymkhana
-                    </h3>
-                    <p className="text-xs text-stone-300 mt-1 leading-relaxed">
-                      Adopted Nov 2012 • 4th Revision Gazetted 2025 • Registered with Institute Senate
-                    </p>
-                    <div className="mt-3 flex items-center justify-between pt-3 border-t border-white/10">
-                      <span className="text-xs text-stone-300 font-mono">Reg: IITI/SG/CONST/REV-04</span>
-                      <a
-                        href="#senate-mom-archive"
-                        className="text-xs text-white font-semibold underline underline-offset-4 hover:text-[#E2A687]"
-                      >
-                        View Gazette Documents →
-                      </a>
+                  <div className="absolute bottom-4 left-4 right-4 p-4 rounded-2xl bg-[#0d2234]/90 backdrop-blur-md text-white border border-white/15">
+                    <h3 className="font-bold text-base">Students' Gymkhana Constitution</h3>
+                    <p className="text-xs text-slate-300 mt-0.5">IIT Indore • 4th Revision Ratified</p>
+                    <div className="mt-2.5 flex items-center justify-between pt-2.5 border-t border-white/10 text-xs">
+                      <span className="text-slate-400 font-mono">Reg: IITI/SG/CONST/REV-04</span>
+                      <button onClick={() => scrollToSection("constitution-chapters")} className="text-sky-300 font-semibold hover:text-white transition">
+                        Explore Chapters →
+                      </button>
                     </div>
                   </div>
                 </div>
               ) : (
-                /* Continuous Campus Video Stream Placeholder (Requested by user) */
-                <div className="relative h-[480px] w-full bg-stone-950 flex flex-col justify-between p-6 text-white">
-                  <div className="flex items-center justify-between z-10">
-                    <span className="px-3 py-1 rounded-full bg-red-600/90 text-xs font-bold flex items-center gap-1.5 text-white animate-pulse">
-                      <span className="w-2 h-2 rounded-full bg-white"></span>
-                      CAMPUS MEDIA STREAM
-                    </span>
-                    <span className="text-xs text-stone-400 font-mono">1080p • Live Stream Placeholder</span>
+                <div className="relative h-[380px] w-full bg-slate-950 flex flex-col justify-between p-6 text-white text-center">
+                  <div className="flex items-center justify-between">
+                    <span className="px-3 py-1 rounded-full bg-red-600 text-xs font-bold animate-pulse">LIVE STREAM</span>
+                    <span className="text-xs text-slate-400 font-mono">Senate Hall</span>
                   </div>
-
-                  {/* Center Video Ambient Graphic */}
-                  <div className="my-auto text-center space-y-4">
-                    <div className="w-20 h-20 rounded-full bg-white/10 mx-auto flex items-center justify-center border-2 border-white/30 text-white text-3xl">
-                      {isPlayingVideo ? <FaPlay className="ml-1 text-emerald-400" /> : <FaPause className="text-amber-400" />}
+                  <div className="my-auto space-y-2">
+                    <div className="w-16 h-16 rounded-full bg-white/10 mx-auto flex items-center justify-center border border-white/20 text-2xl">
+                      {isPlayingVideo ? <FaPlay className="ml-1 text-sky-400" /> : <FaPause className="text-slate-400" />}
                     </div>
-                    <div className="space-y-1">
-                      <h4 className="font-serif font-bold text-lg text-white">
-                        IIT Indore Central Amphitheatre & Senate Hall
-                      </h4>
-                      <p className="text-xs text-stone-400 max-w-xs mx-auto">
-                        Ambient video placeholder simulating continuous campus broadcast stream as observed on institute portal.
-                      </p>
-                    </div>
+                    <p className="text-xs text-slate-300">Continuous campus broadcast placeholder.</p>
                   </div>
-
-                  {/* Video Control Bar */}
-                  <div className="p-3 bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-between text-xs text-stone-300">
-                    <button
-                      onClick={() => setIsPlayingVideo(!isPlayingVideo)}
-                      className="flex items-center gap-1.5 font-semibold text-white hover:text-emerald-400"
-                    >
-                      {isPlayingVideo ? <FaPause /> : <FaPlay />}
-                      <span>{isPlayingVideo ? "Playing Loop" : "Stream Paused"}</span>
-                    </button>
-                    <span className="text-[11px] text-stone-400">Audio: Muted by default</span>
-                  </div>
+                  <button onClick={() => setIsPlayingVideo(!isPlayingVideo)} className="text-xs text-sky-300 hover:underline">
+                    {isPlayingVideo ? "Pause Stream" : "Resume Stream"}
+                  </button>
                 </div>
               )}
 
-              {/* Media Switcher Bar */}
-              <div className="bg-stone-900 px-4 py-2.5 flex items-center justify-between text-xs text-stone-300 border-t border-stone-800">
-                <span className="font-medium">Media View:</span>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setIsVideoMode(false)}
-                    className={`px-3 py-1 rounded-full font-medium transition ${
-                      !isVideoMode ? "bg-[#8C5353] text-white" : "hover:text-white"
-                    }`}
-                  >
-                    Campus Showcase
-                  </button>
-                  <button
-                    onClick={() => setIsVideoMode(true)}
-                    className={`px-3 py-1 rounded-full font-medium flex items-center gap-1 transition ${
-                      isVideoMode ? "bg-[#8C5353] text-white" : "hover:text-white"
-                    }`}
-                  >
-                    <FaVideo className="text-[10px]" />
-                    <span>Video Stream</span>
-                  </button>
+              {/* View Switcher */}
+              <div className="bg-[#0d2234] px-4 py-2 flex items-center justify-between text-xs text-slate-300 border-t border-slate-800">
+                <span className="text-slate-400">Media View:</span>
+                <div className="flex items-center gap-1.5">
+                  <button onClick={() => setIsVideoMode(false)} className={`px-3 py-1 rounded-full font-medium transition ${!isVideoMode ? "bg-blue-600 text-white" : "hover:text-white"}`}>Campus</button>
+                  <button onClick={() => setIsVideoMode(true)} className={`px-3 py-1 rounded-full font-medium transition ${isVideoMode ? "bg-blue-600 text-white" : "hover:text-white"}`}>Stream</button>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Right Column: Hero Heading & 4 Terracotta Stat Cards (Exact match to institute screenshot 2!) */}
-          <div className="lg:col-span-7 order-1 lg:order-2 space-y-8">
-            <div className="space-y-4">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EADBD5] text-[#8C5353] text-xs font-bold tracking-wider uppercase">
-                <FaLandmark /> Supreme Legal Charter & Governance Framework
-              </div>
-              <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-stone-900 leading-[1.15] font-serif">
-                Shaping democracy, student rights, and transparent leadership.
-              </h2>
-              <p className="text-base sm:text-lg text-stone-600 leading-relaxed max-w-2xl">
-                The Constitution of the Students' Gymkhana stands as the supreme governing charter of IIT Indore, vesting legislative authority in the elected Student Senate, executive stewardship in the Executive Council, and fiscal integrity across all student councils and clubs.
+          {/* Right Content */}
+          <div className="lg:col-span-7 order-1 lg:order-2 space-y-6">
+            <div className="space-y-3">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold uppercase tracking-wider border border-blue-200">
+                <FaLandmark /> Supreme Legal Charter
+              </span>
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
+                Students' Gymkhana Constitution
+              </h1>
+              <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-xl">
+                The supreme governing framework of IIT Indore, vesting legislative authority in the elected Student Senate, executive stewardship in the Executive Council, and safeguarding student rights.
               </p>
             </div>
 
-            {/* 4 Stat Cards in Warm Terracotta (Exact visual match to Screenshot 2!) */}
-            <div className="grid grid-cols-2 gap-4 sm:gap-6 pt-2">
-              <div className="bg-[#8C5353] hover:bg-[#7D4545] transition rounded-2xl p-6 text-white shadow-lg flex flex-col justify-between">
-                <div className="text-3xl sm:text-5xl font-black tracking-tight font-serif">
-                  18+
+            {/* 4 Crisp Stat Chips */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {[
+                { num: "18+", label: "Senate MoMs" },
+                { num: "9", label: "Executive Portfolios" },
+                { num: "6", label: "Committees & Cells" },
+                { num: "35+", label: "Elected Senators" },
+              ].map((s, i) => (
+                <div key={i} className="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-center">
+                  <div className="text-2xl sm:text-3xl font-black text-blue-600 font-[Outfit,sans-serif]">{s.num}</div>
+                  <div className="text-xs font-medium text-slate-600 mt-0.5">{s.label}</div>
                 </div>
-                <div className="mt-2 text-xs sm:text-sm font-semibold tracking-wide text-stone-200">
-                  Ratified Senate MoMs & Agendas Archived
-                </div>
-              </div>
-
-              <div className="bg-[#8C5353] hover:bg-[#7D4545] transition rounded-2xl p-6 text-white shadow-lg flex flex-col justify-between">
-                <div className="text-3xl sm:text-5xl font-black tracking-tight font-serif">
-                  9
-                </div>
-                <div className="mt-2 text-xs sm:text-sm font-semibold tracking-wide text-stone-200">
-                  Executive Portfolios & General Secretaries
-                </div>
-              </div>
-
-              <div className="bg-[#8C5353] hover:bg-[#7D4545] transition rounded-2xl p-6 text-white shadow-lg flex flex-col justify-between">
-                <div className="text-3xl sm:text-5xl font-black tracking-tight font-serif">
-                  8
-                </div>
-                <div className="mt-2 text-xs sm:text-sm font-semibold tracking-wide text-stone-200">
-                  Standing Committees & Regulatory Cells
-                </div>
-              </div>
-
-              <div className="bg-[#8C5353] hover:bg-[#7D4545] transition rounded-2xl p-6 text-white shadow-lg flex flex-col justify-between">
-                <div className="text-3xl sm:text-5xl font-black tracking-tight font-serif">
-                  35+
-                </div>
-                <div className="mt-2 text-xs sm:text-sm font-semibold tracking-wide text-stone-200">
-                  Elected Senators Representing 3,000+ Students
-                </div>
-              </div>
+              ))}
             </div>
 
-            {/* CTA action bar */}
-            <div className="flex flex-wrap items-center gap-4 pt-2">
+            {/* Main Action Buttons */}
+            <div className="flex flex-wrap items-center gap-3 pt-1">
               <button
-                onClick={() => scrollToSection("constitution-charter")}
-                className="px-6 py-3 rounded-full bg-stone-900 hover:bg-stone-800 text-white font-semibold text-sm transition shadow-md flex items-center gap-2 group"
+                onClick={() => scrollToSection("constitution-chapters")}
+                className="px-5 py-2.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-bold transition shadow-sm flex items-center gap-2"
               >
-                <span>Explore Full Constitution</span>
-                <FaArrowRight className="group-hover:translate-x-1 transition-transform text-xs" />
+                <FaBookOpen /> Explore Chapters
               </button>
-
               <button
                 onClick={() => scrollToSection("senate-mom-archive")}
-                className="px-6 py-3 rounded-full bg-white hover:bg-stone-50 border border-stone-300 text-stone-800 font-semibold text-sm transition shadow-sm flex items-center gap-2"
+                className="px-5 py-2.5 rounded-full bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 hover:text-blue-700 text-xs sm:text-sm font-semibold transition flex items-center gap-2"
               >
-                <FaFileAlt className="text-[#8C5353]" />
-                <span>Search Senate Minutes (MoM)</span>
+                <FaFileAlt className="text-blue-600" /> Senate Minutes Archive
               </button>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      {/* ============================================================== */}
-      {/* 4. PREAMBLE CALLOUT BANNER (Dignified Institutional Parchment) */}
-      {/* ============================================================== */}
-      <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-6">
-        <div className="bg-gradient-to-r from-[#F5EFE6] via-[#FAF6F0] to-[#F5EFE6] border-2 border-[#D8C7B5] rounded-3xl p-8 sm:p-12 shadow-sm relative overflow-hidden">
-          {/* Subtle watermarked seal */}
-          <div className="absolute -right-8 -bottom-8 opacity-5 pointer-events-none w-64 h-64">
-            <FaStamp className="w-full h-full text-stone-900" />
-          </div>
-
-          <div className="max-w-4xl mx-auto text-center space-y-6">
-            <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-white border border-[#D8C7B5] text-[#8C5353] font-bold text-xs uppercase tracking-widest shadow-sm">
-              <FaStamp /> Preamble to the Supreme Charter
-            </div>
-
-            <div className="relative">
-              <FaQuoteLeft className="text-3xl text-[#CBB9A7] mx-auto mb-3 opacity-60" />
-              <blockquote className="font-serif text-xl sm:text-2xl text-stone-800 font-medium leading-relaxed italic">
-                “WE, THE STUDENTS OF THE INDIAN INSTITUTE OF TECHNOLOGY INDORE, having solemnly resolved to constitute a democratic, autonomous, and accountable student governance system to promote intellectual curiosity, cultural expression, athletic excellence, welfare, and integrity — DO HEREBY ADOPT, ENACT, AND GIVE TO OURSELVES THIS CONSTITUTION.”
-              </blockquote>
-            </div>
-
-            <div className="pt-2 flex flex-wrap items-center justify-center gap-6 text-xs text-stone-500 font-mono">
-              <span className="flex items-center gap-1.5">
-                <MdVerified className="text-emerald-600 text-sm" /> Registered with Institute Senate
-              </span>
-              <span>•</span>
-              <span>Adopted: November 26, 2012</span>
-              <span>•</span>
-              <span>4th Revision Ratified: October 01, 2025</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ============================================================== */}
-      {/* 5. INTERACTIVE CONSTITUTION EXPLORER (Chapters & Articles) */}
-      {/* ============================================================== */}
-      <section id="constitution-charter" className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-16 scroll-mt-24">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 pb-4 border-b border-stone-300">
-          <div>
-            <div className="text-xs font-bold text-[#8C5353] tracking-wider uppercase mb-1 flex items-center gap-2">
-              <FaScroll /> Articles of Governance
-            </div>
-            <h3 className="text-3xl sm:text-4xl font-extrabold text-stone-900 font-serif">
-              The Gymkhana Constitution
-            </h3>
-            <p className="text-stone-600 text-sm mt-1">
-              Browse chapters, search constitutional clauses, review amendment logs, and verify governance rules.
-            </p>
-          </div>
-
-          {/* Quick search inside constitution */}
-          <div className="relative w-full md:w-80">
-            <FaSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400 text-sm" />
-            <input
-              type="text"
-              placeholder="Search constitution clauses..."
-              value={constitutionSearch}
-              onChange={(e) => setConstitutionSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 rounded-full bg-white border border-stone-300 text-stone-800 text-sm focus:outline-none focus:ring-2 focus:ring-[#8C5353] shadow-sm"
-            />
-            {constitutionSearch && (
               <button
-                onClick={() => setConstitutionSearch("")}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 text-xs"
-              >
-                Clear
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* Chapters Navigation Tabs */}
-        <div className="flex overflow-x-auto pb-4 gap-2.5 scrollbar-thin scrollbar-thumb-stone-300 mb-8">
-          {constitutionChapters.map((ch) => {
-            const isSelected = activeChapterId === ch.id;
-            return (
-              <button
-                key={ch.id}
-                onClick={() => setActiveChapterId(ch.id)}
-                className={`flex-shrink-0 px-4 py-2.5 rounded-2xl text-left transition-all border ${
-                  isSelected
-                    ? "bg-[#8C5353] text-white border-[#8C5353] shadow-md"
-                    : "bg-white hover:bg-stone-100 text-stone-700 border-stone-200"
-                }`}
-              >
-                <div className={`text-[10px] font-bold uppercase tracking-wider ${isSelected ? "text-stone-200" : "text-[#8C5353]"}`}>
-                  {ch.chapterNum}
-                </div>
-                <div className="text-xs sm:text-sm font-semibold truncate max-w-[190px]">
-                  {ch.title}
-                </div>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Active Chapter Details & Accordion */}
-        <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-sm border border-stone-200 space-y-8">
-          <div className="flex flex-col md:flex-row md:items-center justify-between pb-6 border-b border-stone-200 gap-4">
-            <div>
-              <span className="text-xs font-bold text-[#8C5353] uppercase tracking-widest bg-[#FAF2EE] px-3 py-1 rounded-full border border-[#EADBD5]">
-                {activeChapterData.chapterNum}
-              </span>
-              <h4 className="text-2xl sm:text-3xl font-bold font-serif text-stone-900 mt-2">
-                {activeChapterData.title}
-              </h4>
-              <p className="text-stone-600 text-sm mt-1.5 leading-relaxed max-w-3xl">
-                {activeChapterData.summary}
-              </p>
-            </div>
-
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <button
-                onClick={() =>
-                  handleCopyText(
-                    `IIT Indore Gymkhana Constitution - ${activeChapterData.title}`,
-                    activeChapterData.title
-                  )
-                }
-                className="px-3.5 py-2 rounded-full border border-stone-300 hover:bg-stone-100 text-xs font-medium text-stone-700 flex items-center gap-1.5 transition"
+                onClick={() => handleCopyText(`${window.location.origin}/constitution#charter`, "Constitution Link")}
+                className="px-4 py-2.5 rounded-full border border-slate-200 hover:bg-slate-50 text-slate-600 text-xs font-medium transition flex items-center gap-1.5"
               >
                 <FaRegCopy /> Copy Citation
               </button>
             </div>
           </div>
 
-          {/* Articles Accordion List */}
-          <div className="space-y-4">
-            {activeChapterData.articles.length === 0 ? (
-              <div className="p-8 text-center bg-stone-50 rounded-2xl border border-dashed border-stone-300 text-stone-500 text-sm">
-                No articles matching "{constitutionSearch}" in this chapter. Try clearing your search.
-              </div>
-            ) : (
-              activeChapterData.articles.map((art) => {
-                const isExpanded = expandedArticles[art.articleNum] !== false;
-                return (
-                  <div
-                    key={art.articleNum}
-                    className="border border-stone-200 rounded-2xl overflow-hidden bg-[#FCFBF8] transition-shadow hover:shadow-sm"
-                  >
-                    <button
-                      onClick={() => toggleArticle(art.articleNum)}
-                      className="w-full p-4 sm:p-5 text-left flex items-center justify-between gap-4 bg-white hover:bg-stone-50 transition"
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className="px-2.5 py-1 rounded-lg bg-[#FAF2EE] text-[#8C5353] font-mono font-bold text-xs border border-[#EADBD5]">
-                          {art.articleNum}
-                        </span>
-                        <h5 className="font-bold text-base text-stone-900">
-                          {art.heading}
-                        </h5>
-                      </div>
-                      <div className="text-stone-400 text-sm">
-                        {isExpanded ? <FaChevronUp /> : <FaChevronDown />}
-                      </div>
-                    </button>
-
-                    {isExpanded && (
-                      <div className="p-5 sm:p-6 border-t border-stone-100 space-y-4 text-stone-800 text-sm leading-relaxed bg-[#FCFBF8]">
-                        <ul className="space-y-2.5">
-                          {art.clauses.map((clause, idx) => (
-                            <li key={idx} className="flex items-start gap-2.5">
-                              <span className="text-[#8C5353] font-bold font-mono text-xs mt-0.5">
-                                §{idx + 1}.
-                              </span>
-                              <span>{clause}</span>
-                            </li>
-                          ))}
-                        </ul>
-
-                          <div className="pt-3 border-t border-stone-200 flex flex-wrap items-center justify-between text-xs text-stone-500 gap-2">
-                            {art.amendmentNote ? (
-                              <span className="italic flex items-center gap-1.5 text-stone-600">
-                                <MdOutlineArticle className="text-[#8C5353]" /> {art.amendmentNote}
-                              </span>
-                            ) : (
-                              <span className="text-stone-400">Constitution Original Provision</span>
-                            )}
-                            <span className="font-mono text-[11px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 flex items-center gap-1">
-                              <MdCheckCircle /> Enforceable
-                            </span>
-                          </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })
-            )}
-          </div>
         </div>
       </section>
 
       {/* ============================================================== */}
-      {/* 6. SENATE MINUTES OF MEETINGS (MoM) & OFFICIAL ARCHIVE */}
+      {/* 3. CONSTITUTION CHAPTERS (Interactive Card Grid)               */}
       {/* ============================================================== */}
-      <section id="senate-mom-archive" className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-16 scroll-mt-24">
-        {/* Section Header */}
-        <div className="mb-10 text-center max-w-3xl mx-auto space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#EADBD5] text-[#8C5353] font-bold text-xs uppercase tracking-wider">
-            <FaGavel /> Official Gazette Archive
+      <section id="constitution-chapters" className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-12 scroll-mt-32">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 pb-4 border-b border-slate-200">
+          <div>
+            <span className="text-xs font-bold uppercase tracking-wider text-blue-600">Charter Articles</span>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">Constitution Chapters</h2>
+            <p className="text-slate-600 text-xs sm:text-sm mt-0.5">Click any chapter to view its codified articles, mandates, and enforceable clauses.</p>
           </div>
-          <h3 className="text-3xl sm:text-4xl font-extrabold text-stone-900 font-serif">
-            Senate Minutes of Meetings (MoM) & Documents
-          </h3>
-          <p className="text-stone-600 text-sm sm:text-base leading-relaxed">
-            Searchable, verified public repository of Student Senate legislative sessions, ratified resolutions, gazette notifications, financial statements, and executive orders.
-          </p>
+          <div className="shrink-0">
+            <span className="text-xs font-mono font-medium text-slate-500 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
+              8 Enacted Chapters
+            </span>
+          </div>
         </div>
 
-        {/* Filter Controls Bar */}
-        <div className="bg-white rounded-3xl p-6 shadow-sm border border-stone-200 mb-8 space-y-5">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-            
-            {/* Search Input */}
-            <div className="md:col-span-6 relative">
-              <FaSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400 text-sm" />
+        {/* Compact Chapter Cards Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {constitutionChapters.map((ch, idx) => (
+            <div
+              key={ch.id}
+              onClick={() => setSelectedChapterModal(ch)}
+              className="group bg-white rounded-2xl p-5 border border-slate-200 hover:border-blue-400 hover:shadow-lg transition-all duration-200 cursor-pointer flex flex-col justify-between"
+            >
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold font-mono text-blue-600 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
+                    {ch.chapterNum}
+                  </span>
+                  <span className="text-xs text-slate-400 group-hover:text-blue-600 transition-colors">
+                    {ch.articles.length} {ch.articles.length === 1 ? "Article" : "Articles"}
+                  </span>
+                </div>
+                <h3 className="font-bold text-base text-slate-900 group-hover:text-blue-700 transition-colors leading-snug">
+                  {ch.title}
+                </h3>
+                <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
+                  {ch.summary}
+                </p>
+              </div>
+
+              <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-blue-600 group-hover:text-blue-800">
+                <span>View Articles</span>
+                <FaArrowRight className="text-[10px] group-hover:translate-x-1 transition-transform" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ============================================================== */}
+      {/* 4. SENATE MINUTES (MoM) ARCHIVE (Streamlined, Scannable List)   */}
+      {/* ============================================================== */}
+      <section id="senate-mom-archive" className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-12 scroll-mt-32">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
+          <div>
+            <span className="text-xs font-bold uppercase tracking-wider text-blue-600">Legislative Gazette</span>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">Senate Minutes of Meetings (MoM)</h2>
+            <p className="text-slate-600 text-xs sm:text-sm mt-0.5">Verified public repository of Student Senate legislative resolutions and executive orders.</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold text-slate-600 bg-blue-50 text-blue-700 px-3 py-1.5 rounded-full border border-blue-200">
+              <MdVerified className="inline mr-1 text-sm text-blue-600" /> {filteredDocuments.length} Verified Records
+            </span>
+          </div>
+        </div>
+
+        {/* Search & Category Filter Box */}
+        <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200 mb-6 space-y-3">
+          <div className="flex flex-col sm:flex-row gap-3">
+            <div className="relative flex-1">
+              <FaSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs" />
               <input
                 type="text"
-                placeholder="Search by meeting title, agenda, resolution, or reference number..."
+                placeholder="Search meeting title, agenda, or reference code..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-stone-50 border border-stone-300 text-stone-800 text-sm focus:outline-none focus:ring-2 focus:ring-[#8C5353]"
+                className="w-full pl-9 pr-4 py-2 rounded-xl bg-white border border-slate-300 text-slate-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery("")}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 text-xs"
-                >
-                  Clear
-                </button>
+                <button onClick={() => setSearchQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs">Clear</button>
               )}
             </div>
-
-            {/* Academic Year Selector */}
-            <div className="md:col-span-3">
-              <select
-                value={selectedYear}
-                onChange={(e) => setSelectedYear(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl bg-stone-50 border border-stone-300 text-stone-800 text-sm focus:outline-none focus:ring-2 focus:ring-[#8C5353]"
-              >
-                {academicYears.map((yr) => (
-                  <option key={yr} value={yr}>
-                    Academic Year: {yr}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Status Indicator */}
-            <div className="md:col-span-3 flex items-center justify-end text-xs text-stone-500 font-medium px-2">
-              <span className="flex items-center gap-1.5 bg-emerald-50 text-emerald-800 px-3 py-1.5 rounded-full border border-emerald-200">
-                <MdVerified className="text-emerald-600 text-sm" />
-                <span>Showing {filteredDocuments.length} Verified Documents</span>
-              </span>
-            </div>
+            <select
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(e.target.value)}
+              className="px-3 py-2 rounded-xl bg-white border border-slate-300 text-slate-800 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 shrink-0"
+            >
+              {["All Years", "2025-26", "2024-25", "2023-24"].map((yr) => (
+                <option key={yr} value={yr}>Year: {yr}</option>
+              ))}
+            </select>
           </div>
 
-          {/* Category Filter Pills */}
-          <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-stone-100">
-            <span className="text-xs font-bold text-stone-500 flex items-center gap-1 mr-2">
-              <FaFilter className="text-[10px]" /> Filter:
-            </span>
-            {categories.map((cat) => {
-              const isCatActive = selectedCategory === cat;
-              return (
-                <button
-                  key={cat}
-                  onClick={() => setSelectedCategory(cat)}
-                  className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition ${
-                    isCatActive
-                      ? "bg-[#8C5353] text-white shadow-sm"
-                      : "bg-stone-100 hover:bg-stone-200 text-stone-700"
-                  }`}
-                >
-                  {cat}
-                </button>
-              );
-            })}
+          {/* Quick Category Chips */}
+          <div className="flex flex-wrap items-center gap-1.5 pt-1">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-3 py-1 rounded-full text-xs font-medium transition ${
+                  selectedCategory === cat
+                    ? "bg-blue-600 text-white shadow-sm"
+                    : "bg-white text-slate-700 hover:bg-slate-200 border border-slate-200"
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* Documents Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Clean, Scannable Document List */}
+        <div className="space-y-3">
           {filteredDocuments.length === 0 ? (
-            <div className="col-span-2 bg-white rounded-3xl p-12 text-center border border-dashed border-stone-300 text-stone-500">
-              <FaFileAlt className="text-4xl mx-auto mb-3 text-stone-300" />
-              <h5 className="font-bold text-stone-800 text-lg">No official documents found</h5>
-              <p className="text-sm mt-1 max-w-md mx-auto">
-                No gazette documents match the selected query or filters. Try resetting the category or year filter.
-              </p>
-              <button
-                onClick={() => {
-                  setSearchQuery("");
-                  setSelectedCategory("All Documents");
-                  setSelectedYear("All Years");
-                }}
-                className="mt-4 px-4 py-2 rounded-full bg-stone-900 text-white text-xs font-semibold"
-              >
-                Reset All Filters
+            <div className="bg-white rounded-2xl p-10 text-center border border-dashed border-slate-300 text-slate-500">
+              <p className="text-sm font-semibold">No records match your filters.</p>
+              <button onClick={() => { setSearchQuery(""); setSelectedCategory("All Documents"); setSelectedYear("All Years"); }}
+                className="mt-3 px-4 py-1.5 rounded-full bg-blue-600 text-white text-xs font-bold">
+                Reset Filters
               </button>
             </div>
           ) : (
             filteredDocuments.map((doc) => (
               <div
                 key={doc.id}
-                className="bg-white rounded-3xl p-6 sm:p-7 shadow-sm border border-stone-200 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group"
+                className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 hover:border-blue-400 hover:shadow-md transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4"
               >
-                {/* Terracotta top strip accent */}
-                <div className="absolute top-0 left-0 right-0 h-1.5 bg-[#8C5353]" />
-
-                <div className="space-y-4">
-                  {/* Category, Date & Verification Badge */}
-                  <div className="flex flex-wrap items-center justify-between gap-2 pt-1 text-xs">
-                    <span className="font-mono text-stone-500 font-semibold bg-stone-100 px-2.5 py-1 rounded-md border border-stone-200">
+                <div className="space-y-1.5 flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="font-mono text-[11px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
                       {doc.refNumber}
                     </span>
-                    <span className="flex items-center gap-1 font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
-                      <MdVerified className="text-emerald-600" /> Verified & Ratified
+                    <span className="text-xs text-slate-500 flex items-center gap-1">
+                      <FaCalendarAlt className="text-[10px] text-slate-400" /> {doc.date}
                     </span>
+                    <span className="text-xs text-slate-400">• {doc.academicYear}</span>
                   </div>
-
-                  {/* Document Title */}
-                  <h4 className="text-lg sm:text-xl font-bold font-serif text-stone-900 group-hover:text-[#8C5353] transition-colors leading-snug">
+                  <h3 className="font-bold text-base text-slate-900 hover:text-blue-700 transition-colors cursor-pointer truncate" onClick={() => setSelectedDocModal(doc)}>
                     {doc.title}
-                  </h4>
-
-                  {/* Date & Presiding Officer */}
-                  <div className="grid grid-cols-2 gap-2 text-xs text-stone-500 py-1 border-y border-stone-100">
-                    <div>
-                      <span className="block text-[10px] uppercase font-bold text-stone-400">Date Ratified</span>
-                      <span className="font-medium text-stone-800 flex items-center gap-1 mt-0.5">
-                        <FaCalendarAlt className="text-stone-400" /> {doc.date}
-                      </span>
-                    </div>
-                    <div>
-                      <span className="block text-[10px] uppercase font-bold text-stone-400">Academic Year</span>
-                      <span className="font-medium text-stone-800 mt-0.5 block">{doc.academicYear}</span>
-                    </div>
-                  </div>
-
-                  {/* Summary */}
-                  <p className="text-stone-600 text-xs sm:text-sm leading-relaxed line-clamp-3">
-                    {doc.summary}
+                  </h3>
+                  <p className="text-xs text-slate-600 line-clamp-1">
+                    <span className="font-semibold text-blue-800">Resolution:</span> {doc.resolutions[0]}
                   </p>
-
-                  {/* Key resolution preview tag */}
-                  <div className="bg-[#FAF7F2] p-3 rounded-xl border border-stone-200 text-xs text-stone-700">
-                    <span className="font-bold text-[#8C5353] block mb-1">
-                      Key Resolution Passed:
-                    </span>
-                    <p className="italic text-stone-600">
-                      "{doc.resolutions[0]}"
-                    </p>
-                  </div>
                 </div>
 
-                {/* Bottom Action Footer */}
-                <div className="pt-6 mt-6 border-t border-stone-100 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2 shrink-0">
                   <button
                     onClick={() => setSelectedDocModal(doc)}
-                    className="px-4 py-2 rounded-full bg-stone-900 hover:bg-stone-800 text-white text-xs font-semibold transition flex items-center gap-1.5"
+                    className="px-4 py-1.5 rounded-full bg-[#0d2234] hover:bg-blue-700 text-white text-xs font-bold transition flex items-center gap-1.5"
                   >
-                    <FaFileAlt /> View MoM Details
+                    <FaFileAlt className="text-[11px]" /> View MoM
                   </button>
-
                   <button
-                    onClick={() =>
-                      handleCopyText(
-                        `${doc.title} (${doc.refNumber}) - IIT Indore Students' Gymkhana Gazette.`,
-                        doc.refNumber
-                      )
-                    }
-                    className="px-3 py-2 rounded-full border border-stone-300 hover:bg-stone-100 text-stone-700 text-xs font-medium transition flex items-center gap-1.5"
+                    onClick={() => handleCopyText(`${doc.title} (${doc.refNumber})`, doc.refNumber)}
+                    className="px-3 py-1.5 rounded-full border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-medium transition"
                   >
-                    <FaRegCopy /> Reference
+                    Citation
                   </button>
                 </div>
               </div>
@@ -1371,197 +998,117 @@ export default function ConstitutionPage() {
       </section>
 
       {/* ============================================================== */}
-      {/* 7. GOVERNANCE ARCHITECTURE & HIERARCHY */}
+      {/* 5. GOVERNANCE ARCHITECTURE (Concise 4-Pillar Layout)           */}
       {/* ============================================================== */}
-      <section id="governance-hierarchy" className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-16 scroll-mt-24">
-        <div className="mb-12 text-center max-w-3xl mx-auto space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#EADBD5] text-[#8C5353] font-bold text-xs uppercase tracking-wider">
-            <MdOutlineAccountBalance /> Democratic Framework
-          </div>
-          <h3 className="text-3xl sm:text-4xl font-extrabold text-stone-900 font-serif">
-            Governance Architecture & Hierarchy
-          </h3>
-          <p className="text-stone-600 text-sm sm:text-base leading-relaxed">
-            The tripartite system of institutional oversight, legislative deliberation, executive administration, and independent regulatory adjudication.
-          </p>
+      <section id="governance-hierarchy" className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-12 scroll-mt-32">
+        <div className="mb-8">
+          <span className="text-xs font-bold uppercase tracking-wider text-blue-600">Democratic Framework</span>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">Governance Architecture</h2>
+          <p className="text-slate-600 text-xs sm:text-sm mt-0.5">The constitutional division of institutional advisory, legislative deliberation, and executive stewardship.</p>
         </div>
 
-        {/* 4 Tier Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          
-          {/* Tier 1: Institutional Patronage */}
-          <div className="bg-white rounded-3xl p-6 shadow-sm border border-stone-200 flex flex-col justify-between relative overflow-hidden">
-            <div className="space-y-4">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-[#8C5353] bg-[#FAF2EE] px-2.5 py-1 rounded-full border border-[#EADBD5]">
-                Tier 1 • Patronage
-              </span>
-              <h4 className="text-xl font-bold font-serif text-stone-900">
-                Institutional Directorate & Deans
-              </h4>
-              <p className="text-xs text-stone-600 leading-relaxed">
-                Autonomous supervisory authority ensuring statutory adherence to Institute Acts and university regulations.
-              </p>
-              <ul className="text-xs text-stone-700 space-y-2 border-t border-stone-100 pt-3">
-                <li className="font-semibold text-stone-900">• Director, IIT Indore (Chief Patron)</li>
-                <li>• Dean of Student Affairs (DOSA)</li>
-                <li>• Associate Dean of Student Affairs (ADOSA)</li>
-                <li>• Faculty Advisors across Councils</li>
-              </ul>
-            </div>
-            <div className="mt-6 pt-3 border-t border-stone-100 text-[11px] font-mono text-stone-400">
-              Authority: Statutory Acts
-            </div>
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[
+            {
+              tier: "Tier 1 • Patronage",
+              title: "Directorate & Deans",
+              desc: "Statutory oversight ensuring adherence to Institute Acts and educational charters.",
+              lead: "Director & Dean of Student Affairs",
+              authority: "Statutory Oversight"
+            },
+            {
+              tier: "Tier 2 • Legislative",
+              title: "The Student Senate",
+              desc: "Apex legislative, policy-making, and budgetary body directly representing all students.",
+              lead: "Speaker & Elected Senators",
+              authority: "Supreme Legislative Body"
+            },
+            {
+              tier: "Tier 3 • Executive",
+              title: "The Executive Council",
+              desc: "Operational stewardship executing policies, campus festivals, clubs, and council initiatives.",
+              lead: "President & 8 General Secretaries",
+              authority: "Accountable to Senate"
+            },
+            {
+              tier: "Tier 4 • Regulatory",
+              title: "Regulatory Cells",
+              desc: "Independent bodies guaranteeing electoral integrity, rules review, and grievance redressal.",
+              lead: "Central Election Commission & CRRC",
+              authority: "Autonomous Oversight"
+            },
+          ].map((t, i) => (
+            <div
+              key={i}
+              className={`rounded-2xl p-5 border flex flex-col justify-between transition-all hover:shadow-md ${
+                i === 1
+                  ? "bg-[#0d2234] border-blue-400 text-white"
+                  : "bg-white border-slate-200 text-slate-900"
+              }`}
+            >
+              <div className="space-y-2">
+                <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full inline-block ${
+                  i === 1 ? "bg-blue-600 text-white" : "bg-blue-50 text-blue-700 border border-blue-200"
+                }`}>
+                  {t.tier}
+                </span>
+                <h3 className={`font-bold text-lg ${i === 1 ? "text-white" : "text-slate-900"}`}>{t.title}</h3>
+                <p className={`text-xs leading-relaxed ${i === 1 ? "text-slate-300" : "text-slate-600"}`}>{t.desc}</p>
+              </div>
 
-          {/* Tier 2: The Student Senate */}
-          <div className="bg-white rounded-3xl p-6 shadow-sm border-2 border-[#8C5353] flex flex-col justify-between relative overflow-hidden">
-            <div className="space-y-4">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-white bg-[#8C5353] px-2.5 py-1 rounded-full">
-                Tier 2 • Legislative
-              </span>
-              <h4 className="text-xl font-bold font-serif text-stone-900">
-                The Student Senate
-              </h4>
-              <p className="text-xs text-stone-600 leading-relaxed">
-                The apex legislative, deliberative, and budgetary assembly directly representing the student body across all cohorts.
-              </p>
-              <ul className="text-xs text-stone-700 space-y-2 border-t border-stone-100 pt-3">
-                <li className="font-semibold text-stone-900">• Speaker of the Senate (Presiding)</li>
-                <li>• Deputy Speaker & Convenor</li>
-                <li>• Elected B.Tech Senators (UG 1st to 4th Yr)</li>
-                <li>• Elected PG & Doctoral Senators (M.Tech/Ph.D.)</li>
-              </ul>
+              <div className={`mt-4 pt-3 border-t text-xs ${i === 1 ? "border-slate-800 text-sky-300" : "border-slate-100 text-slate-700"}`}>
+                <span className="font-semibold block text-[11px] opacity-80">Primary Leadership:</span>
+                <span>{t.lead}</span>
+              </div>
             </div>
-            <div className="mt-6 pt-3 border-t border-stone-100 text-[11px] font-mono text-[#8C5353] font-bold">
-              Supreme Policy & Budgetary Body
-            </div>
-          </div>
-
-          {/* Tier 3: The Executive Council */}
-          <div className="bg-white rounded-3xl p-6 shadow-sm border border-stone-200 flex flex-col justify-between relative overflow-hidden">
-            <div className="space-y-4">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-[#8C5353] bg-[#FAF2EE] px-2.5 py-1 rounded-full border border-[#EADBD5]">
-                Tier 3 • Executive
-              </span>
-              <h4 className="text-xl font-bold font-serif text-stone-900">
-                The Executive Council
-              </h4>
-              <p className="text-xs text-stone-600 leading-relaxed">
-                Operational stewardship executing senate policies, event management, festival coordination, and student services.
-              </p>
-              <ul className="text-xs text-stone-700 space-y-2 border-t border-stone-100 pt-3">
-                <li className="font-semibold text-stone-900">• President, Students' Gymkhana</li>
-                <li>• 8 General Secretaries (SnT, Cult, Sports, etc.)</li>
-                <li>• Recognized Club Heads & Coordinators</li>
-                <li>• Festival Core Steering Committees</li>
-              </ul>
-            </div>
-            <div className="mt-6 pt-3 border-t border-stone-100 text-[11px] font-mono text-stone-400">
-              Accountable to the Senate
-            </div>
-          </div>
-
-          {/* Tier 4: Regulatory & Judicial Bodies */}
-          <div className="bg-white rounded-3xl p-6 shadow-sm border border-stone-200 flex flex-col justify-between relative overflow-hidden">
-            <div className="space-y-4">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-[#8C5353] bg-[#FAF2EE] px-2.5 py-1 rounded-full border border-[#EADBD5]">
-                Tier 4 • Regulatory
-              </span>
-              <h4 className="text-xl font-bold font-serif text-stone-900">
-                Regulatory & Grievance Wings
-              </h4>
-              <p className="text-xs text-stone-600 leading-relaxed">
-                Impartial supervisory entities ensuring electoral integrity, fair disciplinary mediation, and rights protection.
-              </p>
-              <ul className="text-xs text-stone-700 space-y-2 border-t border-stone-100 pt-3">
-                <li className="font-semibold text-stone-900">• Central Election Commission (CEC)</li>
-                <li>• Constitution & Rules Review (CRRC)</li>
-                <li>• Student Grievance Redressal Cell (SGRC)</li>
-                <li>• Anti-Ragging & Disciplinary Squad</li>
-              </ul>
-            </div>
-            <div className="mt-6 pt-3 border-t border-stone-100 text-[11px] font-mono text-stone-400">
-              Independent Oversight
-            </div>
-          </div>
-
+          ))}
         </div>
       </section>
 
       {/* ============================================================== */}
-      {/* 8. VERIFIED EXECUTIVE OFFICE BEARERS (Photos & Designations) */}
+      {/* 6. OFFICE BEARERS (Clean Visual Profile Cards)                 */}
       {/* ============================================================== */}
-      <section id="office-bearers" className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-16 scroll-mt-24">
-        <div className="mb-12 text-center max-w-3xl mx-auto space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#EADBD5] text-[#8C5353] font-bold text-xs uppercase tracking-wider">
-            <FaUsers /> Verified Office Bearers
+      <section id="office-bearers" className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-12 scroll-mt-32">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+          <div>
+            <span className="text-xs font-bold uppercase tracking-wider text-blue-600">Executive Council</span>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">Verified Office Bearers</h2>
+            <p className="text-slate-600 text-xs sm:text-sm mt-0.5">Democratically elected student leaders for the 2025–2026 academic tenure.</p>
           </div>
-          <h3 className="text-3xl sm:text-4xl font-extrabold text-stone-900 font-serif">
-            Executive Leadership & General Secretaries
-          </h3>
-          <p className="text-stone-600 text-sm sm:text-base leading-relaxed">
-            The democratically elected Executive Council serving for the 2025 - 2026 academic tenure, verified under Gymkhana electoral credentials.
-          </p>
+          <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
+            9 Portfolios Verified
+          </span>
         </div>
 
-        {/* Office Bearers Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {verifiedOfficeBearers.map((bearer, idx) => (
             <div
               key={idx}
-              className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-stone-200 group flex flex-col justify-between"
+              className="bg-white rounded-2xl p-4 border border-slate-200 hover:border-blue-400 hover:shadow-lg transition-all flex items-center gap-4 group"
             >
-              <div>
-                {/* Photo Header */}
-                <div className="relative h-64 sm:h-72 w-full bg-stone-100 overflow-hidden">
-                  <img
-                    src={bearer.img}
-                    alt={bearer.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    onError={(e) => {
-                      // Graceful fallback placeholder if photo fails
-                      e.currentTarget.style.display = 'none';
-                      e.currentTarget.parentElement.classList.add('flex', 'items-center', 'justify-center', 'bg-stone-200');
-                    }}
-                  />
-                  {/* Status badge */}
-                  <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold text-emerald-800 shadow-sm flex items-center gap-1">
-                    <MdVerified className="text-emerald-600" /> {bearer.status}
-                  </div>
-                </div>
-
-                {/* Details Section */}
-                <div className="p-6 space-y-3">
-                  <div>
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-[#8C5353] block">
-                      {bearer.title}
-                    </span>
-                    <h4 className="text-xl font-bold font-serif text-stone-900">
-                      {bearer.name}
-                    </h4>
-                    <p className="text-xs font-medium text-stone-500 uppercase tracking-wide mt-0.5">
-                      {bearer.council}
-                    </p>
-                  </div>
-
-                  <p className="text-xs text-stone-600 leading-relaxed border-t border-stone-100 pt-3">
-                    {bearer.roleDescription}
-                  </p>
-                </div>
+              <div className="relative w-16 h-16 sm:w-18 sm:h-18 rounded-full overflow-hidden bg-slate-100 shrink-0 border border-slate-200">
+                <img
+                  src={bearer.img}
+                  alt={bearer.name}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                  onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.parentElement.classList.add("flex","items-center","justify-center","bg-blue-50"); }}
+                />
               </div>
 
-              {/* Contact Footer */}
-              <div className="p-6 pt-0">
-                <div className="pt-3 border-t border-stone-100 flex items-center justify-between text-xs">
-                  <a
-                    href={`mailto:${bearer.email}`}
-                    className="flex items-center gap-1.5 text-stone-700 hover:text-[#8C5353] font-medium transition"
-                  >
-                    <IoMailOutline className="text-base text-[#8C5353]" />
-                    <span className="truncate max-w-[180px]">{bearer.email}</span>
-                  </a>
-                  <span className="font-mono text-[11px] text-stone-400">{bearer.tenure}</span>
-                </div>
+              <div className="flex-1 min-w-0">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 block truncate">
+                  {bearer.title}
+                </span>
+                <h3 className="font-bold text-base text-slate-900 truncate">{bearer.name}</h3>
+                <p className="text-xs text-slate-500 truncate">{bearer.council}</p>
+
+                <a
+                  href={`mailto:${bearer.email}`}
+                  className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-medium text-slate-600 hover:text-blue-600 transition"
+                >
+                  <IoMailOutline className="text-xs text-blue-600" />
+                  <span className="truncate max-w-[160px]">{bearer.email}</span>
+                </a>
               </div>
             </div>
           ))}
@@ -1569,55 +1116,34 @@ export default function ConstitutionPage() {
       </section>
 
       {/* ============================================================== */}
-      {/* 9. STANDING COMMITTEES (Matches Cards Style in Screenshot 3 & 4) */}
+      {/* 7. STANDING COMMITTEES (Compact Cards)                         */}
       {/* ============================================================== */}
-      <section id="standing-committees" className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-16 scroll-mt-24">
-        <div className="mb-12 text-center max-w-3xl mx-auto space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#EADBD5] text-[#8C5353] font-bold text-xs uppercase tracking-wider">
-            <FaShieldAlt /> Regulatory Bodies
-          </div>
-          <h3 className="text-3xl sm:text-4xl font-extrabold text-stone-900 font-serif">
-            Statutory Standing Committees
-          </h3>
-          <p className="text-stone-600 text-sm sm:text-base leading-relaxed">
-            Permanent committees established under Chapter III and Chapter VII of the Constitution to maintain functional checks, transparent auditing, and student protection.
-          </p>
+      <section id="standing-committees" className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-12 scroll-mt-32">
+        <div className="mb-8">
+          <span className="text-xs font-bold uppercase tracking-wider text-blue-600">Statutory Oversight</span>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">Standing Committees</h2>
+          <p className="text-slate-600 text-xs sm:text-sm mt-0.5">Permanent committees ensuring checks, balances, and operational compliance.</p>
         </div>
 
-        {/* 6 Committees Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {standingCommittees.map((comm, idx) => (
-            <div
-              key={idx}
-              className="bg-white rounded-3xl p-6 sm:p-7 shadow-sm border border-stone-200 flex flex-col justify-between hover:shadow-md transition relative group"
-            >
-              <div className="space-y-4">
+            <div key={idx} className="bg-white rounded-2xl p-5 border border-slate-200 hover:border-blue-400 hover:shadow-md transition-all flex flex-col justify-between">
+              <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="w-10 h-10 rounded-2xl bg-[#FAF2EE] text-[#8C5353] flex items-center justify-center text-lg font-bold">
+                  <span className="w-7 h-7 rounded-lg bg-blue-50 text-blue-700 font-bold text-xs flex items-center justify-center border border-blue-200">
                     {idx + 1}
                   </span>
-                  <span className="text-[11px] font-mono text-stone-500 bg-stone-100 px-2.5 py-1 rounded-full">
-                    {comm.status}
+                  <span className="text-[11px] font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                    Active
                   </span>
                 </div>
-
-                <h4 className="text-lg font-bold font-serif text-stone-900 leading-snug">
-                  {comm.name}
-                </h4>
-
-                <p className="text-xs text-stone-600 leading-relaxed">
-                  {comm.mandate}
-                </p>
-
-                <div className="border-t border-stone-100 pt-3 space-y-1.5 text-xs text-stone-700">
-                  <span className="block text-[10px] uppercase font-bold text-stone-400">Composition</span>
-                  <p className="text-stone-600 text-xs">{comm.composition}</p>
-                </div>
+                <h3 className="font-bold text-base text-slate-900">{comm.name}</h3>
+                <p className="text-xs text-slate-600 leading-relaxed line-clamp-2">{comm.mandate}</p>
               </div>
 
-              <div className="mt-6 pt-3 border-t border-stone-100 flex items-center justify-between text-xs">
-                <span className="text-stone-500">Lead / Convenor:</span>
-                <span className="font-semibold text-stone-900">{comm.lead}</span>
+              <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                <span>Lead / Chair:</span>
+                <span className="font-semibold text-slate-800">{comm.lead}</span>
               </div>
             </div>
           ))}
@@ -1625,159 +1151,56 @@ export default function ConstitutionPage() {
       </section>
 
       {/* ============================================================== */}
-      {/* 10. LEGISLATIVE PROCESS: HOW A BILL BECOMES CONSTITUTIONAL LAW */}
+      {/* 8. QUICK VERIFICATION CHECKER (Compact 1-Row Widget)           */}
       {/* ============================================================== */}
-      <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-16">
-        <div className="bg-[#FAF2EE] border border-[#EADBD5] rounded-3xl p-8 sm:p-12 shadow-sm">
-          <div className="max-w-3xl mb-8 space-y-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#8C5353]">
-              Legislative Lifecycle
-            </span>
-            <h3 className="text-2xl sm:text-3xl font-bold font-serif text-stone-900">
-              How a Resolution Becomes Gymkhana Law
-            </h3>
-            <p className="text-stone-600 text-sm">
-              The standardized democratic timeline from sponsorship to gazette ratification.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="bg-white p-6 rounded-2xl border border-stone-200 space-y-3">
-              <span className="w-8 h-8 rounded-full bg-[#8C5353] text-white text-xs font-bold flex items-center justify-center">
-                1
-              </span>
-              <h5 className="font-bold text-stone-900 text-sm">Drafting & Sponsorship</h5>
-              <p className="text-xs text-stone-600 leading-relaxed">
-                A Senator or General Secretary drafts a formal legislative proposal with 7 days advance notice.
-              </p>
-            </div>
-
-            <div className="bg-white p-6 rounded-2xl border border-stone-200 space-y-3">
-              <span className="w-8 h-8 rounded-full bg-[#8C5353] text-white text-xs font-bold flex items-center justify-center">
-                2
-              </span>
-              <h5 className="font-bold text-stone-900 text-sm">Committee Review</h5>
-              <p className="text-xs text-stone-600 leading-relaxed">
-                The CRRC or FBAC analyzes constitutional validity, financial feasibility, and student impact.
-              </p>
-            </div>
-
-            <div className="bg-white p-6 rounded-2xl border border-stone-200 space-y-3">
-              <span className="w-8 h-8 rounded-full bg-[#8C5353] text-white text-xs font-bold flex items-center justify-center">
-                3
-              </span>
-              <h5 className="font-bold text-stone-900 text-sm">Senate Debate & Vote</h5>
-              <p className="text-xs text-stone-600 leading-relaxed">
-                Floor reading in an Ordinary Senate Session. Simple majority for ordinary acts, 2/3rd for amendments.
-              </p>
-            </div>
-
-            <div className="bg-white p-6 rounded-2xl border border-stone-200 space-y-3">
-              <span className="w-8 h-8 rounded-full bg-[#8C5353] text-white text-xs font-bold flex items-center justify-center">
-                4
-              </span>
-              <h5 className="font-bold text-stone-900 text-sm">Gazette Promulgation</h5>
-              <p className="text-xs text-stone-600 leading-relaxed">
-                Presidential & DOSA assent, official seal affixed, and published in the public digital archive.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ============================================================== */}
-      {/* 11. VERIFICATION CHECKER TOOL (Addresses verification mandate) */}
-      {/* ============================================================== */}
-      <section id="verification-portal" className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-16 scroll-mt-24">
-        <div className="bg-white rounded-3xl p-8 sm:p-12 shadow-sm border border-stone-200">
-          <div className="max-w-2xl mx-auto text-center space-y-3 mb-8">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 font-bold text-xs uppercase tracking-wider border border-emerald-200">
+      <section id="verification-portal" className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-12 scroll-mt-32">
+        <div className="bg-slate-50 border border-slate-200 rounded-3xl p-6 sm:p-8">
+          <div className="max-w-xl mx-auto text-center space-y-2 mb-6">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-700 font-bold text-xs uppercase tracking-wider border border-blue-200">
               <MdVerified /> Gazette Document Authenticator
             </span>
-            <h3 className="text-2xl sm:text-3xl font-bold font-serif text-stone-900">
-              Verify Official Senate & Gymkhana Documents
-            </h3>
-            <p className="text-stone-600 text-sm leading-relaxed">
-              Verify the authenticity of any printed or digital Minute of Meeting (MoM), election notification, or constitutional gazette using its registered reference number.
-            </p>
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Verify Official Senate Documents</h2>
+            <p className="text-slate-600 text-xs sm:text-sm">Verify the authenticity of any ratified MoM or constitutional gazette by reference number.</p>
           </div>
 
-          <form onSubmit={handleVerifyCheck} className="max-w-xl mx-auto space-y-4">
-            <div className="flex flex-col sm:flex-row gap-2.5">
+          <form onSubmit={handleVerifyCheck} className="max-w-lg mx-auto space-y-3">
+            <div className="flex gap-2">
               <input
                 type="text"
-                placeholder="e.g., IITI/SG/SEN/2026/18 or IITI/SG/CEC/2025/01"
+                placeholder="Enter reference e.g., IITI/SG/SEN/2026/18"
                 value={verifyRefInput}
                 onChange={(e) => setVerifyRefInput(e.target.value)}
-                className="flex-grow px-4 py-3 rounded-full bg-stone-50 border border-stone-300 text-stone-800 text-sm focus:outline-none focus:ring-2 focus:ring-[#8C5353]"
+                className="flex-1 px-4 py-2.5 rounded-full bg-white border border-slate-300 text-slate-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <button
                 type="submit"
-                className="px-6 py-3 rounded-full bg-[#8C5353] hover:bg-[#774242] text-white font-semibold text-sm transition shadow-md whitespace-nowrap"
+                className="px-5 py-2.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm transition shrink-0"
               >
-                Verify Document
+                Verify
               </button>
             </div>
 
-            <div className="flex items-center justify-center gap-2 text-xs text-stone-500">
-              <span>Try test reference:</span>
-              <button
-                type="button"
-                onClick={() => setVerifyRefInput("IITI/SG/SEN/2026/18")}
-                className="font-mono text-[#8C5353] hover:underline"
-              >
-                IITI/SG/SEN/2026/18
-              </button>
+            <div className="flex items-center justify-center gap-2 text-xs text-slate-500">
+              <span>Try:</span>
+              <button type="button" onClick={() => setVerifyRefInput("IITI/SG/SEN/2026/18")} className="font-mono text-blue-600 hover:underline">IITI/SG/SEN/2026/18</button>
               <span>or</span>
-              <button
-                type="button"
-                onClick={() => setVerifyRefInput("IITI/SG/CEC/2025/01")}
-                className="font-mono text-[#8C5353] hover:underline"
-              >
-                IITI/SG/CEC/2025/01
-              </button>
+              <button type="button" onClick={() => setVerifyRefInput("IITI/SG/CEC/2025/01")} className="font-mono text-blue-600 hover:underline">IITI/SG/CEC/2025/01</button>
             </div>
 
             {verificationResult && (
-              <div
-                className={`mt-6 p-6 rounded-2xl border text-sm transition-all animate-fadeIn ${
-                  verificationResult.found
-                    ? "bg-emerald-50 border-emerald-200 text-emerald-900"
-                    : "bg-amber-50 border-amber-200 text-amber-900"
-                }`}
-              >
+              <div className={`mt-4 p-4 rounded-xl border text-xs animate-fadeIn ${
+                verificationResult.found ? "bg-white border-blue-200 text-slate-900 shadow-md" : "bg-red-50 border-red-200 text-red-900"
+              }`}>
                 {verificationResult.found ? (
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2 font-bold text-base text-emerald-800">
-                      <MdVerified className="text-xl" />
-                      <span>Authentic Gazette Record Confirmed</span>
+                  <div className="space-y-1.5">
+                    <div className="font-bold text-blue-700 flex items-center gap-1.5 text-sm">
+                      <MdVerified /> Authentic Gazette Record
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                      <div>
-                        <span className="font-semibold">Document:</span> {verificationResult.document.title}
-                      </div>
-                      <div>
-                        <span className="font-semibold">Reference:</span> {verificationResult.document.refNumber}
-                      </div>
-                      <div>
-                        <span className="font-semibold">Ratification Date:</span> {verificationResult.document.date}
-                      </div>
-                      <div>
-                        <span className="font-semibold">Presided By:</span> {verificationResult.document.presidedBy}
-                      </div>
-                    </div>
-                    <p className="text-xs text-emerald-700 italic border-t border-emerald-200 pt-2">
-                      Official seal cryptographic signature verified against Students' Gymkhana digital ledger.
-                    </p>
+                    <div><span className="font-semibold">Title:</span> {verificationResult.document.title}</div>
+                    <div><span className="font-semibold">Ref:</span> {verificationResult.document.refNumber} • {verificationResult.document.date}</div>
                   </div>
                 ) : (
-                  <div className="flex items-start gap-2.5">
-                    <FaShieldAlt className="text-amber-600 mt-1 flex-shrink-0" />
-                    <div>
-                      <span className="font-bold">Record Not Found:</span>
-                      <p className="text-xs mt-1">{verificationResult.message}</p>
-                    </div>
-                  </div>
+                  <p className="font-medium">{verificationResult.message}</p>
                 )}
               </div>
             )}
@@ -1785,125 +1208,134 @@ export default function ConstitutionPage() {
         </div>
       </section>
 
-      {/* ============================================================== */}
-      {/* 12. FLOATING BACK TO TOP BUTTON (Matching Screenshot 2 & 5) */}
-      {/* ============================================================== */}
+      {/* Back to Top Button */}
       <button
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         aria-label="Back to top"
-        className="fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full bg-[#8C5353] hover:bg-[#7D4545] text-white flex items-center justify-center shadow-2xl transition hover:scale-110 border-2 border-white"
+        className="fixed bottom-6 right-6 z-40 w-10 h-10 rounded-full bg-[#0d2234] hover:bg-blue-600 text-white flex items-center justify-center shadow-xl transition hover:scale-105 border border-white/20"
       >
-        <FaArrowUp />
+        <FaArrowUp className="text-xs" />
       </button>
 
       {/* ============================================================== */}
-      {/* 13. INTERACTIVE DOCUMENT MODAL VIEWER */}
+      {/* 9. CHAPTER CLAUSES MODAL (Interactive reader instead of wall)   */}
       {/* ============================================================== */}
-      {selectedDocModal && (
+      {selectedChapterModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-stone-200 p-6 sm:p-8 space-y-6">
-            
-            {/* Modal Header */}
-            <div className="flex items-start justify-between pb-4 border-b border-stone-200 gap-4">
+          <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[85vh] overflow-y-auto shadow-2xl border border-slate-200 p-6 sm:p-8 space-y-5">
+            <div className="flex items-start justify-between pb-3 border-b border-slate-200 gap-4">
               <div>
-                <span className="text-xs font-mono font-bold text-[#8C5353] bg-[#FAF2EE] px-3 py-1 rounded-md border border-[#EADBD5]">
-                  {selectedDocModal.refNumber}
+                <span className="text-xs font-mono font-bold text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded border border-blue-200">
+                  {selectedChapterModal.chapterNum}
                 </span>
-                <h4 className="text-xl sm:text-2xl font-bold font-serif text-stone-900 mt-2">
-                  {selectedDocModal.title}
-                </h4>
-                <div className="flex flex-wrap items-center gap-3 text-xs text-stone-500 mt-1">
-                  <span>Date: {selectedDocModal.date}</span>
-                  <span>•</span>
-                  <span>Year: {selectedDocModal.academicYear}</span>
-                  <span>•</span>
-                  <span className="text-emerald-700 font-semibold flex items-center gap-1">
-                    <MdVerified /> Verified & Sealed
-                  </span>
-                </div>
+                <h3 className="text-xl font-bold text-slate-900 mt-1">{selectedChapterModal.title}</h3>
+                <p className="text-xs text-slate-500 mt-0.5">{selectedChapterModal.summary}</p>
               </div>
-
               <button
-                onClick={() => setSelectedDocModal(null)}
-                className="w-9 h-9 rounded-full bg-stone-100 hover:bg-stone-200 flex items-center justify-center text-stone-600 transition"
+                onClick={() => setSelectedChapterModal(null)}
+                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition shrink-0"
               >
                 <FaTimes />
               </button>
             </div>
 
-            {/* Modal Content */}
-            <div className="space-y-4 text-stone-800 text-sm">
-              <div className="bg-[#FAF7F2] p-4 rounded-2xl border border-stone-200 space-y-1">
-                <span className="text-[10px] uppercase font-bold text-stone-400 block">Meeting Summary</span>
-                <p className="text-xs sm:text-sm text-stone-700 leading-relaxed">
-                  {selectedDocModal.summary}
-                </p>
+            <div className="space-y-4">
+              {selectedChapterModal.articles.map((art) => (
+                <div key={art.articleNum} className="border border-slate-200 rounded-xl p-4 bg-slate-50/50 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-mono font-bold text-blue-700 bg-white px-2 py-0.5 rounded border border-slate-200">
+                      {art.articleNum}
+                    </span>
+                    <h4 className="font-bold text-sm text-slate-900">{art.heading}</h4>
+                  </div>
+                  <ul className="space-y-1.5 text-xs text-slate-700 pl-1">
+                    {art.clauses.map((cl, i) => (
+                      <li key={i} className="flex items-start gap-2">
+                        <span className="text-blue-600 font-bold shrink-0">§{i + 1}.</span>
+                        <span>{cl}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+
+            <div className="pt-3 border-t border-slate-200 flex justify-end">
+              <button
+                onClick={() => setSelectedChapterModal(null)}
+                className="px-5 py-2 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold"
+              >
+                Close Reader
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================== */}
+      {/* 10. DOCUMENT DETAILS MODAL                                      */}
+      {/* ============================================================== */}
+      {selectedDocModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[85vh] overflow-y-auto shadow-2xl border border-slate-200 p-6 sm:p-8 space-y-5">
+            <div className="flex items-start justify-between pb-3 border-b border-slate-200 gap-4">
+              <div>
+                <span className="text-xs font-mono font-bold text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded border border-blue-200">
+                  {selectedDocModal.refNumber}
+                </span>
+                <h3 className="text-lg sm:text-xl font-bold text-slate-900 mt-1">{selectedDocModal.title}</h3>
+                <div className="flex items-center gap-2 text-xs text-slate-500 mt-0.5">
+                  <span>{selectedDocModal.date}</span>
+                  <span>•</span>
+                  <span>{selectedDocModal.academicYear}</span>
+                </div>
+              </div>
+              <button
+                onClick={() => setSelectedDocModal(null)}
+                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition shrink-0"
+              >
+                <FaTimes />
+              </button>
+            </div>
+
+            <div className="space-y-3 text-xs sm:text-sm text-slate-700">
+              <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                <span className="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">Summary</span>
+                <p>{selectedDocModal.summary}</p>
               </div>
 
-              <div className="space-y-2">
-                <span className="text-xs font-bold uppercase tracking-wider text-[#8C5353] block">
-                  Presided & Attendance
-                </span>
-                <p className="text-xs text-stone-600">
-                  <span className="font-semibold text-stone-800">Chair / Speaker:</span> {selectedDocModal.presidedBy}
-                </p>
-                <p className="text-xs text-stone-600">
-                  <span className="font-semibold text-stone-800">Quorum:</span> {selectedDocModal.attendees}
-                </p>
-              </div>
-
-              <div className="space-y-3 pt-2">
-                <span className="text-xs font-bold uppercase tracking-wider text-[#8C5353] block">
-                  Official Resolutions Ratified
-                </span>
-                <ul className="space-y-2">
+              <div>
+                <span className="text-xs font-bold uppercase tracking-wider text-blue-700 block mb-1">Key Resolutions Ratified</span>
+                <ul className="space-y-1.5">
                   {selectedDocModal.resolutions.map((res, i) => (
-                    <li key={i} className="flex items-start gap-2.5 text-xs sm:text-sm bg-stone-50 p-3 rounded-xl border border-stone-200">
-                      <span className="text-[#8C5353] font-bold font-mono">R.{i + 1}</span>
+                    <li key={i} className="flex items-start gap-2 bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-xs">
+                      <span className="text-blue-600 font-bold">R.{i + 1}</span>
                       <span>{res}</span>
                     </li>
                   ))}
                 </ul>
               </div>
 
-              <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-800 flex items-center gap-3">
-                <FaStamp className="text-xl text-emerald-700 flex-shrink-0" />
-                <div>
-                  <span className="font-bold">Official Seal Affixed</span>
-                  <p className="text-[11px] text-emerald-700">
-                    This document has been entered into the official archival gazette of IIT Indore Students' Gymkhana and certified by DOSA.
-                  </p>
-                </div>
+              <div className="flex items-center gap-2 p-3 rounded-xl bg-blue-50 text-blue-900 text-xs border border-blue-200">
+                <MdVerified className="text-base text-blue-600 shrink-0" />
+                <span>Certified official record preserved in Students' Gymkhana archival gazette.</span>
               </div>
             </div>
 
-            {/* Modal Actions */}
-            <div className="pt-4 border-t border-stone-200 flex flex-wrap items-center justify-between gap-3">
+            <div className="pt-3 border-t border-slate-200 flex items-center justify-between gap-3">
               <button
-                onClick={() =>
-                  handleCopyText(
-                    `Reference: ${selectedDocModal.refNumber} - ${selectedDocModal.title} (Ratified ${selectedDocModal.date})`,
-                    selectedDocModal.refNumber
-                  )
-                }
-                className="px-4 py-2 rounded-full border border-stone-300 hover:bg-stone-100 text-stone-700 text-xs font-semibold flex items-center gap-1.5 transition"
+                onClick={() => handleCopyText(`${selectedDocModal.title} (${selectedDocModal.refNumber})`, selectedDocModal.refNumber)}
+                className="px-4 py-1.5 rounded-full border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-semibold"
               >
-                <FaRegCopy /> Copy Citation
+                Copy Reference
               </button>
-
               <button
-                onClick={() => {
-                  handleCopyText(
-                    `Gazette Reference URL: ${window.location.origin}/constitution#${selectedDocModal.id}`,
-                    "Gazette Link"
-                  );
-                }}
-                className="px-5 py-2 rounded-full bg-stone-900 hover:bg-stone-800 text-white text-xs font-semibold flex items-center gap-1.5 transition"
+                onClick={() => setSelectedDocModal(null)}
+                className="px-5 py-1.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold"
               >
-                <FaDownload /> Download Gazette Record ({selectedDocModal.fileSize})
+                Done
               </button>
             </div>
-
           </div>
         </div>
       )}

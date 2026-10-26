@@ -4,7 +4,7 @@ import React from "react";
 
 const DetailsArrow = ({ Text }) => {
   return (
-    <span className="mt-5 hover:text-blue-700 inline-flex items-center gap-5 text-xl font-semibold text-[#263f4b]">
+    <span className="mt-5 group-hover:text-blue-600 inline-flex items-center gap-3 text-base sm:text-lg font-semibold text-slate-800 transition-colors">
       {Text}
       <span className="inline-flex h-4 w-5 items-center scale-250">
         <svg

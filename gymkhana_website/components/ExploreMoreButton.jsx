@@ -32,7 +32,7 @@ const ExploreMore = ({ href, text }) => {
     >
       <Link
         href={`/${href}`}
-        className="group inline-flex items-center rounded-full border border-[#c8bcb4] bg-[#fffefd] text-sm font-semibold text-[#263f4b] shadow-[0_3px_8px_rgba(74,48,31,0.1)] transition-colors hover:border-[#b96f65] hover:text-[#a4574e] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#a75c4e]"
+        className="group inline-flex items-center rounded-full border border-slate-300 bg-white text-sm font-semibold text-slate-700 shadow-sm transition-all hover:border-blue-500 hover:bg-blue-50 hover:text-blue-700 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-600"
       >
         <motion.div
           variants={contvariants}

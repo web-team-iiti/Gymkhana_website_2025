@@ -375,7 +375,7 @@ const ClubCard = ({ club }) => {
 
   return (
     <div
-      className="group relative h-64 w-52 flex-shrink-0 overflow-hidden rounded-2xl border border-[#e7d4c8] bg-[#fffefd] shadow-[0_5px_14px_rgba(74,48,31,0.13)] transition-[transform,box-shadow] duration-500 hover:scale-105 hover:shadow-[0_14px_28px_rgba(74,48,31,0.2)] sm:h-80 sm:w-72"
+      className="group relative h-64 w-52 flex-shrink-0 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-400 hover:shadow-xl sm:h-80 sm:w-72"
       // Mobile: Ensure min-width so it doesn't shrink
       style={{ minWidth: "250px" }}
     >
@@ -469,35 +469,38 @@ const DiscoverClubsPage = () => {
   };
 
   return (
-    <div className="flex w-full flex-col items-center justify-center overflow-hidden bg-[#e5c8c6] py-8 text-[#192b35]">
-      <div className="text-center mb-8 mt-12 px-4">
-        <h1 className="mb-3 text-xl font-bold sm:text-2xl md:text-4xl">
+    <div className="flex w-full flex-col items-center justify-center overflow-hidden bg-slate-50 py-12 text-slate-900 border-y border-slate-200">
+      <div className="text-center mb-8 mt-4 px-4">
+        <p className="mb-2 text-xs font-bold uppercase tracking-wider text-blue-600">
+          Campus Communities
+        </p>
+        <h1 className="mb-3 text-xl font-bold sm:text-2xl md:text-4xl text-slate-900">
           OUR CLUBS
         </h1>
-        <p className="mx-auto max-w-2xl text-sm text-[#657078] md:text-base">
-          Explore the diverse range of clubs at IIT Indore
+        <p className="mx-auto max-w-2xl text-sm text-slate-600 md:text-base">
+          Explore the diverse range of student-led clubs and initiatives at IIT Indore
         </p>
       </div>
 
       {/* 🟢 Filter Buttons - Mobile Optimized (flex-wrap) */}
-      <div className="flex flex-wrap justify-center gap-2 md:gap-4 mb-8 px-4">
+      <div className="flex flex-wrap justify-center gap-2 md:gap-3 mb-8 px-4">
         {["ALL", "TECHNICAL", "SPORTS", "CULTURAL"].map((cat) => (
           <motion.button
             key={cat}
             type="button"
-            whileHover={{ scale: 1.05, y: -5 }}
-            whileTap={{ scale: 0.9, y: 5 }}
+            whileHover={{ scale: 1.05, y: -2 }}
+            whileTap={{ scale: 0.95, y: 1 }}
             transition={{ type: "spring", stiffness: 600, damping: 20 }}
             onClick={() => {
               setFilter(cat);
               // Reset scroll position when filter changes
               if (scrollRef.current) scrollRef.current.scrollLeft = 0;
             }}
-            className={`cursor-pointer rounded-full border px-2 py-1 text-xs font-semibold shadow-sm transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a75c4e] sm:px-4 md:px-5 md:py-2 md:text-sm
+            className={`cursor-pointer rounded-full border px-3 py-1.5 text-xs font-semibold shadow-sm transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:px-4 md:px-5 md:py-2 md:text-sm
               ${
                 filter === cat
-                  ? "border-[#b96f65] bg-[#b96f65] text-white"
-                  : "border-[#d9ccc3] bg-[#fffefd] text-[#263f4b] hover:border-[#b96f65] hover:bg-[#fff3e8]"
+                  ? "border-blue-600 bg-blue-600 text-white shadow-sm"
+                  : "border-slate-300 bg-white text-slate-700 hover:border-blue-400 hover:bg-blue-50 hover:text-blue-700"
               }`}
           >
             {cat}
@@ -517,7 +520,7 @@ const DiscoverClubsPage = () => {
       >
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_18%_50%,rgba(255,255,255,0.48),transparent_44%),radial-gradient(ellipse_at_82%_48%,rgba(185,111,101,0.2),transparent_46%)] blur-2xl"
+          className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_18%_50%,rgba(255,255,255,0.7),transparent_50%),radial-gradient(ellipse_at_82%_48%,rgba(37,99,235,0.05),transparent_50%)] blur-2xl"
         />
 
         <motion.button
@@ -527,7 +530,7 @@ const DiscoverClubsPage = () => {
           whileHover={{ scale: 1.08, y: -2 }}
           whileTap={{ scale: 0.9, y: 2 }}
           transition={{ type: "spring", stiffness: 600, damping: 20 }}
-          className="absolute left-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/70 bg-white/45 text-[#263f4b] shadow-[0_5px_18px_rgba(38,63,75,0.16)] backdrop-blur-md transition-colors hover:bg-white/75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a75c4e] md:left-6"
+          className="absolute left-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white/90 text-slate-700 shadow-md backdrop-blur-md transition-colors hover:bg-blue-50 hover:text-blue-600 hover:border-blue-300 md:left-6"
         >
           <FaChevronLeft aria-hidden="true" />
         </motion.button>
@@ -539,7 +542,7 @@ const DiscoverClubsPage = () => {
           whileHover={{ scale: 1.09, y: -4 }}
           whileTap={{ scale: 0.9, y: 4 }}
           transition={{ type: "spring", stiffness: 600, damping: 20 }}
-          className="absolute right-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/70 bg-white/45 text-[#263f4b] shadow-[0_5px_18px_rgba(38,63,75,0.16)] backdrop-blur-md transition-colors hover:bg-white/75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a75c4e] md:right-6"
+          className="absolute right-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white/90 text-slate-700 shadow-md backdrop-blur-md transition-colors hover:bg-blue-50 hover:text-blue-600 hover:border-blue-300 md:right-6"
         >
           <FaChevronRight aria-hidden="true" />
         </motion.button>
@@ -553,7 +556,7 @@ const DiscoverClubsPage = () => {
               <ClubCard key={`${club.id}-${index}`} club={club} />
             ))
           ) : (
-            <p className="w-full text-center text-[#657078]">
+            <p className="w-full text-center text-slate-500">
               No clubs found in this category.
             </p>
           )}

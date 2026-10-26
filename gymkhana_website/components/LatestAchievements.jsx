@@ -16,17 +16,17 @@ const LatestAchievements = ({ achievements = [] }) => {
   const Text = "Explore Councils";
 
   return (
-    <section className="w-full outfit-font bg-[#fff5e5] px-4 py-14 text-[#192b35] sm:px-6 md:py-20">
+    <section className="w-full outfit-font bg-slate-50 px-4 py-14 text-slate-900 sm:px-6 md:py-20 border-b border-slate-200">
       <div className="mx-auto max-w-7xl">
         <div className="mb-8 flex flex-col gap-4 sm:mb-10 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="mb-2 text-xs font-bold uppercase text-[#b96f65]">
+            <p className="mb-2 text-xs font-bold uppercase tracking-wider text-blue-600">
               A moment worth celebrating
             </p>
-            <h2 className="text-3xl font-semibold leading-tight sm:text-4xl">
+            <h2 className="text-3xl font-bold leading-tight text-slate-900 sm:text-4xl">
               Latest achievements
             </h2>
-            <p className="mt-2 max-w-xl text-sm leading-6 text-[#657078] sm:text-base">
+            <p className="mt-2 max-w-xl text-sm leading-6 text-slate-600 sm:text-base">
               The people and councils making an impact across the campus.
             </p>
           </div>
@@ -46,15 +46,15 @@ const LatestAchievements = ({ achievements = [] }) => {
             ))}
           </motion.div>
         ) : (
-          <div className="flex flex-col items-center rounded-lg border border-dashed border-[#d9ccc3] bg-[#fffdfb] px-6 py-12 text-center">
+          <div className="flex flex-col items-center rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-12 text-center shadow-sm">
             <FaTrophy
-              className="mb-4 text-3xl text-[#b96f65]"
+              className="mb-4 text-3xl text-blue-600"
               aria-hidden="true"
             />
-            <h3 className="text-lg font-semibold text-[#263f4b]">
+            <h3 className="text-lg font-semibold text-slate-900">
               New achievements are on the way
             </h3>
-            <p className="mt-2 max-w-md text-sm leading-6 text-[#657078]">
+            <p className="mt-2 max-w-md text-sm leading-6 text-slate-500">
               Council highlights will appear here as they are shared.
             </p>
           </div>
