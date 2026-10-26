@@ -4,7 +4,9 @@ import { FaArrowRight, FaTrophy } from "react-icons/fa";
 
 /* Custom "Know More" button component can be reusable */
 
-const ExploreMore = ({ href, text }) => {
+const ExploreMore = ({ href, text, onClick }) => {
+  if (!href) href = "#0";
+
   const contvariants = {
     rest: {
       paddingLeft: "1.25rem",
@@ -29,10 +31,11 @@ const ExploreMore = ({ href, text }) => {
       whileTap={{ scale: 0.8, y: 5 }}
       transition={{ type: "spring", stiffness: 600, damping: 20 }}
       className="w-fit"
+      onClick={onClick}
     >
       <Link
         href={`/${href}`}
-        className="group inline-flex items-center rounded-full border border-slate-300 bg-white text-sm font-semibold text-slate-700 shadow-sm transition-all hover:border-blue-500 hover:bg-blue-50 hover:text-blue-700 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-600"
+        className="group outfit-font inline-flex items-center rounded-full border border-[#c8bcb4] bg-[#fffefd] font-bold text-[#263f4b] shadow-[0_3px_8px_rgba(74,48,31,0.1)] transition-colors hover:border-[#b96f65] hover:text-white hover:bg-blue-900 text-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#a75c4e]"
       >
         <motion.div
           variants={contvariants}

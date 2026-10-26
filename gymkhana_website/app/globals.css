@@ -51,3 +51,31 @@ canvas.finisher-header {
   height: 100vh;
   z-index: -1; /* stays behind your content */
 }
+
+.shifting-gradient-text {
+  background: linear-gradient(
+    90deg,
+    #faa51b 0%,
+    #90540b 25%,
+    #241202 50%,
+    #83520e 75%,
+    #4d2903 100%
+  );
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: monokaiShift 4.5s ease infinite;
+}
+
+@keyframes monokaiShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
